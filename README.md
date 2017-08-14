@@ -1,4 +1,4 @@
-# SudokuSolver v 1.4
+# SudokuSolver v 1.5
 
 A tool for solving sudoku
 
