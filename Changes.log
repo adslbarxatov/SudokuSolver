@@ -1,0 +1,10 @@
+Sudoku solver changes log
+
+Version 1.4
+ • Publication on GitHub.
+ 
+Version 1.5
+ • Final solution control added; if source table causes an evaluation error,
+   user will be notified about it;
+ • Some visual improvements has been implemented.
+ 
