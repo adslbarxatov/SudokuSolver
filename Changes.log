@@ -6,5 +6,4 @@ Version 1.4
 Version 1.5
  • Final solution control added; if source table causes an evaluation error,
    user will be notified about it;
- • Some visual improvements has been implemented.
- 
+ • Some visual improvements have been implemented.
