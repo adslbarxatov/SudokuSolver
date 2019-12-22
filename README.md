@@ -16,6 +16,15 @@ tool uses binary representation of known (7 -> 001000000b) and unknown
 Программа использует бинарное представление известных (7 -> 001000000b)
 и неизвестных (1 или 2 или 6 -> 000100011b) значений для упрощения
 поиска решения.
+
+#
+
+We've formalized our [Applications development policy (ADP)](https://vk.com/@rdaaow_fupl-adp).
+We're strongly recommend reading it before using our products.
+
+Мы формализовали нашу [Политику разработки приложений (ADP)](https://vk.com/@rdaaow_fupl-adp).
+Настоятельно рекомендуем ознакомиться с ней перед использованием наших продуктов.
+
 #
 
 Only .c and .h must be compiled; other are included by .c. Interface language: en_us
