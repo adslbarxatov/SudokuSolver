@@ -3,12 +3,11 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 // Ресурсы: данные о версии создаваемого приложения
-#define	ASSEMBLYCOMPANY	"RD AAOW"				// EXE Company name
-#define	ASSEMBLYNAME	"Sudoku solver"			// EXE Product name
-#define	ASSEMBLYVERSION	1,5,0,0					// EXE File / Product version
-#define	ASSEMBLYCOPYRIGHT	"(C) Barhatov N."	// EXE Copyright
-#define	ASSEMBLYDESCRIPTION	ASSEMBLYNAME		// EXE Description
-#define	ASSEMBLYUPDATE	"14.08.2017; 21:21"		// EXE Last update
+#define OSME_VERSION		1,6,0,0
+#define OSME_VERSION_S		"1.6.0.0"
+#define OSME_PRODUCT		"Sudoku solver utility v 1.6"
+#define OSME_COMPANY		"RD AAOW"
+//#define	ASSEMBLYUPDATE	"14.08.2017; 21:21"
 
 ///////////////////////////////////////////////////////////////////////////
 // Заголовочные файлы

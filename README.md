@@ -1,25 +1,74 @@
-# SudokuSolver v 1.5
+﻿# SudokuSolver v 1.6u / 2.0u
 
-A tool for solving sudoku / Инструмент для решения судоку
+A simple console and Windows tools for solving sudoku /
+Простой консольный и оконный инструменты для решения судоку
 
 #
 
-This console tool allows you to solve standart (9x9) sudoku tables.
+This tools allow you to solve standart (9x9) sudoku tables.
 
-Solution based on recursive function that builds series of 'assumptions'
+Solution based on recursive function that builds series of “assumptions”
 and finds first one that doesn't conflict with sudoku game rules. Also
 tool uses binary representation of known (7 -> 001000000b) and unknown
 (1 or 2 or 6 -> 000100011b) numbers for simplifying solution process.
 
 #
 
-Этот консольный инструмент позволяет решать стандартные (9x9) судоку.
+Эти инструменты позволяют решать стандартные (9x9) судоку.
 
-Решение основано на рекурсивной функции, строящей серии 'предположений'
+Решение основано на рекурсивной функции, строящей серии «предположений»
 и возвращающей первое из них, которое не конфликтует с правилами судоку.
 Программа использует бинарное представление известных (7 -> 001000000b)
 и неизвестных (1 или 2 или 6 -> 000100011b) значений для упрощения
 поиска решения.
+
+#
+
+Console tool requires text files (like presented below) as input
+
+Консольный инструмент требует текстовые файлы (наподобие нижеприведённого) в качестве входных
+
+```
+030000800
+070080400
+000019300
+600800007
+200000009
+400002005
+009430000
+005070060
+001000020
+```
+
+Result can be received on the monitor or in file if its name is specified as the second parameter
+
+Результат можно получить на экране или в виде файла, если указать его имя в качестве второго параметра
+
+#
+
+Windows tools accepts next keys:
+- 1 – 9 – press these numbers while on cells to enter them;
+- any other symbol – to clear selected cell;
+- Enter – to run solution process:
+    - you will get red cells if your table is unsolvable (has or leads to a duplication of values);
+    - you will get green cells when a solution is found;
+- Backspace – to clear only found cells;
+- Esc – to clear all cells;
+- F1 – to get application's about;
+- Arrow keys – to move over the field;
+- Alt + F4 – to exit application
+
+Оконный вариант утилиты управляется следующими клавишами:
+- 1 - 9 – нажимайте эти цифры, находясь в ячейках, чтобы ввести их;
+- любой другой символ – чтобы очистить выделенную ячейку;
+- Enter – чтобы запустить процесс решения:
+    - вы получите красные ячейки, если ваша таблица неразрешима (имеет или приводит к дублированию значений);
+    - вы получите зелёные клетки, когда решение будет найдено;
+- Backspace – чтобы очистить только найденные клетки;
+- Esc – чтобы очистить все ячейки;
+- F1 – узнать о приложении;
+- клавиши со стрелками – для перемещения по полю;
+- Alt + F4 – для выхода из приложения
 
 #
 
@@ -28,9 +77,3 @@ We're strongly recommend reading it before using our products.
 
 Мы формализовали нашу [Политику разработки приложений (ADP)](https://vk.com/@rdaaow_fupl-adp).
 Настоятельно рекомендуем ознакомиться с ней перед использованием наших продуктов.
-
-#
-
-Only .c and .h must be compiled; other are included by .c. Interface language: en_us
-
-Компилировать нужно только файлы .c и .h; остальные включены в файлы .c. Язык интерфейса: en_us

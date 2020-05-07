@@ -1,9 +1,14 @@
-Sudoku solver changes log
+﻿Sudoku solver changes log
 
-Version 1.4
- • Publication on GitHub.
- 
-Version 1.5
- • Final solution control added; if source table causes an evaluation error,
-   user will be notified about it;
- • Some visual improvements have been implemented.
+Version 2.0u:
+• Windows interface and C# adaptation released for the solution algorithm; stand-alone application in addition to console one has been developed (application manual added to the main page of project)
+
+Version 1.6u:
+• Application namespace, icon and development environment have been unified
+
+Version 1.5:
+• Final solution control added; if source table causes an evaluation error, user will be notified about it;
+• Some visual improvements have been implemented
+
+Version 1.4:
+• Publication on GitHub
