@@ -1,5 +1,9 @@
 ﻿Sudoku solver changes log
 
+Version 2.0.1h
+• New application info interface implemented;
+• Both applications' versions have been unified
+
 Version 2.0u:
 • Windows interface and C# adaptation released for the solution algorithm; stand-alone application in addition to console one has been developed (application manual added to the main page of project)
 

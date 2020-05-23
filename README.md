@@ -1,28 +1,27 @@
-﻿# SudokuSolver v 1.6u / 2.0u
+﻿# SudokuSolver v 2.0.1h
 
-A simple console and Windows tools for solving sudoku /
+A simple console and Windows tools for solving sudoku
+
 Простой консольный и оконный инструменты для решения судоку
 
-#
+## Общие сведения
 
-This tools allow you to solve standart (9x9) sudoku tables.
+These tools allow you to solve standart (9x9) sudoku tables.
 
 Solution based on recursive function that builds series of “assumptions”
 and finds first one that doesn't conflict with sudoku game rules. Also
-tool uses binary representation of known (7 -> 001000000b) and unknown
-(1 or 2 or 6 -> 000100011b) numbers for simplifying solution process.
-
-#
+tool uses binary representation of known (```7 -> 001000000b```) and unknown
+(```1 or 2 or 6 -> 000100011b```) numbers for simplifying solution process.
 
 Эти инструменты позволяют решать стандартные (9x9) судоку.
 
 Решение основано на рекурсивной функции, строящей серии «предположений»
 и возвращающей первое из них, которое не конфликтует с правилами судоку.
-Программа использует бинарное представление известных (7 -> 001000000b)
-и неизвестных (1 или 2 или 6 -> 000100011b) значений для упрощения
+Программа использует бинарное представление известных (```7 -> 001000000b```)
+и неизвестных (```1 или 2 или 6 -> 000100011b```) значений для упрощения
 поиска решения.
 
-#
+## Console tool / Версия для командной строки
 
 Console tool requires text files (like presented below) as input
 
@@ -44,9 +43,9 @@ Result can be received on the monitor or in file if its name is specified as the
 
 Результат можно получить на экране или в виде файла, если указать его имя в качестве второго параметра
 
-#
+## Version for Windows / Версия для Windows
 
-Windows tools accepts next keys:
+Windows tool accepts next keys:
 - 1 – 9 – press these numbers while on cells to enter them;
 - any other symbol – to clear selected cell;
 - Enter – to run solution process:
