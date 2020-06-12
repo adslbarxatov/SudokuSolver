@@ -1,4 +1,4 @@
-﻿# SudokuSolver v 2.0.1h
+﻿# SudokuSolver v 2.1
 
 A simple console and Windows tools for solving sudoku
 

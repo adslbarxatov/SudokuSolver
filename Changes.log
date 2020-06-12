@@ -1,5 +1,8 @@
 ﻿Sudoku solver changes log
 
+Version 2.1
+• Keyboard description added to application quick help on [F1] key
+
 Version 2.0.1h
 • New application info interface implemented;
 • Both applications' versions have been unified
