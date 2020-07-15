@@ -4,7 +4,9 @@ A simple console and Windows tools for solving sudoku
 
 Простой консольный и оконный инструменты для решения судоку
 
-## Общие сведения
+
+
+## About application / Общие сведения
 
 These tools allow you to solve standart (9x9) sudoku tables.
 
@@ -20,6 +22,8 @@ tool uses binary representation of known (```7 -> 001000000b```) and unknown
 Программа использует бинарное представление известных (```7 -> 001000000b```)
 и неизвестных (```1 или 2 или 6 -> 000100011b```) значений для упрощения
 поиска решения.
+
+
 
 ## Console tool / Версия для командной строки
 
@@ -43,6 +47,8 @@ Result can be received on the monitor or in file if its name is specified as the
 
 Результат можно получить на экране или в виде файла, если указать его имя в качестве второго параметра
 
+
+
 ## Version for Windows / Версия для Windows
 
 Windows tool accepts next keys:
@@ -57,6 +63,9 @@ Windows tool accepts next keys:
 - Arrow keys – to move over the field;
 - Alt + F4 – to exit application
 
+Needs Windows XP and newer, Framework 4.0 and newer
+
+
 Оконный вариант утилиты управляется следующими клавишами:
 - 1 - 9 – нажимайте эти цифры, находясь в ячейках, чтобы ввести их;
 - любой другой символ – чтобы очистить выделенную ячейку;
@@ -69,10 +78,20 @@ Windows tool accepts next keys:
 - клавиши со стрелками – для перемещения по полю;
 - Alt + F4 – для выхода из приложения
 
-#
+Требуется ОС Windows XP и новее, Framework 4.0 и новее
 
-We've formalized our [Applications development policy (ADP)](https://vk.com/@rdaaow_fupl-adp).
-We're strongly recommend reading it before using our products.
 
-Мы формализовали нашу [Политику разработки приложений (ADP)](https://vk.com/@rdaaow_fupl-adp).
-Настоятельно рекомендуем ознакомиться с ней перед использованием наших продуктов.
+
+## Development policy and EULA / Политика разработки и EULA
+
+This [Policy (ADP)](https://vk.com/@rdaaow_fupl-adp), its positions, conclusion, EULA and application methods
+describes general rules that we follow in all of our development processes, released applications and implemented
+ideas.
+**It must be acquainted by participants and users before using any of laboratory's products.
+By downloading them, you agree to this Policy**
+
+Данная [Политика (ADP)](https://vk.com/@rdaaow_fupl-adp), её положения, заключение, EULA и способы применения
+описывают общие правила, которым мы следуем во всех наших процессах разработки, вышедших в релиз приложениях
+и реализованных идеях.
+**Обязательна к ознакомлению всем участникам и пользователям перед использованием любого из продуктов лаборатории.
+Загружая их, вы соглашаетесь с этой Политикой**
