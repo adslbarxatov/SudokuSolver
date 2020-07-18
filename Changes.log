@@ -1,9 +1,14 @@
 ﻿Sudoku solver changes log
 
-Version 2.1
+Version 2.1.1p:
+• Updated application info interface (more convenient font is used for now);
+• Added a button to access the Application development policy and EULA in the application info interface (due to ADP update);
+• Added automatic check for updates to the application info interface
+
+Version 2.1:
 • Keyboard description added to application quick help on [F1] key
 
-Version 2.0.1h
+Version 2.0.1h:
 • New application info interface implemented;
 • Both applications' versions have been unified
 
