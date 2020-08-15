@@ -81,25 +81,7 @@ namespace RD_AAOW
 
 				// Отображение справки
 				case Keys.F1:
-					AboutForm af = new AboutForm (SupportedLanguages.en_us,
-						"https://github.com/adslbarxatov/SudokuSolver",
-						"https://github.com/adslbarxatov/SudokuSolver/releases",
-						"https://github.com/adslbarxatov/SudokuSolver",
-
-						"These tools allow you to solve standart (9x9) sudoku tables. Solution based on recursive " +
-						"function that builds series of “assumptions” and finds first one that doesn't conflict with " +
-						"sudoku game rules. Also tool uses binary representation of known (7 -> 001000000b) and " +
-						"unknown (1 or 2 or 6 -> 000100011b) numbers for simplifying solution process\r\n\r\n" +
-
-						"Эти инструменты позволяют решать стандартные (9x9) судоку. Решение основано на рекурсивной " +
-						"функции, строящей серии «предположений» и возвращающей первое из них, которое не конфликтует " +
-						"с правилами судоку. Программа использует бинарное представление известных (7 -> 001000000b) " +
-						"и неизвестных (1 или 2 или 6 -> 000100011b) значений для упрощения поиска решения\r\n\r\n" +
-				
-						"[Esc] – full reset / полный сброс;\r\n[Backspace] – solution reset / сброс результата;\r\n" +
-						"[Enter] – solution search / поиск решения;\r\n"+
-						"Arrow and digits / стрелки и цифры – move and values enter / движение и ввод значений;\r\n"+
-						"[Space] – value reset / сброс значения;\r\n[F1] – quick help / быстрая справка");
+					ProgramDescription.ShowAbout (false);
 					return true;
 
 				// Остальные клавиши обрабатываются стандартной процедурой
