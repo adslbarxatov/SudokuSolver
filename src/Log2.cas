@@ -20,3 +20,4 @@ unsigned int log2ui (unsigned int x)
 	{
 	return (unsigned int)log2 ((double)x);
 	}
+

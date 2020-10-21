@@ -3,10 +3,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 // Ресурсы: данные о версии создаваемого приложения
-#define OSME_VERSION		2,0,1,0
-#define OSME_VERSION_S		"2.0.1.0"
-#define OSME_PRODUCT		"Sudoku solver utility v 2.0.1"
-#define OSME_COMPANY		"RD AAOW"
+#define SS_VERSION		2,2,0,0
+#define SS_VERSION_S	"2.2.0.0"
+#define SS_PRODUCT		"Sudoku solver utility v 2.2"
+#define SS_COMPANY		"RD AAOW"
 //#define	ASSEMBLYUPDATE	"14.08.2017; 21:21"
 
 ///////////////////////////////////////////////////////////////////////////

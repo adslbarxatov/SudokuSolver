@@ -1,5 +1,8 @@
 ﻿Sudoku solver changes log
 
+Version 2.2:
+• Cumulative changes applied
+
 Version 2.1.3i:
 • Application info interface now able to get last release's changes log;
 • Found and fixed hidden bug that caused an error when starting the application from local network;

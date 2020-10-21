@@ -28,10 +28,10 @@ int main (int argc, char *argv[])
 	HANDLE hStdout = GetStdHandle (STD_OUTPUT_HANDLE);
 
 	// Заголовок программы
-	system ("Title " OSME_PRODUCT);
+	system ("Title " SS_PRODUCT);
 	SetConsoleTextAttribute (hStdout, 0x0B);
-	printf ("\n      \x11 %s \x10\n\n", OSME_PRODUCT);
-	printf ("  %s                         %s  \n\n", OSME_COMPANY, OSME_VERSION_S);
+	printf ("\n      \x11 %s \x10\n\n", SS_PRODUCT);
+	printf ("  %s                         %s  \n\n", SS_COMPANY, SS_VERSION_S);
 	SetConsoleTextAttribute (hStdout, 0x0F);
 
 	///////////////////////////////////////////////////////////////////////////

@@ -1,10 +1,13 @@
-﻿# SudokuSolver v 2.1.3i
+﻿# SudokuSolver v 2.2
+> PCC: 00044D201F625B3E
+
 
 A simple console and Windows tools for solving sudoku
 
 Простой консольный и оконный инструменты для решения судоку
 
 
+#
 
 ## About application / Общие сведения
 
@@ -15,6 +18,8 @@ and finds first one that doesn't conflict with sudoku game rules. Also
 tool uses binary representation of known (```7 -> 001000000b```) and unknown
 (```1 or 2 or 6 -> 000100011b```) numbers for simplifying solution process.
 
+#
+
 Эти инструменты позволяют решать стандартные (9x9) судоку.
 
 Решение основано на рекурсивной функции, строящей серии «предположений»
@@ -22,6 +27,8 @@ tool uses binary representation of known (```7 -> 001000000b```) and unknown
 Программа использует бинарное представление известных (```7 -> 001000000b```)
 и неизвестных (```1 или 2 или 6 -> 000100011b```) значений для упрощения
 поиска решения.
+
+&nbsp;
 
 
 
@@ -47,6 +54,8 @@ Result can be received on the monitor or in file if its name is specified as the
 
 Результат можно получить на экране или в виде файла, если указать его имя в качестве второго параметра
 
+&nbsp;
+
 
 
 ## Version for Windows / Версия для Windows
@@ -65,6 +74,7 @@ Windows tool accepts next keys:
 
 Needs Windows XP and newer, Framework 4.0 and newer
 
+#
 
 Оконный вариант утилиты управляется следующими клавишами:
 - 1 - 9 – нажимайте эти цифры, находясь в ячейках, чтобы ввести их;
@@ -80,6 +90,8 @@ Needs Windows XP and newer, Framework 4.0 and newer
 
 Требуется ОС Windows XP и новее, Framework 4.0 и новее
 
+&nbsp;
+
 
 
 ## Development policy and EULA / Политика разработки и EULA
@@ -89,6 +101,8 @@ describes general rules that we follow in all of our development processes, rele
 ideas.
 **It must be acquainted by participants and users before using any of laboratory's products.
 By downloading them, you agree to this Policy**
+
+#
 
 Данная [Политика (ADP)](https://vk.com/@rdaaow_fupl-adp), её положения, заключение, EULA и способы применения
 описывают общие правила, которым мы следуем во всех наших процессах разработки, вышедших в релиз приложениях
