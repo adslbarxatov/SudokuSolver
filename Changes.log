@@ -1,5 +1,8 @@
 ﻿Sudoku solver changes log
 
+ToDo:
+- Disallow multiple starts
+
 Version 2.2:
 • Cumulative changes applied
 
