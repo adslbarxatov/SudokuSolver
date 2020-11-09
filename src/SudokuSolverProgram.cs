@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace RD_AAOW
@@ -17,6 +18,16 @@ namespace RD_AAOW
 			// Инициализация
 			Application.EnableVisualStyles ();
 			Application.SetCompatibleTextRenderingDefault (false);
+
+			// Проверка запуска единственной копии
+			bool result;
+			Mutex instance = new Mutex (true, ProgramDescription.AssemblyTitle, out result);
+			if (!result)
+				{
+				MessageBox.Show (ProgramDescription.AssemblyTitle + " is already running",
+					ProgramDescription.AssemblyTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				return;
+				}
 
 			// Отображение справки и запроса на принятие Политики
 			if (!ProgramDescription.AcceptEULA ())

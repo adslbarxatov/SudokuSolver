@@ -7,7 +7,7 @@ namespace RD_AAOW
 	/// <summary>
 	/// Класс описывает главную форму приложения
 	/// </summary>
-	public partial class SudokuSolverForm:Form
+	public partial class SudokuSolverForm: Form
 		{
 		// Переменные и константы
 		private const int buttonSize = 30;
