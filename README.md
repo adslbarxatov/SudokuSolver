@@ -14,7 +14,7 @@ A simple console and Windows tools for solving sudoku
 These tools allow you to solve standart (9x9) sudoku tables.
 
 Solution based on recursive function that builds series of “assumptions”
-and finds first one that doesn't conflict with sudoku game rules. Also
+and finds first one that doesn’t conflict with sudoku game rules. Also
 tool uses binary representation of known (```7 -> 001000000b```) and unknown
 (```1 or 2 or 6 -> 000100011b```) numbers for simplifying solution process.
 
@@ -61,32 +61,34 @@ Result can be received on the monitor or in file if its name is specified as the
 ## Version for Windows / Версия для Windows
 
 Windows tool accepts next keys:
-- 1 – 9 – press these numbers while on cells to enter them;
+- ```1 – 9``` – press these numbers while on cells to enter them;
 - any other symbol – to clear selected cell;
-- Enter – to run solution process:
+- ```Enter``` – to run solution process:
     - you will get red cells if your table is unsolvable (has or leads to a duplication of values);
     - you will get green cells when a solution is found;
-- Backspace – to clear only found cells;
-- Esc – to clear all cells;
-- F1 – to get application's about;
+- ```Backspace``` – to clear only found cells;
+- ```Esc``` – to clear all cells;
+- ```F1``` – to get application’s about;
 - Arrow keys – to move over the field;
-- Alt + F4 – to exit application
+- ```Alt``` + ```F4``` – to exit application
+
+Workflow maintenance
 
 Needs Windows XP and newer, Framework 4.0 and newer
 
 #
 
 Оконный вариант утилиты управляется следующими клавишами:
-- 1 - 9 – нажимайте эти цифры, находясь в ячейках, чтобы ввести их;
+- ```1 - 9``` – нажимайте эти цифры, находясь в ячейках, чтобы ввести их;
 - любой другой символ – чтобы очистить выделенную ячейку;
-- Enter – чтобы запустить процесс решения:
+- ```Enter``` – чтобы запустить процесс решения:
     - вы получите красные ячейки, если ваша таблица неразрешима (имеет или приводит к дублированию значений);
     - вы получите зелёные клетки, когда решение будет найдено;
-- Backspace – чтобы очистить только найденные клетки;
-- Esc – чтобы очистить все ячейки;
-- F1 – узнать о приложении;
+- ```Backspace``` – чтобы очистить только найденные клетки;
+- ```Esc``` – чтобы очистить все ячейки;
+- ```F1``` – узнать о приложении;
 - клавиши со стрелками – для перемещения по полю;
-- Alt + F4 – для выхода из приложения
+- ```Alt``` + ```F4``` – для выхода из приложения
 
 Требуется ОС Windows XP и новее, Framework 4.0 и новее
 
@@ -98,13 +100,11 @@ Needs Windows XP and newer, Framework 4.0 and newer
 
 This Policy (ADP), its positions, conclusion, EULA and application methods
 describes general rules that we follow in all of our development processes, released applications and implemented ideas.
-**It must be acquainted by participants and users before using any of laboratory’s products.
-By downloading them, you agree and accept this Policy!**
-
-&nbsp;
+***It must be acquainted by participants and users before using any of laboratory’s products.
+By downloading them, you agree and accept this Policy!***
 
 Данная Политика (ADP), её положения, заключение, EULA и способы применения
 описывают общие правила, которым мы следуем во всех наших процессах разработки, вышедших в релиз приложениях
 и реализованных идеях.
-**Обязательна к ознакомлению для всех участников и пользователей перед использованием любого из продуктов лаборатории.
-Загружая их, вы соглашаетесь и принимаете эту Политику!**
+***Обязательна к ознакомлению для всех участников и пользователей перед использованием любого из продуктов лаборатории.
+Загружая их, вы соглашаетесь и принимаете эту Политику!***
