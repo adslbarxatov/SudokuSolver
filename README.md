@@ -1,5 +1,5 @@
-﻿# SudokuSolver v 2.3.1
-> PCC: 00052A105BD6761C
+﻿# SudokuSolver v 2.3.15
+> PCC: 000291F7218191B4
 
 
 A simple console and Windows tools for solving sudoku
