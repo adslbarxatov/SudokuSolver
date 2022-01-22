@@ -1,5 +1,5 @@
-﻿# SudokuSolver v 2.4
-> PCC: 00043799FCF7B313
+﻿# SudokuSolver v 2.4.3
+> PCC: 0004ADA6592720A4
 
 
 A simple console and Windows tools for solving sudoku
@@ -34,9 +34,9 @@ tool uses binary representation of known (```7 -> 001000000b```) and unknown
 
 ## Console tool / Версия для командной строки
 
-Console tool requires text files (like presented below) as input
+Console tool requires text files (like presented below) as input:
 
-Консольный инструмент требует текстовые файлы (наподобие нижеприведённого) в качестве входных
+Консольный инструмент требует текстовые файлы (наподобие нижеприведённого) в качестве входных:
 
 ```
 030000800
@@ -50,9 +50,9 @@ Console tool requires text files (like presented below) as input
 001000020
 ```
 
-Result can be received on the monitor or in file if its name is specified as the second parameter
+Result can be received on the monitor or in file if its name is specified as the second parameter.
 
-Результат можно получить на экране или в виде файла, если указать его имя в качестве второго параметра
+Результат можно получить на экране или в виде файла, если указать его имя в качестве второго параметра.
 
 &nbsp;
 
@@ -72,10 +72,6 @@ Windows tool accepts next keys:
 - Arrow keys – to move over the field;
 - ```Alt``` + ```F4``` – to exit application
 
-Workflow maintenance
-
-Needs Windows XP and newer, Framework 4.0 and newer
-
 #
 
 Оконный вариант утилиты управляется следующими клавишами:
@@ -90,7 +86,16 @@ Needs Windows XP and newer, Framework 4.0 and newer
 - клавиши со стрелками – для перемещения по полю;
 - ```Alt``` + ```F4``` – для выхода из приложения
 
-Требуется ОС Windows XP и новее, Framework 4.0 и новее
+&nbsp;
+
+
+
+## Requirements / Требования
+
+- Windows XP or newer / или новее;
+- [Microsoft .NET Framework 4.0](https://www.microsoft.com/en-us/download/details.aspx?id=17718).
+
+Interface languages / языки интерфейса: ru_ru, en_us.
 
 &nbsp;
 
