@@ -1,5 +1,5 @@
-﻿# SudokuSolver v 2.4.37
-> PCC: 0003C79F8DF377E1
+﻿# SudokuSolver v 2.5
+> PCC: 0003D7D4670EC9AC
 
 
 A simple console and Windows tools for solving sudoku
@@ -28,37 +28,7 @@ tool uses binary representation of known (```7 -> 001000000b```) and unknown
 и неизвестных (```1 или 2 или 6 -> 000100011b```) значений для упрощения
 поиска решения.
 
-&nbsp;
-
-
-
-## Console tool / Версия для командной строки
-
-Console tool requires text files (like presented below) as input:
-
-Консольный инструмент требует текстовые файлы (наподобие нижеприведённого) в качестве входных:
-
-```
-030000800
-070080400
-000019300
-600800007
-200000009
-400002005
-009430000
-005070060
-001000020
-```
-
-Result can be received on the monitor or in file if its name is specified as the second parameter.
-
-Результат можно получить на экране или в виде файла, если указать его имя в качестве второго параметра.
-
-&nbsp;
-
-
-
-## Version for Windows / Версия для Windows
+#
 
 Windows tool accepts next keys:
 - ```1 – 9``` – press these numbers while on cells to enter them;
@@ -93,7 +63,7 @@ Windows tool accepts next keys:
 ## Requirements / Требования
 
 - Windows XP or newer / или новее;
-- [Microsoft .NET Framework 4.0](https://www.microsoft.com/en-us/download/details.aspx?id=17718).
+- [Microsoft .NET Framework 4.0](https://microsoft.com/en-us/download/details.aspx?id=17718).
 
 Interface languages / языки интерфейса: ru_ru, en_us.
 
