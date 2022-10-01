@@ -1,5 +1,5 @@
-﻿# SudokuSolver v 2.5
-> PCC: 0003D7D4670EC9AC
+﻿# SudokuSolver v 3.0
+> PCC: 000309B4C043EA9A
 
 
 A simple console and Windows tools for solving sudoku
@@ -62,8 +62,8 @@ Windows tool accepts next keys:
 
 ## Requirements / Требования
 
-- Windows XP or newer / или новее;
-- [Microsoft .NET Framework 4.0](https://microsoft.com/en-us/download/details.aspx?id=17718).
+- Windows 7 or newer / или новее;
+- [Microsoft .NET Framework 4.8](https://go.microsoft.com/fwlink/?linkid=2088631).
 
 Interface languages / языки интерфейса: ru_ru, en_us.
 
