@@ -120,6 +120,7 @@ namespace RD_AAOW
 
 					lb.Cursor = Cursors.UpArrow;
 					lb.KeyDown += Lb_KeyDown;
+					lb.Click += Lb_Click;
 
 					this.Controls.Add (lb);
 					}
@@ -150,6 +151,25 @@ namespace RD_AAOW
 					lb.Text = emptySign;
 					break;
 				}
+			}
+
+		// Нажание кнопок
+		private void Lb_Click (object sender, EventArgs e)
+			{
+			Button b = (Button)sender;
+			uint v = 0;
+
+			try
+				{
+				v = uint.Parse (b.Text);
+				}
+			catch { }
+
+			v++;
+			if (v > 9)
+				v = 1;
+			b.Text = v.ToString ();
+			b.ForeColor = newTextColor;
 			}
 
 		// Решение задачи
