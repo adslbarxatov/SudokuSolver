@@ -1,5 +1,5 @@
-﻿# SudokuSolver v 3.1
-> PCC: 0003159B5FF4B91A
+﻿# SudokuSolver v 3.2
+> PCC: 000383B83EF05633
 
 
 A simple console and Windows tools for solving sudoku
@@ -40,6 +40,8 @@ Windows tool accepts next keys:
 - `Esc` – to clear all cells;
 - `F1` – to get application’s about;
 - Arrow keys – to move over the field;
+- Press buttons – to change values;
+- `L` – to set the interface language;
 - `Alt` + `F4` – to exit application
 
 #
@@ -54,6 +56,8 @@ Windows tool accepts next keys:
 - `Esc` – чтобы очистить все ячейки;
 - `F1` – узнать о приложении;
 - клавиши со стрелками – для перемещения по полю;
+- нажатие кнопок – для изменения значений;
+- `L` – для задания языка интерфейса;
 - `Alt` + `F4` – для выхода из приложения
 
 &nbsp;

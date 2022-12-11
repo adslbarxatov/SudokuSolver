@@ -5,7 +5,7 @@ namespace RD_AAOW
 	/// <summary>
 	/// Класс описывает основной функционал поиска решения
 	/// </summary>
-	public class SudokuSolver
+	public class SudokuSolverClass
 		{
 		//////////////////////////////
 		// SudokuSolver.h
@@ -372,8 +372,9 @@ m1:
 		/// Конструктор. Инициализирует экземпляр и выполняет поиск решения задачи
 		/// </summary>
 		/// <param name="SourceMatrix">Исходная таблица чисел; должна иметь высоту и ширину, равные 9;
-		/// из значений извлекаются только младшие разряды; нулевые значения рассматриваются как те, которые нужно найти</param>
-		public SudokuSolver (Byte[,] SourceMatrix)
+		/// из значений извлекаются только младшие разряды; нулевые значения рассматриваются как те, 
+		/// которые нужно найти</param>
+		public SudokuSolverClass (Byte[,] SourceMatrix)
 			{
 			// Контроль
 			if ((SourceMatrix == null) || (SourceMatrix.GetLength (0) != SDS) || (SourceMatrix.GetLength (1) != SDS))

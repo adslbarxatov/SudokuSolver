@@ -1,8 +1,10 @@
 ﻿Sudoku solver changes log
 
-ToDo:
-- Make proper localization;
-- Add total cleanup warning
+Version 3.2:
+• The app now uses a new, secure method for setting the size and position of windows;
+• Implemented support for HypeHelp mechanics;
+• App now allows you to select the language of the interface (using L key);
+• App will now warn user about the full reset
 
 Version 3.1:
 • Added the ability to set values by buttons pressing;

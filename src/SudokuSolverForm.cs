@@ -12,6 +12,7 @@ namespace RD_AAOW
 		// Переменные и константы
 		private const int buttonSize = 30;
 		private const string emptySign = " ";
+		private SupportedLanguages al = Localization.CurrentLanguage;
 
 		private Color backgroundColor = Color.FromArgb (255, 255, 248),
 			buttonsColor = Color.FromArgb (255, 255, 200),
@@ -29,19 +30,19 @@ namespace RD_AAOW
 				{
 				// Перенаправление движения по кнопкам
 				case Keys.Up:
-					for (int i = 0; i < SudokuSolver.SudokuSideSize; i++)
+					for (int i = 0; i < SudokuSolverClass.SudokuSideSize; i++)
 						this.SelectNextControl (this.ActiveControl, false, true, false, true);
 					return true;
 
 				case Keys.Down:
-					for (int i = 0; i < SudokuSolver.SudokuSideSize; i++)
+					for (int i = 0; i < SudokuSolverClass.SudokuSideSize; i++)
 						this.SelectNextControl (this.ActiveControl, true, true, false, true);
 					return true;
 
 				case Keys.Left:
-					if (this.Controls.IndexOf (this.ActiveControl) % SudokuSolver.SudokuSideSize == 0)
+					if (this.Controls.IndexOf (this.ActiveControl) % SudokuSolverClass.SudokuSideSize == 0)
 						{
-						for (int i = 1; i < SudokuSolver.SudokuSideSize; i++)
+						for (int i = 1; i < SudokuSolverClass.SudokuSideSize; i++)
 							this.SelectNextControl (this.ActiveControl, true, true, false, true);
 						}
 					else
@@ -51,9 +52,9 @@ namespace RD_AAOW
 					return true;
 
 				case Keys.Right:
-					if ((this.Controls.IndexOf (this.ActiveControl) + 1) % SudokuSolver.SudokuSideSize == 0)
+					if ((this.Controls.IndexOf (this.ActiveControl) + 1) % SudokuSolverClass.SudokuSideSize == 0)
 						{
-						for (int i = 1; i < SudokuSolver.SudokuSideSize; i++)
+						for (int i = 1; i < SudokuSolverClass.SudokuSideSize; i++)
 							this.SelectNextControl (this.ActiveControl, false, true, false, true);
 						}
 					else
@@ -69,6 +70,11 @@ namespace RD_AAOW
 
 				// Полный и частичный сброс поля
 				case Keys.Escape:
+					if (RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning, "ResetWarning",
+						Localization.DefaultButtons.YesNoFocus, Localization.DefaultButtons.No) !=
+						RDMessageButtons.ButtonOne)
+						return true;
+
 					for (int i = 0; i < this.Controls.Count; i++)
 						this.Controls[i].Text = emptySign;
 					return true;
@@ -81,7 +87,13 @@ namespace RD_AAOW
 
 				// Отображение справки
 				case Keys.F1:
-					ProgramDescription.ShowAbout (false);
+					RDGenerics.ShowAbout (false);
+					return true;
+
+				// Смена языка интерфейса
+				case Keys.L:
+					if (RDGenerics.MessageBox (al) == RDMessageButtons.ButtonOne)
+						al = Localization.CurrentLanguage;
 					return true;
 
 				// Остальные клавиши обрабатываются стандартной процедурой
@@ -99,15 +111,15 @@ namespace RD_AAOW
 			InitializeComponent ();
 
 			this.Text = ProgramDescription.AssemblyTitle;
-			this.ClientSize = new Size ((int)(SudokuSolver.SudokuSideSize + 2) * buttonSize,
-				(int)(SudokuSolver.SudokuSideSize + 2) * buttonSize);
+			this.ClientSize = new Size ((int)(SudokuSolverClass.SudokuSideSize + 2) * buttonSize,
+				(int)(SudokuSolverClass.SudokuSideSize + 2) * buttonSize);
 			this.BackColor = backgroundColor;
 
 			// Формирование поля
-			int sqrt = (int)Math.Sqrt (SudokuSolver.SudokuSideSize);
-			for (int r = 0; r < SudokuSolver.SudokuSideSize; r++)
+			int sqrt = (int)Math.Sqrt (SudokuSolverClass.SudokuSideSize);
+			for (int r = 0; r < SudokuSolverClass.SudokuSideSize; r++)
 				{
-				for (int c = 0; c < SudokuSolver.SudokuSideSize; c++)
+				for (int c = 0; c < SudokuSolverClass.SudokuSideSize; c++)
 					{
 					Button lb = new Button ();
 
@@ -176,12 +188,12 @@ namespace RD_AAOW
 		private void Solve ()
 			{
 			// Сборка массива
-			Byte[,] matrix = new Byte[SudokuSolver.SudokuSideSize, SudokuSolver.SudokuSideSize];
-			for (int r = 0; r < SudokuSolver.SudokuSideSize; r++)
+			Byte[,] matrix = new Byte[SudokuSolverClass.SudokuSideSize, SudokuSolverClass.SudokuSideSize];
+			for (int r = 0; r < SudokuSolverClass.SudokuSideSize; r++)
 				{
-				for (int c = 0; c < SudokuSolver.SudokuSideSize; c++)
+				for (int c = 0; c < SudokuSolverClass.SudokuSideSize; c++)
 					{
-					Control ct = this.Controls[r * (int)SudokuSolver.SudokuSideSize + c];
+					Control ct = this.Controls[r * (int)SudokuSolverClass.SudokuSideSize + c];
 					if ((ct.Text != emptySign) &&
 						((ct.ForeColor == oldTextColor) || (ct.ForeColor == newTextColor) || ct.ForeColor == errorTextColor))
 						matrix[r, c] = Byte.Parse (ct.Text);
@@ -191,8 +203,8 @@ namespace RD_AAOW
 				}
 
 			// Решение задачи
-			SudokuSolver ss = new SudokuSolver (matrix);
-			if (ss.InitResult != SudokuSolver.InitResults.OK)
+			SudokuSolverClass ss = new SudokuSolverClass (matrix);
+			if (ss.InitResult != SudokuSolverClass.InitResults.OK)
 				{
 				for (int i = 0; i < this.Controls.Count; i++)
 					this.Controls[i].ForeColor = errorTextColor;
@@ -201,11 +213,11 @@ namespace RD_AAOW
 				}
 
 			// Отображение решения
-			for (int r = 0; r < SudokuSolver.SudokuSideSize; r++)
+			for (int r = 0; r < SudokuSolverClass.SudokuSideSize; r++)
 				{
-				for (int c = 0; c < SudokuSolver.SudokuSideSize; c++)
+				for (int c = 0; c < SudokuSolverClass.SudokuSideSize; c++)
 					{
-					Control ct = this.Controls[r * (int)SudokuSolver.SudokuSideSize + c];
+					Control ct = this.Controls[r * (int)SudokuSolverClass.SudokuSideSize + c];
 					if ((ct.Text != emptySign) &&
 						((ct.ForeColor == oldTextColor) || (ct.ForeColor == newTextColor) || ct.ForeColor == errorTextColor))
 						{
