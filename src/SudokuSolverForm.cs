@@ -12,7 +12,7 @@ namespace RD_AAOW
 		// Переменные и константы
 		private const int buttonSize = 30;
 		private const string emptySign = " ";
-		private SupportedLanguages al = Localization.CurrentLanguage;
+		/*private SupportedLanguages al = Localization.CurrentLanguage;*/
 
 		private Color backgroundColor = Color.FromArgb (255, 255, 248),
 			buttonsColor = Color.FromArgb (255, 255, 200),
@@ -92,8 +92,9 @@ namespace RD_AAOW
 
 				// Смена языка интерфейса
 				case Keys.L:
-					if (RDGenerics.MessageBox (al) == RDMessageButtons.ButtonOne)
-						al = Localization.CurrentLanguage;
+					/*if (*/
+					RDGenerics.MessageBox ()/* == RDMessageButtons.ButtonOne)
+						al = Localization.CurrentLanguage*/;
 					return true;
 
 				// Остальные клавиши обрабатываются стандартной процедурой
