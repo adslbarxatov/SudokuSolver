@@ -1,13 +1,16 @@
-﻿# SudokuSolver v 3.3
-> PCC: 000389AF0EBD33B6
+﻿# SudokuSolver v 3.3.2
+> PCC: 0002F5B1A04CF6E1
 
 
 A simple console and Windows tools for solving sudoku
 
+---
+
 Простой консольный и оконный инструменты для решения судоку
 
+&nbsp;
 
-#
+
 
 ## About application / Общие сведения
 
@@ -18,7 +21,7 @@ and finds first one that doesn’t conflict with sudoku game rules. Also
 tool uses binary representation of known (`7 → 001000000b`) and unknown
 (`1 or 2 or 6 → 000100011b`) numbers for simplifying solution process.
 
-#
+---
 
 Эти инструменты позволяют решать стандартные (9x9) судоку.
 
@@ -28,7 +31,7 @@ tool uses binary representation of known (`7 → 001000000b`) and unknown
 и неизвестных (`1 или 2 или 6 → 000100011b`) значений для упрощения
 поиска решения.
 
-#
+---
 
 Windows tool accepts next keys:
 - `1 – 9` – press these numbers while on cells to enter them;
@@ -44,7 +47,7 @@ Windows tool accepts next keys:
 - `L` – to set the interface language;
 - `Alt` + `F4` – to exit application
 
-#
+---
 
 Оконный вариант утилиты управляется следующими клавишами:
 - `1 - 9` – нажимайте эти цифры, находясь в ячейках, чтобы ввести их;
