@@ -1,4 +1,4 @@
-﻿# SudokuSolver v 3.3.7
+# SudokuSolver v 3.3.7
 > PCC: 0002FB997F9F27FB
 
 
