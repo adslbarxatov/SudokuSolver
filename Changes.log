@@ -1,5 +1,9 @@
 Sudoku solver: changes log
 
+Version 4.0:
+• Implemented the complete menu for the app interface;
+• Implemented the “loading from file” and “save to file” operations for sudoku tables
+
 Version 3.3.7:
 • Added UTF32 encoding;
 • The interface was adapted to Windows 10, incorrect window borders were fixed
