@@ -12,7 +12,7 @@ A simple console and Windows tools for solving sudoku
 
 
 
-## About application / Общие сведения
+## About the application / Общие сведения
 
 These tools allow you to solve standart (9x9) sudoku tables.
 
@@ -36,31 +36,33 @@ tool uses binary representation of known (`7 → 001000000b`) and unknown
 Windows tool accepts next keys:
 - `1 – 9` – press these numbers while on cells to enter them;
 - any other symbol – to clear selected cell;
-- `Enter` – to run solution process:
+- `F5` – to run solution process:
     - you will get red cells if your table is unsolvable (has or leads to a duplication of values);
     - you will get green cells when a solution is found;
-- `Backspace` – to clear only found cells;
-- `Esc` – to clear all cells;
-- `F1` – to get application’s about;
+- `F8` – to clear only found cells;
+- `F12` – to clear all cells;
+- `F3` – to load the table from file;
+- `F4` – to save the table to file;
+- `F1` – to get the quick help;
 - Arrow keys – to move over the field;
-- Press buttons – to change values;
-- `L` – to set the interface language;
-- `Alt` + `F4` – to exit application
+- Press mouse buttons – to change values;
+- `Alt` + `F4` – to exit the application
 
 ---
 
 Оконный вариант утилиты управляется следующими клавишами:
 - `1 - 9` – нажимайте эти цифры, находясь в ячейках, чтобы ввести их;
 - любой другой символ – чтобы очистить выделенную ячейку;
-- `Enter` – чтобы запустить процесс решения:
+- `F5` – чтобы запустить процесс решения:
     - вы получите красные ячейки, если ваша таблица неразрешима (имеет или приводит к дублированию значений);
     - вы получите зелёные клетки, когда решение будет найдено;
-- `Backspace` – чтобы очистить только найденные клетки;
-- `Esc` – чтобы очистить все ячейки;
-- `F1` – узнать о приложении;
+- `F8` – чтобы очистить только найденные клетки;
+- `F12` – чтобы очистить все ячейки;
+- `F3` – загрузить таблицу из файла;
+- `F4` – сохранить таблицу в файл;
+- `F1` – получить краткую справку;
 - клавиши со стрелками – для перемещения по полю;
-- нажатие кнопок – для изменения значений;
-- `L` – для задания языка интерфейса;
+- нажатие кнопок мыши – для изменения значений;
 - `Alt` + `F4` – для выхода из приложения
 
 &nbsp;
