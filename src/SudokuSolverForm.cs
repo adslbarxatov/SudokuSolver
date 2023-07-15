@@ -16,12 +16,12 @@ namespace RD_AAOW
 		private const int buttonSize = 30;
 		private const string emptySign = " ";
 
-		private Color backgroundColor = Color.FromArgb (255, 255, 248),
-			buttonsColor = Color.FromArgb (255, 255, 200),
-			newTextColor = Color.FromArgb (0, 0, 200),
-			errorTextColor = Color.FromArgb (200, 0, 0),
-			foundTextColor = Color.FromArgb (0, 200, 0),
-			oldTextColor = Color.FromArgb (0, 0, 0);
+		private Color backgroundColor = Color.FromArgb (255, 255, 248);
+		private Color buttonsColor = Color.FromArgb (255, 255, 200);
+		private Color newTextColor = Color.FromArgb (0, 0, 200);
+		private Color errorTextColor = Color.FromArgb (200, 0, 0);
+		private Color foundTextColor = Color.FromArgb (0, 200, 0);
+		private Color oldTextColor = Color.FromArgb (0, 0, 0);
 
 		private string[] splitters = new string[] { "\r", "\n", "\t", " ", ";" };
 		private const string checker = "123456789";
@@ -122,38 +122,6 @@ namespace RD_AAOW
 						}
 					return true;
 
-				/* Запуск решения
-				case Keys.Return:
-					Solve ();
-					return true;
-
-				// Полный и частичный сброс поля
-				case Keys.Escape:
-					if (RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning, "ResetWarning",
-						LzDefaultTextValues.Button_YesNoFocus, LzDefaultTextValues.Button_No) !=
-						RDMessageButtons.ButtonOne)
-						return true;
-
-					for (int i = 0; i < this.Controls.Count; i++)
-						this.Controls[i].Text = emptySign;
-					return true;
-
-				case Keys.Back:
-					for (int i = 0; i < this.Controls.Count; i++)
-						if ((this.Controls[i].ForeColor != oldTextColor) && (this.Controls[i].ForeColor != newTextColor))
-							this.Controls[i].Text = emptySign;
-					return true;
-
-				// Отображение справки
-				case Keys.F1:
-					RDGenerics.ShowAbout (false);
-					return true;
-
-				// Смена языка интерфейса
-				case Keys.L:
-					RDGenerics.MessageBox ();
-					return true;*/
-
 				// Остальные клавиши обрабатываются стандартной процедурой
 				default:
 					return base.ProcessCmdKey (ref msg, keyData);
@@ -179,7 +147,7 @@ namespace RD_AAOW
 		// Полный сброс
 		private void MReset_Click (object sender, EventArgs e)
 			{
-			if (RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning, "ResetWarning",
+			if (RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning_Center, "ResetWarning",
 				LzDefaultTextValues.Button_YesNoFocus, LzDefaultTextValues.Button_No) !=
 				RDMessageButtons.ButtonOne)
 				return;
@@ -223,7 +191,7 @@ namespace RD_AAOW
 				}
 			catch
 				{
-				RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning, "MessageMissingFile");
+				RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning_Center, "MessageMissingFile");
 				return;
 				}
 
@@ -233,7 +201,7 @@ namespace RD_AAOW
 
 			if (file.Length < SudokuSolverClass.SudokuSideSize * SudokuSolverClass.SudokuSideSize)
 				{
-				RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning, "MessageNotEnough");
+				RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning_Center, "MessageNotEnough");
 				return;
 				}
 
@@ -289,7 +257,7 @@ namespace RD_AAOW
 				}
 			catch
 				{
-				RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning, "MessageCannotSave");
+				RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning_Center, "MessageCannotSave");
 				return;
 				}
 			}
