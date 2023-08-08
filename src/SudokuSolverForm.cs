@@ -191,7 +191,9 @@ namespace RD_AAOW
 				}
 			catch
 				{
-				RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning_Center, "MessageMissingFile");
+				RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning_Center,
+					Localization.GetFileProcessingMessage (OFDialog.FileName,
+					LzFileProcessingMessageTypes.Load_Failure));
 				return;
 				}
 
@@ -257,7 +259,9 @@ namespace RD_AAOW
 				}
 			catch
 				{
-				RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning_Center, "MessageCannotSave");
+				RDGenerics.MessageBox (RDMessageTypes.Warning_Center,
+					Localization.GetFileProcessingMessage (SFDialog.FileName,
+					LzFileProcessingMessageTypes.Save_Failure));
 				return;
 				}
 			}
