@@ -245,9 +245,9 @@ namespace RD_AAOW
 				file += buttons[i - 1].Text.Replace (emptySign, "-");
 
 				if (i % cubedSqrt == 0)
-					file += "\r\n\r\n";
+					file += Localization.RNRN;
 				else if (i % SudokuSolverClass.SudokuSideSize == 0)
-					file += "\r\n";
+					file += Localization.RN;
 				else if (i % sqrt == 0)
 					file += " ";
 				}
