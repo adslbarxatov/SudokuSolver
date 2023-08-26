@@ -1,5 +1,8 @@
 Sudoku solver: changes log
 
+Version 4.0.8:
+• Cumulative updates applied
+
 Version 4.0.7:
 • Fixed some issues with the Policy loader where it would sometimes ask for multiple confirmations
 
