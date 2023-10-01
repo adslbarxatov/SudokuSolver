@@ -1,5 +1,8 @@
 Sudoku solver: changes log
 
+Version 4.0.11:
+• Updates and fixes have been applied to the update polling mechanism, as well as to other auxiliary functions
+
 Version 4.0.9:
 • New identity has been applied
 
