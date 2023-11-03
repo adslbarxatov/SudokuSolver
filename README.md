@@ -1,69 +1,18 @@
-# SudokuSolver v 4.0.11
-> PCC: 000344B1B01EA690
+# SudokuSolver
 
+## Description
 
-A simple console and Windows tools for solving sudoku
-
----
-
-Простой консольный и оконный инструменты для решения судоку
+A tool for solving sudoku.
+Detailed description of the app is available on [its own page](https://adslbarxatov.github.io/SudokuSolver)
 
 &nbsp;
 
 
 
-## About the application / Общие сведения
+## Описание
 
-These tools allow you to solve standart (9x9) sudoku tables.
-
-Solution based on recursive function that builds series of “assumptions”
-and finds first one that doesn’t conflict with sudoku game rules. Also
-tool uses binary representation of known (`7 → 001000000b`) and unknown
-(`1 or 2 or 6 → 000100011b`) numbers for simplifying solution process.
-
----
-
-Эти инструменты позволяют решать стандартные (9x9) судоку.
-
-Решение основано на рекурсивной функции, строящей серии «предположений»
-и возвращающей первое из них, которое не конфликтует с правилами судоку.
-Программа использует бинарное представление известных (`7 → 001000000b`)
-и неизвестных (`1 или 2 или 6 → 000100011b`) значений для упрощения
-поиска решения.
-
----
-
-Windows tool accepts next keys:
-- `1 – 9` – press these numbers while on cells to enter them;
-- any other symbol – to clear selected cell;
-- `F5` – to run solution process:
-    - you will get red cells if your table is unsolvable (has or leads to a duplication of values);
-    - you will get green cells when a solution is found;
-- `F8` – to clear only found cells;
-- `F12` – to clear all cells;
-- `F3` – to load the table from file;
-- `F4` – to save the table to file;
-- `F1` – to get the quick help;
-- Arrow keys – to move over the field;
-- Press mouse buttons – to change values;
-- `Alt` + `F4` – to exit the application
-
----
-
-Оконный вариант утилиты управляется следующими клавишами:
-- `1 - 9` – нажимайте эти цифры, находясь в ячейках, чтобы ввести их;
-- любой другой символ – чтобы очистить выделенную ячейку;
-- `F5` – чтобы запустить процесс решения:
-    - вы получите красные ячейки, если ваша таблица неразрешима (имеет или приводит к дублированию значений);
-    - вы получите зелёные клетки, когда решение будет найдено;
-- `F8` – чтобы очистить только найденные клетки;
-- `F12` – чтобы очистить все ячейки;
-- `F3` – загрузить таблицу из файла;
-- `F4` – сохранить таблицу в файл;
-- `F1` – получить краткую справку;
-- клавиши со стрелками – для перемещения по полю;
-- нажатие кнопок мыши – для изменения значений;
-- `Alt` + `F4` – для выхода из приложения
+Инструмент для решения судоку.
+Подробное описание приложения доступно на [отдельной странице](https://adslbarxatov.github.io/SudokuSolver/ru)
 
 &nbsp;
 

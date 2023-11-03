@@ -1,5 +1,9 @@
 Sudoku solver: changes log
 
+Version 4.0.13:
+• The offline quick help has been discontinued;
+• Completed the process of version control unification
+
 Version 4.0.11:
 • Updates and fixes have been applied to the update polling mechanism, as well as to other auxiliary functions
 
