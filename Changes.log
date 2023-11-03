@@ -1,6 +1,7 @@
 Sudoku solver: changes log
 
 Version 4.0.13:
+• A stand-alone user guide is now available;
 • The offline quick help has been discontinued;
 • Completed the process of version control unification
 
