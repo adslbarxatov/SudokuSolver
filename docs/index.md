@@ -20,6 +20,10 @@ and finds first one that doesn’t conflict with sudoku game rules. Also
 tool uses binary representation of known (`7 → 001000000b`) and unknown
 (`1 or 2 or 6 → 000100011b`) numbers for simplifying solution process.
 
+> Warning! This method ***always*** finishes with some result (it is finite).
+> But in some cases it can take some time. This behavior is correct
+> for the application.
+
 Tool accepts next keys:
 - `1 – 9` – press these numbers while on cells to enter them;
 - any other symbol – to clear selected cell;
