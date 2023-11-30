@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace RD_AAOW
 	{
@@ -420,11 +421,14 @@ m1:
 			//		Если предположение неверно, функция, обнаружившая это, завершает
 			//		работу, давая возможность вызвавшему её экземпляру сделать
 			//		другое предположение
-			if (!Search ())
+			HardWorkExecutor hwe = new HardWorkExecutor (DoSearch, null, Localization.GetText ("DoingSearch"),
+				true, false);
+			if (hwe.Result == "-3")
 				{
 				initResult = InitResults.NoSolutionsFound;
 				return;
 				}
+			hwe.Dispose ();
 
 			// Успешно. Возврат результата
 			resultMatrix = new Byte[SDS, SDS];
@@ -450,5 +454,17 @@ m1:
 				}
 			}
 		private Byte[,] resultMatrix;
+
+		// Образец метода, выполняющего длительные вычисления
+		private void DoSearch (object sender, DoWorkEventArgs e)
+			{
+			if (!Search ())
+				{
+				e.Result = InitResults.NoSolutionsFound;
+				return;
+				}
+
+			e.Result = InitResults.OK;
+			}
 		}
 	}

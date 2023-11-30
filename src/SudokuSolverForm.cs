@@ -222,9 +222,6 @@ namespace RD_AAOW
 					buttons[i].ForeColor = newTextColor;
 					}
 				}
-
-			// Решение
-			Solve ();
 			}
 
 		// Выгрузка таблицы в файл

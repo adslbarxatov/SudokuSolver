@@ -1,8 +1,9 @@
 Sudoku solver: changes log
 
 Version 4.1:
-• The solution method has been incapsulated with the thread;
-• Loading of the file will not start the solution method anymore
+• The solution method has been incapsulated with the stand-alone thread (non-abortable for now);
+• Loading of the file will not start the solution method anymore;
+• Added a new version of offline help
 
 Version 4.0.13:
 • A stand-alone user guide is now available;
