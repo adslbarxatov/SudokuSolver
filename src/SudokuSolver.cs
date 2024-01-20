@@ -421,14 +421,19 @@ m1:
 			//		Если предположение неверно, функция, обнаружившая это, завершает
 			//		работу, давая возможность вызвавшему её экземпляру сделать
 			//		другое предположение
-			HardWorkExecutor hwe = new HardWorkExecutor (DoSearch, null, Localization.GetText ("DoingSearch"),
-				true, false);
-			if (hwe.Result == "-3")
+			/*HardWorkExecutor hwe = new HardWorkExecutor (DoSearch, null, Localization.GetText ("DoingSearch"),
+				true, false);*/
+			RDGenerics.RunWork (DoSearch, null, RDLocale.GetText ("DoingSearch"),
+				RDRunWorkFlags.CaptionInTheMiddle);
+			/*if (hwe.Result == "-3")
+			*/
+			if (RDGenerics.WorkResultAsInteger == -3)
 				{
 				initResult = InitResults.NoSolutionsFound;
 				return;
 				}
-			hwe.Dispose ();
+			/*hwe.Dispose ();
+			*/
 
 			// Успешно. Возврат результата
 			resultMatrix = new Byte[SDS, SDS];

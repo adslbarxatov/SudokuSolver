@@ -71,13 +71,13 @@ namespace RD_AAOW
 		// Метод локализует форму
 		private void LocalizeForm ()
 			{
-			Localization.SetControlsText (MainMenu);
-			Localization.SetControlsText (MActivities);
-			MExit.Text = Localization.GetDefaultText (LzDefaultTextValues.Button_Exit);
+			RDLocale.SetControlsText (MainMenu);
+			RDLocale.SetControlsText (MActivities);
+			MExit.Text = RDLocale.GetDefaultText (RDLDefaultTexts.Button_Exit);
 
-			OFDialog.Title = Localization.GetText ("OFName");
-			SFDialog.Title = Localization.GetText ("SFName");
-			OFDialog.Filter = SFDialog.Filter = Localization.GetText ("OFFilter");
+			OFDialog.Title = RDLocale.GetText ("OFName");
+			SFDialog.Title = RDLocale.GetText ("SFName");
+			OFDialog.Filter = SFDialog.Filter = RDLocale.GetText ("OFFilter");
 			}
 
 		/// <summary>
@@ -148,7 +148,7 @@ namespace RD_AAOW
 		private void MReset_Click (object sender, EventArgs e)
 			{
 			if (RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning_Center, "ResetWarning",
-				LzDefaultTextValues.Button_YesNoFocus, LzDefaultTextValues.Button_No) !=
+				RDLDefaultTexts.Button_YesNoFocus, RDLDefaultTexts.Button_No) !=
 				RDMessageButtons.ButtonOne)
 				return;
 
@@ -187,13 +187,15 @@ namespace RD_AAOW
 			string file = "";
 			try
 				{
-				file = File.ReadAllText (OFDialog.FileName, RDGenerics.GetEncoding (SupportedEncodings.UTF8));
+				file = File.ReadAllText (OFDialog.FileName, RDGenerics.GetEncoding (RDEncodings.UTF8));
 				}
 			catch
 				{
 				RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning_Center,
-					Localization.GetFileProcessingMessage (OFDialog.FileName,
-					LzFileProcessingMessageTypes.Load_Failure));
+					/*Localization.GetFileProcessingMessage (OFDialog.FileName,
+					LzFileProcessingMessageTypes.Load_Failure)*/
+					string.Format (RDLocale.GetDefaultText (RDLDefaultTexts.Message_LoadFailure_Fmt),
+					OFDialog.FileName));
 				return;
 				}
 
@@ -242,9 +244,9 @@ namespace RD_AAOW
 				file += buttons[i - 1].Text.Replace (emptySign, "-");
 
 				if (i % cubedSqrt == 0)
-					file += Localization.RNRN;
+					file += RDLocale.RNRN;
 				else if (i % SudokuSolverClass.SudokuSideSize == 0)
-					file += Localization.RN;
+					file += RDLocale.RN;
 				else if (i % sqrt == 0)
 					file += " ";
 				}
@@ -252,13 +254,15 @@ namespace RD_AAOW
 			// Сохранение
 			try
 				{
-				File.WriteAllText (SFDialog.FileName, file, RDGenerics.GetEncoding (SupportedEncodings.UTF8));
+				File.WriteAllText (SFDialog.FileName, file, RDGenerics.GetEncoding (RDEncodings.UTF8));
 				}
 			catch
 				{
 				RDGenerics.MessageBox (RDMessageTypes.Warning_Center,
-					Localization.GetFileProcessingMessage (SFDialog.FileName,
-					LzFileProcessingMessageTypes.Save_Failure));
+					/*Localization.GetFileProcessingMessage (SFDialog.FileName,
+					LzFileProcessingMessageTypes.Save_Failure)*/
+					string.Format (RDLocale.GetDefaultText (RDLDefaultTexts.Message_SaveFailure_Fmt),
+					SFDialog.FileName));
 				return;
 				}
 			}
