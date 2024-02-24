@@ -192,8 +192,6 @@ namespace RD_AAOW
 			catch
 				{
 				RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning_Center,
-					/*Localization.GetFileProcessingMessage (OFDialog.FileName,
-					LzFileProcessingMessageTypes.Load_Failure)*/
 					string.Format (RDLocale.GetDefaultText (RDLDefaultTexts.Message_LoadFailure_Fmt),
 					OFDialog.FileName));
 				return;
@@ -259,8 +257,6 @@ namespace RD_AAOW
 			catch
 				{
 				RDGenerics.MessageBox (RDMessageTypes.Warning_Center,
-					/*Localization.GetFileProcessingMessage (SFDialog.FileName,
-					LzFileProcessingMessageTypes.Save_Failure)*/
 					string.Format (RDLocale.GetDefaultText (RDLDefaultTexts.Message_SaveFailure_Fmt),
 					SFDialog.FileName));
 				return;
