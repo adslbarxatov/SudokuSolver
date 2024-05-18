@@ -37,6 +37,8 @@ namespace RD_AAOW
 			InitializeComponent ();
 			LocalizeForm ();
 
+			RDGenerics.LoadWindowDimensions (this);
+
 			this.Text = ProgramDescription.AssemblyTitle;
 			this.ClientSize = new Size ((int)(SudokuSolverClass.SudokuSideSize + 2) * buttonSize,
 				(int)(SudokuSolverClass.SudokuSideSize + 2) * buttonSize);
@@ -331,8 +333,9 @@ namespace RD_AAOW
 			SudokuSolverClass ss = new SudokuSolverClass (matrix);
 			if (ss.InitResult != SudokuSolverClass.InitResults.OK)
 				{
-				for (int i = 0; i < buttons.Count; i++)
-					buttons[i].ForeColor = errorTextColor;
+				if (ss.InitResult != SudokuSolverClass.InitResults.SearchAborted)
+					for (int i = 0; i < buttons.Count; i++)
+						buttons[i].ForeColor = errorTextColor;
 
 				return;
 				}
@@ -357,6 +360,12 @@ namespace RD_AAOW
 				}
 
 			// Выполнено
+			}
+
+		// Закрытие окна
+		private void SudokuSolverForm_FormClosing (object sender, FormClosingEventArgs e)
+			{
+			RDGenerics.SaveWindowDimensions (this);
 			}
 		}
 	}

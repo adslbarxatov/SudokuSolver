@@ -73,8 +73,8 @@ namespace RD_AAOW
 
 		// Проверка на ошибочность предположения (повторения цифр)
 		//
-		// Возвращает true, если ошибки были найдены (есть дублирующиеся цифры);
-		//            false, если ошибок нет
+		// Возвращает:	true, если ошибки были найдены (есть дублирующиеся цифры);
+		//				false, если ошибок нет
 		//
 		private bool HasErrors ()
 			{
@@ -166,9 +166,9 @@ namespace RD_AAOW
 
 		// Пересчёт матрицы
 		//
-		// Возвращает 1, если получен конечный результат;
-		//           -1, если обнаружена ошибка в вычислениях;
-		//            0, если простой прогонкой получить результат не удаётся
+		// Возвращает:	1, если получен конечный результат;
+		//				-1, если обнаружена ошибка в вычислениях;
+		//				0, если простой прогонкой получить результат не удаётся
 		//
 		private Int16 UpdateMatrix ()
 			{
@@ -262,11 +262,16 @@ namespace RD_AAOW
 		// Функция изучения предположений
 		//
 		// Рекурсивная функция
-		// Возвращает true, если результат получен
-		//            false, если ответ не был найден
-		//
-		private bool Search ()
+		// Возвращает:	0, если результат получен
+		//				-1, если ответ не был найден
+		//				1, если поиск был отменён
+		private short Search (BackgroundWorker Worker)
 			{
+			// Защита (запрос прерывания)
+			if (Worker.CancellationPending)
+				return 1;
+
+			// Переменные
 			UInt16[,] Mtc = new UInt16[SDS, SDS];
 
 			// Создание копии исходной матрицы для данного предположения
@@ -284,7 +289,7 @@ namespace RD_AAOW
 				}
 
 			// Решение уже найдено
-			return true;
+			return 0;
 
 m1:
 			for (UInt16 k = 0; k < SDS; k++)
@@ -299,17 +304,27 @@ m1:
 					{
 					// Если получен конечный результат, функция его возвращает
 					case 1:
-						return true;
+						return 0;
 
 					// Если результат требует уточнения
 					case 0:
 						// Делается новое предположение
-						if (Search ())
+						short res = Search (Worker);
+						switch (res)
+							{
 							// Если оно дало конечный результат, нужно вернуть его наверх
-							return true;
-						else
+							case 0:
+							/*return 0;*/
+
+							// Если поиск отменён, нужно прервать всё дерево вызовов
+							case 1:
+								return res;
+
 							// Если нет, нужно восстановить матрицу
-							Mtx = (UInt16[,])Mtc.Clone ();
+							default:
+								Mtx = (UInt16[,])Mtc.Clone ();
+								break;
+							}
 						break;
 
 					// Если получена ошибка при прогонке, нужно восстановить матрицу
@@ -320,7 +335,7 @@ m1:
 				}
 
 			// Правильных вариантов не найдено
-			return false;
+			return -1;
 			}
 
 		//////////////////////////////
@@ -335,6 +350,11 @@ m1:
 			/// Экземпляр не инициализирован
 			/// </summary>
 			NotInited = 1,
+
+			/// <summary>
+			/// Поиск был прерван пользователем
+			/// </summary>
+			SearchAborted = 2,
 
 			/// <summary>
 			/// Задача решена
@@ -422,11 +442,13 @@ m1:
 			//		работу, давая возможность вызвавшему её экземпляру сделать
 			//		другое предположение
 			RDGenerics.RunWork (DoSearch, null, RDLocale.GetText ("DoingSearch"),
-				RDRunWorkFlags.CaptionInTheMiddle);
-			if (RDGenerics.WorkResultAsInteger == -3)
+				RDRunWorkFlags.CaptionInTheMiddle | RDRunWorkFlags.AllowOperationAbort);
+			switch (RDGenerics.WorkResultAsInteger)
 				{
-				initResult = InitResults.NoSolutionsFound;
-				return;
+				case (int)InitResults.NoSolutionsFound:
+				case (int)InitResults.SearchAborted:
+					initResult = (InitResults)RDGenerics.WorkResultAsInteger;
+					return;
 				}
 
 			// Успешно. Возврат результата
@@ -457,10 +479,15 @@ m1:
 		// Образец метода, выполняющего длительные вычисления
 		private void DoSearch (object sender, DoWorkEventArgs e)
 			{
-			if (!Search ())
+			switch (Search ((BackgroundWorker)sender))
 				{
-				e.Result = InitResults.NoSolutionsFound;
-				return;
+				case -1:
+					e.Result = (int)InitResults.NoSolutionsFound;
+					return;
+
+				case 1:
+					e.Result = (int)InitResults.SearchAborted;
+					return;
 				}
 
 			e.Result = InitResults.OK;
