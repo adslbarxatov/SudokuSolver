@@ -1,5 +1,8 @@
 Sudoku solver: changes log
 
+Version 4.3.2:
+• XPUN update has been applied
+
 Version 4.3:
 • The search operation is properly abortable now;
 • The application has been retargeted to .NET Framework 4.8.1;
