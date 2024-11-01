@@ -7,7 +7,7 @@
 
 - [General information](#general-information)
 - [Download links](https://adslbarxatov.github.io/DPArray#sudoku-solver)
-- [Русская версия](https://adslbarxatov.github.io/SudokuSolver/ru)
+- [Версия на русском языке](https://adslbarxatov.github.io/SudokuSolver/ru)
 
 ---
 
