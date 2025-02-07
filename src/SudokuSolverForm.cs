@@ -73,8 +73,14 @@ namespace RD_AAOW
 		// Метод локализует форму
 		private void LocalizeForm ()
 			{
-			RDLocale.SetControlsText (MainMenu);
-			RDLocale.SetControlsText (MActivities);
+			/*RDLocale.SetControlsText (MainMenu);*/
+			MActivities.Text = RDLocale.GetText ("MainMenu_MActivities");
+
+			/*RDLocale.SetControlsText (MActivities);*/
+			for (int i = 0; i < MActivities.DropDownItems.Count; i++)
+				MActivities.DropDownItems[i].Text = RDLocale.GetText (MActivities.Name + "_" +
+					MActivities.DropDownItems[i].Name);
+
 			MExit.Text = RDLocale.GetDefaultText (RDLDefaultTexts.Button_Exit);
 
 			OFDialog.Title = RDLocale.GetText ("OFName");
@@ -149,7 +155,7 @@ namespace RD_AAOW
 		// Полный сброс
 		private void MReset_Click (object sender, EventArgs e)
 			{
-			if (RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning_Center, "ResetWarning",
+			if (RDInterface.LocalizedMessageBox (RDMessageTypes.Warning_Center, "ResetWarning",
 				RDLDefaultTexts.Button_YesNoFocus, RDLDefaultTexts.Button_No) !=
 				RDMessageButtons.ButtonOne)
 				return;
@@ -161,13 +167,13 @@ namespace RD_AAOW
 		// Справка
 		private void MHelp_Click (object sender, EventArgs e)
 			{
-			RDGenerics.ShowAbout (false);
+			RDInterface.ShowAbout (false);
 			}
 
 		// Язык интерфейса
 		private void MLanguage_Click (object sender, EventArgs e)
 			{
-			if (RDGenerics.MessageBox ())
+			if (RDInterface.MessageBox ())
 				LocalizeForm ();
 			}
 
@@ -193,7 +199,7 @@ namespace RD_AAOW
 				}
 			catch
 				{
-				RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning_Center,
+				RDInterface.LocalizedMessageBox (RDMessageTypes.Warning_Center,
 					string.Format (RDLocale.GetDefaultText (RDLDefaultTexts.Message_LoadFailure_Fmt),
 					OFDialog.FileName));
 				return;
@@ -205,7 +211,7 @@ namespace RD_AAOW
 
 			if (file.Length < SudokuSolverClass.SudokuSideSize * SudokuSolverClass.SudokuSideSize)
 				{
-				RDGenerics.LocalizedMessageBox (RDMessageTypes.Warning_Center, "MessageNotEnough");
+				RDInterface.LocalizedMessageBox (RDMessageTypes.Warning_Center, "MessageNotEnough");
 				return;
 				}
 
@@ -258,7 +264,7 @@ namespace RD_AAOW
 				}
 			catch
 				{
-				RDGenerics.MessageBox (RDMessageTypes.Warning_Center,
+				RDInterface.MessageBox (RDMessageTypes.Warning_Center,
 					string.Format (RDLocale.GetDefaultText (RDLDefaultTexts.Message_SaveFailure_Fmt),
 					SFDialog.FileName));
 				return;

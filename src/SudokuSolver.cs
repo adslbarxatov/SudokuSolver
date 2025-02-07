@@ -438,13 +438,13 @@ m1:
 			//		Если предположение неверно, функция, обнаружившая это, завершает
 			//		работу, давая возможность вызвавшему её экземпляру сделать
 			//		другое предположение
-			RDGenerics.RunWork (DoSearch, null, RDLocale.GetText ("DoingSearch"),
+			RDInterface.RunWork (DoSearch, null, RDLocale.GetText ("DoingSearch"),
 				RDRunWorkFlags.CaptionInTheMiddle | RDRunWorkFlags.AllowOperationAbort);
-			switch (RDGenerics.WorkResultAsInteger)
+			switch (RDInterface.WorkResultAsInteger)
 				{
 				case (int)InitResults.NoSolutionsFound:
 				case (int)InitResults.SearchAborted:
-					initResult = (InitResults)RDGenerics.WorkResultAsInteger;
+					initResult = (InitResults)RDInterface.WorkResultAsInteger;
 					return;
 				}
 
