@@ -14,16 +14,15 @@ namespace RD_AAOW
 		{
 		// Переменные и константы
 		private const int buttonSize = 30;
-		/*private const string emptySign = " ";*/
 
 		private Color backgroundColor = Color.FromArgb (255, 255, 248);
 		private Color buttonsColor = Color.FromArgb (255, 255, 200);
-		private Color newTextColor = Color.FromArgb (0, 0, 200);
+		/*private Color newTextColor = Color.FromArgb (0, 0, 200);
 		private Color errorTextColor = Color.FromArgb (200, 0, 0);
 		private Color foundTextColor = Color.FromArgb (0, 200, 0);
-		private Color oldTextColor = Color.FromArgb (0, 0, 0);
+		private Color oldTextColor = Color.FromArgb (0, 0, 0);*/
 
-		private List<Control> buttons = new List<Control> ();
+		private List<Button> buttons = new List<Button> ();
 
 		/// <summary>
 		/// Конструктор. Настраивает главную форму приложения
@@ -38,7 +37,7 @@ namespace RD_AAOW
 
 			this.Text = ProgramDescription.AssemblyTitle;
 			this.ClientSize = new Size ((int)(SudokuSolverMath.SudokuSideSize + 2) * buttonSize,
-				(int)(SudokuSolverMath.SudokuSideSize + 2) * buttonSize);
+				(int)(SudokuSolverMath.SudokuSideSize + 2) * buttonSize + buttonSize);
 			this.BackColor = backgroundColor;
 
 			// Формирование поля
@@ -49,12 +48,14 @@ namespace RD_AAOW
 					{
 					Button lb = new Button ();
 
-					lb.Text = SudokuSolverMath.EmptySign;
+					/*lb.Text = SudokuSolverMath.EmptySign;*/
+					SudokuSolverMath.SetProperty (lb, PropertyTypes.EmptyValue);
+					SudokuSolverMath.SetProperty (lb, PropertyTypes.OldColor);
 					lb.BackColor = buttonsColor;
 					lb.TextAlign = ContentAlignment.MiddleCenter;
 					lb.Width = lb.Height = buttonSize;
 					lb.Left = lb.Width * (c + 1) + 3 * (c / sqrt - sqrt / 2);
-					lb.Top = lb.Height * (r + 1) + 3 * (r / sqrt - sqrt / 2);
+					lb.Top = lb.Height * (r + 1) + 3 * (r / sqrt - sqrt / 2) + buttonSize;
 
 					lb.Cursor = Cursors.UpArrow;
 					lb.KeyDown += Lb_KeyDown;
@@ -73,8 +74,10 @@ namespace RD_AAOW
 				for (int i = 0; i < buttons.Count; i++)
 					{
 					buttons[i].Text = sudoku[i].ToString ();
-					if (buttons[i].Text != SudokuSolverMath.EmptySign)
-						buttons[i].ForeColor = newTextColor;
+					/*if (buttons[i].Text != SudokuSolverMath.Empty Sign)*/
+					if (!SudokuSolverMath.CheckCondition (buttons[i], ConditionTypes.IsEmpty))
+						/*buttons[i].ForeColor = SudokuSolverMath.NewNumberColor;*/
+						SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.OldColor);
 					}
 				}
 			}
@@ -87,6 +90,9 @@ namespace RD_AAOW
 			for (int i = 0; i < MActivities.DropDownItems.Count; i++)
 				MActivities.DropDownItems[i].Text = RDLocale.GetText (MActivities.Name + "_" +
 					MActivities.DropDownItems[i].Name);
+			for (int i = 0; i < MGenerate.DropDownItems.Count; i++)
+				MGenerate.DropDownItems[i].Text = RDLocale.GetText (MGenerate.Name + "_" +
+					MGenerate.DropDownItems[i].Name);
 
 			MExit.Text = RDLocale.GetDefaultText (RDLDefaultTexts.Button_Exit);
 
@@ -114,7 +120,7 @@ namespace RD_AAOW
 					return true;
 
 				case Keys.Left:
-					if (buttons.IndexOf (this.ActiveControl) % SudokuSolverMath.SudokuSideSize == 0)
+					if (buttons.IndexOf ((Button)this.ActiveControl) % SudokuSolverMath.SudokuSideSize == 0)
 						{
 						for (int i = 1; i < SudokuSolverMath.SudokuSideSize; i++)
 							this.SelectNextControl (this.ActiveControl, true, true, false, true);
@@ -126,7 +132,7 @@ namespace RD_AAOW
 					return true;
 
 				case Keys.Right:
-					if ((buttons.IndexOf (this.ActiveControl) + 1) % SudokuSolverMath.SudokuSideSize == 0)
+					if ((buttons.IndexOf ((Button)this.ActiveControl) + 1) % SudokuSolverMath.SudokuSideSize == 0)
 						{
 						for (int i = 1; i < SudokuSolverMath.SudokuSideSize; i++)
 							this.SelectNextControl (this.ActiveControl, false, true, false, true);
@@ -155,8 +161,10 @@ namespace RD_AAOW
 		private void MClear_Click (object sender, EventArgs e)
 			{
 			for (int i = 0; i < buttons.Count; i++)
-				if ((buttons[i].ForeColor != oldTextColor) && (buttons[i].ForeColor != newTextColor))
-					buttons[i].Text = SudokuSolverMath.EmptySign;
+				/*if (buttons[i].ForeColor == foundTextColor)*/
+				if (SudokuSolverMath.CheckCondition (buttons[i], ConditionTypes.ContainsFoundValue))
+					/*buttons[i].Text = SudokuSolverMath.EmptySign;*/
+					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.EmptyValue);
 			}
 
 		// Полный сброс
@@ -168,7 +176,8 @@ namespace RD_AAOW
 				return;
 
 			for (int i = 0; i < buttons.Count; i++)
-				buttons[i].Text = SudokuSolverMath.EmptySign;
+				/*buttons[i].Text = SudokuSolverMath.EmptySign;*/
+				SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.EmptyValue);
 			}
 
 		// Справка
@@ -224,36 +233,14 @@ namespace RD_AAOW
 			for (int i = 0; i < buttons.Count; i++)
 				{
 				buttons[i].Text = line[i].ToString ();
-				if (buttons[i].Text == SudokuSolverMath.EmptySign)
-					buttons[i].ForeColor = newTextColor;
+				/*if (buttons[i].Text == SudokuSolverMath.Empty Sign)*/
+				if (SudokuSolverMath.CheckCondition (buttons[i], ConditionTypes.IsEmpty))
+					/*buttons[i].ForeColor = SudokuSolverMath.NewNumberColor;*/
+					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.NewColor);
 				else
-					buttons[i].ForeColor = oldTextColor;
+					/*buttons[i].ForeColor = SudokuSolverMath.OldNumberColor;*/
+					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.OldColor);
 				}
-
-			/*for (int i = 0; i < splitters.Length; i++)
-				file = file.Replace (splitters[i], "");
-
-			if (file.Length < SudokuSolverMath.SudokuSideSize * SudokuSolverMath.SudokuSideSize)
-				{
-				RDInterface.LocalizedMessageBox (RDMessageTypes.Warning_Center, "MessageNotEnough");
-				return;
-				}
-
-			// Загрузка
-			for (int i = 0; i < buttons.Count; i++)
-				{
-				string c = file[i].ToString ();
-				if (checker.Contains (c))
-					{
-					buttons[i].Text = c;
-					buttons[i].ForeColor = oldTextColor;
-					}
-				else
-					{
-					buttons[i].Text = emptySign;
-					buttons[i].ForeColor = newTextColor;
-					}
-				}*/
 			}
 
 		// Выгрузка таблицы в файл
@@ -298,12 +285,14 @@ namespace RD_AAOW
 				case Keys.D7:
 				case Keys.D8:
 				case Keys.D9:
-					lb.ForeColor = newTextColor;
+					/*lb.ForeColor = SudokuSolverMath.NewNumberColor;*/
+					SudokuSolverMath.SetProperty (lb, PropertyTypes.NewColor);
 					lb.Text = ((uint)e.KeyCode - 48).ToString ();
 					break;
 
 				default:
-					lb.Text = SudokuSolverMath.EmptySign;
+					/*lb.Text = SudokuSolverMath.EmptySign;*/
+					SudokuSolverMath.SetProperty (lb, PropertyTypes.EmptyValue);
 					break;
 				}
 			}
@@ -323,10 +312,12 @@ namespace RD_AAOW
 			if (v == 0)
 				b.Text = "1";
 			else if (v > 9)
-				b.Text = SudokuSolverMath.EmptySign;
+				/*b.Text = SudokuSolverMath.EmptySign;*/
+				SudokuSolverMath.SetProperty (b, PropertyTypes.EmptyValue);
 			else
 				b.Text = v.ToString ();
-			b.ForeColor = newTextColor;
+			/*b.ForeColor = SudokuSolverMath.NewNumberColor;*/
+			SudokuSolverMath.SetProperty (b, PropertyTypes.NewColor);
 			}
 
 		// Решение задачи
@@ -338,10 +329,12 @@ namespace RD_AAOW
 				{
 				for (int c = 0; c < SudokuSolverMath.SudokuSideSize; c++)
 					{
-					Control ct = buttons[r * (int)SudokuSolverMath.SudokuSideSize + c];
-					if ((ct.Text != SudokuSolverMath.EmptySign) &&
+					Button ct = buttons[r * (int)SudokuSolverMath.SudokuSideSize + c];
+					/*if ((ct.Text != SudokuSolverMath.Empty Sign) &&
 						((ct.ForeColor == oldTextColor) || (ct.ForeColor == newTextColor) ||
-						(ct.ForeColor == errorTextColor)))
+						(ct.ForeColor == errorTextColor)))*/
+					if (!SudokuSolverMath.CheckCondition (ct, ConditionTypes.IsEmpty) &&
+						!SudokuSolverMath.CheckCondition (ct, ConditionTypes.ContainsFoundValue))
 						matrix[r, c] = Byte.Parse (ct.Text);
 					else
 						matrix[r, c] = 0;
@@ -349,7 +342,6 @@ namespace RD_AAOW
 				}
 
 			// Инициализация задачи
-			/*SudokuSolverMath ss = new SudokuSolverMath (matrix);*/
 			SudokuSolverMath.InitializeSolution (matrix);
 			switch (SudokuSolverMath.CurrentStatus)
 				{
@@ -358,19 +350,20 @@ namespace RD_AAOW
 
 				case SolutionResults.InitialMatrixIsUnsolvable:
 					for (int i = 0; i < buttons.Count; i++)
-						buttons[i].ForeColor = errorTextColor;
+						/*buttons[i].ForeColor = SudokuSolverMath.ErrorNumberColor;*/
+						SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.ErrorColor);
 					return;
 				}
 
 			// Решение задачи
-			/*if (ss.InitResult != SudokuSolverMath.InitResults.OK)*/
 			SudokuSolverMath.FindSolution ();
 			switch (SudokuSolverMath.CurrentStatus)
 				{
 				case SolutionResults.NoSolutionsFound:
 				case SolutionResults.NotInited:
 					for (int i = 0; i < buttons.Count; i++)
-						buttons[i].ForeColor = errorTextColor;
+						/*buttons[i].ForeColor = SudokuSolverMath.ErrorNumberColor;*/
+						SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.ErrorColor);
 					return;
 
 				case SolutionResults.SearchAborted: // Не перекрашивать поле
@@ -382,17 +375,21 @@ namespace RD_AAOW
 				{
 				for (int c = 0; c < SudokuSolverMath.SudokuSideSize; c++)
 					{
-					Control ct = buttons[r * (int)SudokuSolverMath.SudokuSideSize + c];
-					if ((ct.Text != SudokuSolverMath.EmptySign) &&
+					Button ct = buttons[r * (int)SudokuSolverMath.SudokuSideSize + c];
+					/*if ((ct.Text != SudokuSolverMath.Empty Sign) &&
 						((ct.ForeColor == oldTextColor) || (ct.ForeColor == newTextColor) ||
-						(ct.ForeColor == errorTextColor)))
+						(ct.ForeColor == errorTextColor)))*/
+					if (!SudokuSolverMath.CheckCondition (ct, ConditionTypes.IsEmpty) &&
+						!SudokuSolverMath.CheckCondition (ct, ConditionTypes.ContainsFoundValue))
 						{
-						ct.ForeColor = oldTextColor;
+						/*ct.ForeColor = SudokuSolverMath.OldNumberColor;*/
+						SudokuSolverMath.SetProperty (ct, PropertyTypes.OldColor);
 						}
 					else
 						{
 						ct.Text = SudokuSolverMath.ResultMatrix[r, c].ToString ();
-						ct.ForeColor = foundTextColor;
+						/*ct.ForeColor = SudokuSolverMath.SuccessNumberColor;*/
+						SudokuSolverMath.SetProperty (ct, PropertyTypes.SuccessColor);
 						}
 					}
 				}
@@ -429,5 +426,34 @@ namespace RD_AAOW
 				}
 			}
 		private const string sudokuFieldPar = "SudokuField";
+
+		// Генерация матрицы судоку
+		private void MGenerate_Click (object sender, EventArgs e)
+			{
+			// Запуск
+			ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
+			string n = tsmi.Name.Substring (tsmi.Name.Length - 1);
+			SudokuSolverMath.SetGenerationDifficulty ((MatrixDifficulty)uint.Parse (n));
+
+			SudokuSolverMath.GenerateMatrix ();
+
+			// Отображение результата
+			for (int r = 0; r < SudokuSolverMath.SudokuSideSize; r++)
+				{
+				for (int c = 0; c < SudokuSolverMath.SudokuSideSize; c++)
+					{
+					Button ct = buttons[r * (int)SudokuSolverMath.SudokuSideSize + c];
+					if (SudokuSolverMath.ResultMatrix[r, c] == 0)
+						/*ct.Text = SudokuSolverMath.EmptySign;*/
+						SudokuSolverMath.SetProperty (ct, PropertyTypes.EmptyValue);
+					else
+						ct.Text = SudokuSolverMath.ResultMatrix[r, c].ToString ();
+					/*ct.ForeColor = SudokuSolverMath.OldNumberColor;*/
+					SudokuSolverMath.SetProperty (ct, PropertyTypes.OldColor);
+					}
+				}
+
+			// Завершено
+			}
 		}
 	}

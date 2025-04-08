@@ -1,5 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+
+#if ANDROID
+using Microsoft.Maui.Controls;
+#else
 using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+#endif
 
 namespace RD_AAOW
 	{
@@ -42,6 +50,74 @@ namespace RD_AAOW
 		/// Решение не найдено
 		/// </summary>
 		NoSolutionsFound = -3
+		}
+
+	/// <summary>
+	/// Возможные уровни сложности генерируемой матрицы
+	/// </summary>
+	public enum MatrixDifficulty
+		{
+		/// <summary>
+		/// Простой
+		/// </summary>
+		Easy,
+
+		/// <summary>
+		/// Средний
+		/// </summary>
+		Normal,
+
+		/// <summary>
+		/// Сложный
+		/// </summary>
+		Hard,
+		}
+
+	/// <summary>
+	/// Возможные варианты проверки условий для элементов интерфейса
+	/// </summary>
+	public enum ConditionTypes
+		{
+		/// <summary>
+		/// Элемент содержит значение, полученное в результате решения
+		/// </summary>
+		ContainsFoundValue,
+
+		/// <summary>
+		/// Элемент не содержит значения
+		/// </summary>
+		IsEmpty,
+		}
+
+	/// <summary>
+	/// Возможные варинаты настройки элемента интерфейса
+	/// </summary>
+	public enum PropertyTypes
+		{
+		/// <summary>
+		/// Задать пустое значение
+		/// </summary>
+		EmptyValue,
+
+		/// <summary>
+		/// Задать цвет успешного решения задачи
+		/// </summary>
+		SuccessColor,
+
+		/// <summary>
+		/// Задать цвет ошибки
+		/// </summary>
+		ErrorColor,
+
+		/// <summary>
+		/// Задать цвет ранее известного значения
+		/// </summary>
+		OldColor,
+
+		/// <summary>
+		/// Задать цвет нового указанного значения
+		/// </summary>
+		NewColor,
 		}
 
 	/// <summary>
@@ -298,13 +374,17 @@ namespace RD_AAOW
 					}
 				}
 
-			// Результат прогонки
+			// Прогонка дала ошибочный результат (имеются повторяющиеся значения)
 			if (HasErrors ())
-				return -1;      // Прогонка дала ошибочный результат (имеются повторяющиеся значения)
+				return -1;
+
+			// Прогонка дала конечный результат
 			else if (iterations < MAX_ITER)
-				return 1;       // Прогонка не дала конечного результата
+				return 1;
+
+			// Прогонка прервана по превышению количества итераций
 			else
-				return 0;       // Получен ответ
+				return 0;
 			}
 
 		////////////////////////
@@ -333,32 +413,43 @@ namespace RD_AAOW
 
 		private static bool stopRequested = false;
 
+		// Метод взводит или отключает пропуск решений, занимающих слишком много времени
+		private static void SetDroppingLongSolutions (bool Enable)
+			{
+			dropLongSolutions = Enable;
+			if (dropLongSolutions)
+				searchStart = DateTime.Now;
+			}
+		private static bool dropLongSolutions = false;
+		private static DateTime searchStart;
+
 		// Функция изучения предположений
 		//
 		// Рекурсивная функция
 		// Возвращает:	0, если результат получен
 		//				-1, если ответ не был найден
 		//				1, если поиск был отменён
-		private static short Search (/*BackgroundWorker Worker*/)
+		private static short Search ()
 			{
 			// Защита (запрос прерывания)
-			/*if (Worker.CancellationPending)*/
-
 #if !ANDROID
 			CheckBW ();
 #endif
 
-			if (stopRequested)
+			if (stopRequested || dropLongSolutions && ((DateTime.Now - searchStart).Seconds > 5))
 				{
 				stopRequested = false;
 				return 1;
 				}
 
-			// Переменные
+			/*// Переменные
 			UInt16[,] Mtc = new UInt16[SDS, SDS];
 
 			// Создание копии исходной матрицы для данного предположения
-			Mtc = (UInt16[,])Mtx.Clone ();
+			Mtc = (UInt16[,])Mtx.Clone ();*/
+
+			// Создание копии исходной матрицы для данного предположения
+			UInt16[,] Mtc = (UInt16[,])Mtx.Clone ();
 
 			// Поиск первой невычисленной ячейки
 			UInt16 i = 0, j = 0;
@@ -374,11 +465,15 @@ namespace RD_AAOW
 			// Решение уже найдено
 			return 0;
 
-		m1:
+			m1:
 			for (UInt16 k = 0; k < SDS; k++)
 				{
-				// Выполнение предположения (все цифры по порядку)
-				Mtx[i, j] = (UInt16)(1 << k);
+				/*// Выполнение предположения (все цифры по порядку)
+				Mtx[i, j] = (UInt16)(1 << k);*/
+				UInt16 v = (UInt16)(1 << k);
+				if ((Mtx[i, j] & v) == 0)   // Пропускать заведомо недопустимые значения
+					continue;
+				Mtx[i, j] = v;
 
 				// Прогонка матрицы с данным предположением
 				// (копия матрицы с каждым вызовом функции является вынужденной мерой, т.к.
@@ -487,7 +582,7 @@ namespace RD_AAOW
 		/// Метод выполняет поиск решения для ранее инициализированной матрицы
 		/// </summary>
 		/// <returns>Возвращает результат поиска или статус NotInited, если не была выполнена инициализация</returns>
-		public static async Task<bool> FindSolution ()
+		public static bool FindSolution ()
 			{
 			// Контроль
 			if (currentStatus != SolutionResults.ReadyForSearch)
@@ -497,6 +592,8 @@ namespace RD_AAOW
 				}
 
 			// Метод предположений
+			/*drop LongSolutions = false;*/
+			SetDroppingLongSolutions (false);
 			switch (Search ())
 				{
 				case -1:
@@ -540,6 +637,8 @@ namespace RD_AAOW
 			//		Если предположение неверно, функция, обнаружившая это, завершает
 			//		работу, давая возможность вызвавшему её экземпляру сделать
 			//		другое предположение
+			/*drop LongSolutions = false;*/
+			SetDroppingLongSolutions (false);
 			RDInterface.RunWork (DoSearch, null, RDLocale.GetText ("DoingSearch"),
 				RDRunWorkFlags.CaptionInTheMiddle | RDRunWorkFlags.AllowOperationAbort);
 			SolutionResults res = (SolutionResults)RDInterface.WorkResultAsInteger;
@@ -567,7 +666,10 @@ namespace RD_AAOW
 			for (UInt16 i = 0; i < SDS; i++)
 				{
 				for (UInt16 j = 0; j < SDS; j++)
-					resultMatrix[i, j] = (Byte)(Math.Log (Mtx[i, j], 2) + 1);
+					if (IsPowOf2 (Mtx[i, j]))
+						resultMatrix[i, j] = (Byte)(Math.Log (Mtx[i, j], 2) + 1);
+					else
+						resultMatrix[i, j] = 0;
 				}
 			}
 
@@ -601,7 +703,7 @@ namespace RD_AAOW
 					return;
 				}
 
-			e.Result = SolutionResults.SolutionFound;
+			e.Result = (int)SolutionResults.SolutionFound;
 			}
 
 #endif
@@ -618,8 +720,8 @@ namespace RD_AAOW
 				return "";
 			string data = FileContents;
 
-			for (int i = 0; i < splitters.Length; i++)
-				data = data.Replace (splitters[i], "");
+			for (int i = 0; i < fileSplitters.Length; i++)
+				data = data.Replace (fileSplitters[i], "");
 
 			if (data.Length < SudokuSideSize * SudokuSideSize)
 				return "";
@@ -629,7 +731,7 @@ namespace RD_AAOW
 			for (int i = 0; i < SudokuSideSize * SudokuSideSize; i++)
 				{
 				string c = data[i].ToString ();
-				if (checker.Contains (c))
+				if (fileDataChecker.Contains (c))
 					resultLine += c;
 				else
 					resultLine += EmptySign;
@@ -637,8 +739,8 @@ namespace RD_AAOW
 
 			return resultLine;
 			}
-		private static string[] splitters = new string[] { "\r", "\n", "\t", " ", ";" };
-		private const string checker = "123456789";
+		private static string[] fileSplitters = new string[] { "\r", "\n", "\t", " ", ";" };
+		private const string fileDataChecker = "123456789";
 
 		/// <summary>
 		/// Метод оформляет матрицу для сохранения в файл
@@ -665,9 +767,327 @@ namespace RD_AAOW
 			return file;
 			}
 
+		// Признак незаполненной ячейки матрицы
+		private const string EmptySign = " ";
+
 		/// <summary>
-		/// Возвращает признак незаполненной ячейки матрицы
+		/// Метод устанавливает сложность для метода генерации матриц судоку
 		/// </summary>
-		public const string EmptySign = " ";
+		/// <param name="Difficulty"></param>
+		public static void SetGenerationDifficulty (MatrixDifficulty Difficulty)
+			{
+			difficulty = Difficulty;
+			}
+		private static MatrixDifficulty difficulty;
+
+#if ANDROID
+
+		/// <summary>
+		/// Метод формирует матрицу судоку с указанным уровнем сложности
+		/// </summary>
+		public static bool GenerateMatrix ()
+			{
+			// Поиск решаемой матрицы
+			bool solved = false;
+			UInt16[,] Mtc = (UInt16[,])Mtx.Clone ();
+
+			while (!solved)
+				{
+				// Генерация потенциально решаемой матрицы
+				solved = true;
+				while (!FillMatrix ())
+					;
+
+				// Поиск решения для полученной матрицы
+				Mtc = (UInt16[,])Mtx.Clone ();
+
+				// Слишком долгие решения игнорируются
+				SetDroppingLongSolutions (true);
+
+				// Любая проблема рассматривается как дефект матрицы и требует повторной генерации
+				switch (Search ())
+					{
+					case -1:
+						currentStatus = SolutionResults.NoSolutionsFound;
+						solved = false;
+						break;
+
+					case 1:
+						currentStatus = SolutionResults.SearchAborted;
+						solved = false;
+						break;
+					}
+				}
+
+			// Успешно. Возврат результата
+			Mtx = (UInt16[,])Mtc.Clone ();
+			UploadResultMatrix ();
+			currentStatus = SolutionResults.SolutionFound;
+			return true;
+			}
+
+#else
+
+		/// <summary>
+		/// Метод формирует матрицу судоку с указанным уровнем сложности
+		/// </summary>
+		public static void GenerateMatrix ()
+			{
+			// Поиск решаемой матрицы
+			bool solved = false;
+			UInt16[,] Mtc = (UInt16[,])Mtx.Clone ();
+
+			while (!solved)
+				{
+				// Генерация потенциально решаемой матрицы
+				solved = true;
+				while (!FillMatrix ())
+					;
+
+				// Поиск решения для полученной матрицы
+				Mtc = (UInt16[,])Mtx.Clone ();
+
+				// Слишком долгие решения игнорируются
+				/*drop LongSolutions = true;
+				searchStart = DateTime.Now;*/
+
+				SetDroppingLongSolutions (true);
+				RDInterface.RunWork (DoSearch, null, RDLocale.GetText ("DoingSearch"),
+					RDRunWorkFlags.CaptionInTheMiddle);
+				SolutionResults res = (SolutionResults)RDInterface.WorkResultAsInteger;
+
+				// Любая проблема рассматривается как дефект матрицы и требует повторной генерации
+				switch (res)
+					{
+					case SolutionResults.NoSolutionsFound:
+					case SolutionResults.SearchAborted:
+						solved = false;
+						break;
+					}
+				}
+
+			// Успешно. Возврат результата
+			Mtx = (UInt16[,])Mtc.Clone ();
+			UploadResultMatrix ();
+			currentStatus = SolutionResults.SolutionFound;
+			}
+
+#endif
+
+		// Метод выполняет заполнение матрицы неконфликтующими значениями.
+		// Полученная матрица может не иметь решения, несмотря на первичный контроль
+		private static bool FillMatrix ()
+			{
+			// Заполнение всех возможных вероятностей
+			List<int> cells = new List<int> ();
+			for (UInt16 i = 0; i < SDS; i++)
+				{
+				for (UInt16 j = 0; j < SDS; j++)
+					{
+					Mtx[i, j] = SDS_FULL;
+					cells.Add (i * SDS + j);
+					}
+				}
+			UInt16[,] Mtc = (UInt16[,])Mtx.Clone ();    // Чистая копия, не содержащая прогонов
+
+			// Заполнение
+			/*bool continueRequired = false;*/
+			for (int k = 0; (k < KnownValues) /*|| continueRequired*/; k++)
+				{
+				// Выбор заполняемой ячейки
+				int idx = RDGenerics.RND.Next (cells.Count);
+				int cell = cells[idx];
+				cells.RemoveAt (idx);
+
+				// Выбор значения для ячейки
+				int i = cell / SDS;
+				int j = cell % SDS;
+				uint value = Mtx[i, j];
+				if (value == 0) // Такого не должно быть, но почему-то бывает
+					return false;
+
+				List<uint> digits = new List<uint> ();
+				for (int b = 0; b < SDS; b++)
+					if ((value & (1 << b)) != 0)
+						digits.Add ((uint)b + 1);
+
+				value = digits[RDGenerics.RND.Next (digits.Count)];
+				Mtx[i, j] = (UInt16)(1 << ((int)value - 1));
+				Mtc[i, j] = Mtx[i, j];
+
+				// Допускать только матрицы, решаемые прогонами
+				int res = UpdateMatrix ();
+				if (res < 0)
+					return false;
+				/*continueRequired = (res == 0);*/
+				}
+
+			// Пока что успешно. Подмена просчитанной матрицы чистой копией
+			Mtx = (UInt16[,])Mtc.Clone ();
+			return true;
+			}
+
+		// Внутреннее свойство, возвращающее число известных значений по уровню сложности
+		private static uint KnownValues
+			{
+			get
+				{
+				uint knownValues;
+				switch (difficulty)
+					{
+					case MatrixDifficulty.Hard:
+						knownValues = 24;
+						break;
+
+					case MatrixDifficulty.Normal:
+						knownValues = 30;
+						break;
+
+					case MatrixDifficulty.Easy:
+					default:
+						knownValues = 36;
+						break;
+					}
+
+				knownValues += (uint)RDGenerics.RND.Next (6);
+				return knownValues;
+				}
+			}
+
+		// Цветовая схема
+
+		private static Color[] colors = new Color[] {
+#if ANDROID
+			Color.FromArgb ("#0000C8"),
+			Color.FromArgb ("#C80000"),
+			Color.FromArgb ("#00C800"),
+#else
+			Color.FromArgb (0, 0, 200),
+			Color.FromArgb (200, 0, 0),
+			Color.FromArgb (0, 200, 0),
+#endif
+			RDInterface.GetInterfaceColor (RDInterfaceColors.AndroidTextColor),
+			};
+
+		/*/// <summary>
+		/// Возвращает цвет нового введённого значения
+		/// </summary>
+		public static Color NewNumberColor
+			{
+			get
+				{
+				return colors[0];
+				}
+			}*/
+
+		/*/// <summary>
+		/// Возвращает цвет уже присутствующего значения
+		/// </summary>
+		public static Color OldNumberColor
+			{
+			get
+				{
+				return colors[3];
+				}
+			}*/
+
+		/*/// <summary>
+		/// Возвращает цвет ошибочного решения
+		/// </summary>
+		public static Color ErrorNumberColor
+			{
+			get
+				{
+				return colors[1];
+				}
+			}*/
+
+		/*/// <summary>
+		/// Возвращает цвет успешного решения
+		/// </summary>
+		public static Color SuccessNumberColor
+			{
+			get
+				{
+				return colors[2];
+				}
+			}*/
+
+		/// <summary>
+		/// Метод проверяет указанное условие на истинность
+		/// </summary>
+		/// <param name="InterfaceElement">Элемент интерфейса, для которого выполняется контроль</param>
+		/// <param name="Condition">Проверяемое условие</param>
+		public static bool CheckCondition (Button InterfaceElement, ConditionTypes Condition)
+			{
+			string text = InterfaceElement.Text;
+#if ANDROID
+			Color color = InterfaceElement.TextColor;
+#else
+			Color color = InterfaceElement.ForeColor;
+#endif
+
+			// Проверка условия
+			switch (Condition)
+				{
+				case ConditionTypes.ContainsFoundValue:
+					return color == colors[2];
+
+				case ConditionTypes.IsEmpty:
+					return text == EmptySign;
+				}
+
+			// Неприменимое условие
+			return false;
+			}
+
+		/// <summary>
+		/// Метод настраивает указанный параметр элемента интерфейса
+		/// </summary>
+		/// <param name="InterfaceElement">Элемент интерфейса, для которого выполняется настройка</param>
+		/// <param name="Property">Проверяемое условие</param>
+		public static void SetProperty (Button InterfaceElement, PropertyTypes Property)
+			{
+			/*string text = InterfaceElement.Text;
+			if ANDROID
+			Color color = InterfaceElement.TextColor;
+			else
+			Color color = InterfaceElement.ForeColor;
+			endif*/
+
+			// Проверка условия
+			bool setColor = true;
+			Color color = colors[3];
+
+			switch (Property)
+				{
+				case PropertyTypes.EmptyValue:
+					InterfaceElement.Text = EmptySign;
+					setColor = false;
+					break;
+
+				case PropertyTypes.SuccessColor:
+					color = colors[2];
+					break;
+
+				case PropertyTypes.ErrorColor:
+					color = colors[1];
+					break;
+
+				case PropertyTypes.NewColor:
+					color = colors[0];
+					break;
+
+				case PropertyTypes.OldColor:
+					break;
+				}
+
+			if (setColor)
+#if ANDROID
+				InterfaceElement.TextColor = color;
+#else
+				InterfaceElement.ForeColor = color;
+#endif
+			}
 		}
 	}

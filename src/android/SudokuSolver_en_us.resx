@@ -117,8 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Difficulty0" xml:space="preserve">
+    <value>Easy</value>
+  </data>
+  <data name="Difficulty1" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="Difficulty2" xml:space="preserve">
+    <value>Hard</value>
+  </data>
+  <data name="DifficultyLevel" xml:space="preserve">
+    <value>Difficulty level:</value>
+  </data>
   <data name="EmptyButton" xml:space="preserve">
     <value>(empty)</value>
+  </data>
+  <data name="GenerateMatrix" xml:space="preserve">
+    <value>Generate table</value>
   </data>
   <data name="InputLabel" xml:space="preserve">
     <value>Table values:</value>

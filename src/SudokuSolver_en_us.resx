@@ -123,6 +123,9 @@
   <data name="MActivities_MClear" xml:space="preserve">
     <value>&amp;Clear the solution</value>
   </data>
+  <data name="MActivities_MGenerate" xml:space="preserve">
+    <value>&amp;Generate table</value>
+  </data>
   <data name="MActivities_MHelp" xml:space="preserve">
     <value>&amp;Help</value>
   </data>
@@ -146,6 +149,15 @@
   </data>
   <data name="MessageNotEnough" xml:space="preserve">
     <value>There is not enough numbers in the specified file to build the sudoku table</value>
+  </data>
+  <data name="MGenerate_MDifficulty0" xml:space="preserve">
+    <value>Easy</value>
+  </data>
+  <data name="MGenerate_MDifficulty1" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="MGenerate_MDifficulty2" xml:space="preserve">
+    <value>Hard</value>
   </data>
   <data name="OFFilter" xml:space="preserve">
     <value>Text documents (*.txt, *.csv)|*.txt;*.csv</value>

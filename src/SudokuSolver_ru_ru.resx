@@ -123,6 +123,9 @@
   <data name="MActivities_MClear" xml:space="preserve">
     <value>&amp;Очистить решение</value>
   </data>
+  <data name="MActivities_MGenerate" xml:space="preserve">
+    <value>С&amp;генерировать таблицу</value>
+  </data>
   <data name="MActivities_MHelp" xml:space="preserve">
     <value>&amp;Помощь</value>
   </data>
@@ -146,6 +149,15 @@
   </data>
   <data name="MessageNotEnough" xml:space="preserve">
     <value>В указанном файле недостаточно чисел для построения таблицы судоку</value>
+  </data>
+  <data name="MGenerate_MDifficulty0" xml:space="preserve">
+    <value>Простая</value>
+  </data>
+  <data name="MGenerate_MDifficulty1" xml:space="preserve">
+    <value>Средняя</value>
+  </data>
+  <data name="MGenerate_MDifficulty2" xml:space="preserve">
+    <value>Сложная</value>
   </data>
   <data name="OFFilter" xml:space="preserve">
     <value>Текстовые документы (*.txt, *.csv)|*.txt;*.csv</value>
