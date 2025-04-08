@@ -24,18 +24,32 @@ tool uses binary representation of known (`7 → 001000000b`) and unknown
 > But in some cases it can take some time. This behavior is correct
 > for the application.
 
-***Controls:***
 
+***Controls (Android):***
+
+- Click cells to select them;
+- Click them again to change their values (from 1 to 9 + empty value);
+- Use numeric keyboard to set the value of selected cell;
+- Use menu to set the current mode and alignment of numeric keyboard;
+- Use other buttons to solve the table or check it for solution
+
+
+***Controls (Windows):***
+
+- `←`, `→`, `↑`, `↓` – to move over the field;
 - `1` – `9` – press these numbers while on cells to enter them;
+- mouse buttons – to change values (from 1 to 9 + empty value);
 - any other character – to clear selected cell;
 - `F5` – to run the solution process:
     - you will get red cells if your table is unsolvable (has or leads to a duplication of values);
     - you will get green cells when a solution is found;
 - `F8` – to clear only found cells;
 - `F12` – to clear all cells;
-- `F3` – to load the table from file;
-- `F4` – to save the table to file;
+- `Ctrl` + `O` – to load the table from file;
+- `Ctrl` + `S` – to save the table to file;
+- `Ctrl` + `1` – to generate easy sudoku table;
+- `Ctrl` + `2` – to generate medium table;
+- `Ctrl` + `3` – to generate hard table;
+- `F3` – to check the availability of solution without showing it (game mode);
 - `F1` – to get the quick help;
-- `←`, `→`, `↑`, `↓` – to move over the field;
-- mouse buttons – to change values;
 - `Alt` + `F4` – to exit the application
