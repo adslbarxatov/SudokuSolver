@@ -1,5 +1,9 @@
 Sudoku solver: changes log
 
+ToDo:
+- Allow to check solution without showing it
+- Align other buttons on Android
+
 Version 4.5:
 • Implemented the sudoku table generator: now you can use the tool as a game;
 • Increased the speed of solution method;
