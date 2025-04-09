@@ -11,17 +11,6 @@
 
 			<StackLayout Orientation="Vertical" HorizontalOptions="Center" x:Name="MasterField" />
 
-			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
-				WidthRequest="200" Color="#505050" Margin="6" />
-
-			<StackLayout Orientation="Horizontal" HorizontalOptions="Center">
-				<Button x:Name="KeyboardButton" VerticalOptions="Center" />
-				<Label Text=" | " VerticalOptions="Center" />
-				<Button x:Name="SolveButton" VerticalOptions="Center" />
-				<Label Text=" | " VerticalOptions="Center" />
-				<Button x:Name="MenuButton" VerticalOptions="Center" />
-			</StackLayout>
-
 			<Label />
 
 		</StackLayout>

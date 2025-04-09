@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CheckSolutionButton" xml:space="preserve">
+    <value>Check solution</value>
+  </data>
   <data name="Difficulty0" xml:space="preserve">
     <value>Easy</value>
   </data>
@@ -162,6 +165,15 @@
   <data name="MessageNotEnough" xml:space="preserve">
     <value>There is not enough numbers in the specified file to build the sudoku table</value>
   </data>
+  <data name="Mode0" xml:space="preserve">
+    <value>Solution only</value>
+  </data>
+  <data name="Mode1" xml:space="preserve">
+    <value>Game</value>
+  </data>
+  <data name="ModeButton" xml:space="preserve">
+    <value>Interface mode</value>
+  </data>
   <data name="ResetField" xml:space="preserve">
     <value>Reset entire table</value>
   </data>
@@ -173,6 +185,12 @@
   </data>
   <data name="SaveToFile" xml:space="preserve">
     <value>Save to file</value>
+  </data>
+  <data name="SolutionIsCorrect" xml:space="preserve">
+    <value>Solution is correct, keep going!</value>
+  </data>
+  <data name="SolutionIsIncorrect" xml:space="preserve">
+    <value>This solution contains mistakes</value>
   </data>
   <data name="SolutionPage" xml:space="preserve">
     <value>Sudoku solution</value>

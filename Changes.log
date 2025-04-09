@@ -1,8 +1,12 @@
 Sudoku solver: changes log
 
-ToDo:
-- Allow to check solution without showing it
-- Align other buttons on Android
+Version 4.6:
+• Android: the app menu has been rebuilt to support the game mode;
+• Android: added the game mode, that changes the set of buttons on the main page;
+• Added the ability to check the solution without loading it to the page;
+• Windows: cells now support the mouse wheel and right mouse button when setting
+  their values;
+• Windows: new hotkeys have been added for file operations and solution checking
 
 Version 4.5:
 • Implemented the sudoku table generator: now you can use the tool as a game;

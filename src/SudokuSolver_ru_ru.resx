@@ -120,6 +120,9 @@
   <data name="DoingSearch" xml:space="preserve">
     <value>Поиск решения...</value>
   </data>
+  <data name="MActivities_MCheck" xml:space="preserve">
+    <value>Про&amp;верить решение</value>
+  </data>
   <data name="MActivities_MClear" xml:space="preserve">
     <value>&amp;Очистить решение</value>
   </data>
@@ -170,5 +173,11 @@
   </data>
   <data name="SFName" xml:space="preserve">
     <value>Укажите имя для нового файла</value>
+  </data>
+  <data name="SolutionIsCorrect" xml:space="preserve">
+    <value>Решение корректно, так держать!</value>
+  </data>
+  <data name="SolutionIsIncorrect" xml:space="preserve">
+    <value>В решении содержатся ошибки</value>
   </data>
 </root>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.RD_AAOW.SudokuSolver"
-	android:installLocation="internalOnly" android:versionCode="600402" android:versionName="4.5">
+	android:installLocation="internalOnly" android:versionCode="600403" android:versionName="4.6">
 
 	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="35" />
 

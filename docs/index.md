@@ -1,5 +1,5 @@
 # Sudoku solver: user guide
-> **ƒ** &nbsp;RD AAOW FDL; 1.12.2023; 2:34
+> **ƒ** &nbsp;RD AAOW FDL; 9.04.2025; 21:14
 
 
 

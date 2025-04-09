@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CheckSolutionButton" xml:space="preserve">
+    <value>Проверить решение</value>
+  </data>
   <data name="Difficulty0" xml:space="preserve">
     <value>Простая</value>
   </data>
@@ -162,6 +165,15 @@
   <data name="MessageNotEnough" xml:space="preserve">
     <value>В указанном файле недостаточно чисел для построения таблицы судоку</value>
   </data>
+  <data name="Mode0" xml:space="preserve">
+    <value>Только решение</value>
+  </data>
+  <data name="Mode1" xml:space="preserve">
+    <value>Игра</value>
+  </data>
+  <data name="ModeButton" xml:space="preserve">
+    <value>Режим интерфейса</value>
+  </data>
   <data name="ResetField" xml:space="preserve">
     <value>Сбросить всю таблицу</value>
   </data>
@@ -173,6 +185,12 @@
   </data>
   <data name="SaveToFile" xml:space="preserve">
     <value>Сохранить в файл</value>
+  </data>
+  <data name="SolutionIsCorrect" xml:space="preserve">
+    <value>Решение корректно, так держать!</value>
+  </data>
+  <data name="SolutionIsIncorrect" xml:space="preserve">
+    <value>В решении содержатся ошибки</value>
   </data>
   <data name="SolutionPage" xml:space="preserve">
     <value>Решение судоку</value>

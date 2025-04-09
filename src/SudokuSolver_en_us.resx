@@ -120,6 +120,9 @@
   <data name="DoingSearch" xml:space="preserve">
     <value>Searching for solution...</value>
   </data>
+  <data name="MActivities_MCheck" xml:space="preserve">
+    <value>Chec&amp;k solution</value>
+  </data>
   <data name="MActivities_MClear" xml:space="preserve">
     <value>&amp;Clear the solution</value>
   </data>
@@ -130,7 +133,7 @@
     <value>&amp;Help</value>
   </data>
   <data name="MActivities_MLanguage" xml:space="preserve">
-    <value>Lan&amp;guage</value>
+    <value>La&amp;nguage</value>
   </data>
   <data name="MActivities_MLoad" xml:space="preserve">
     <value>&amp;Load from file...</value>
@@ -142,7 +145,7 @@
     <value>&amp;Save to file...</value>
   </data>
   <data name="MActivities_MSolve" xml:space="preserve">
-    <value>&amp;Solve</value>
+    <value>&amp;Find solution</value>
   </data>
   <data name="MainMenu_MActivities" xml:space="preserve">
     <value>&amp;Actions</value>
@@ -170,5 +173,11 @@
   </data>
   <data name="SFName" xml:space="preserve">
     <value>Specify a name for a new file</value>
+  </data>
+  <data name="SolutionIsCorrect" xml:space="preserve">
+    <value>Solution is correct, keep going!</value>
+  </data>
+  <data name="SolutionIsIncorrect" xml:space="preserve">
+    <value>This solution contains mistakes</value>
   </data>
 </root>

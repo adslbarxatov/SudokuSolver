@@ -120,14 +120,52 @@ namespace RD_AAOW
 		NewColor,
 		}
 
+#if ANDROID
+
+	/// <summary>
+	/// Возможные расположения числовой клавиатуры
+	/// </summary>
+	public enum KeyboardPlacements
+		{
+		/// <summary>
+		/// Не отображается
+		/// </summary>
+		None,
+
+		/// <summary>
+		/// Справа
+		/// </summary>
+		Right,
+
+		/// <summary>
+		/// Снизу
+		/// </summary>
+		Bottom,
+		}
+
+	/// <summary>
+	/// Возможные режимы работы программы
+	/// </summary>
+	public enum AppModes
+		{
+		/// <summary>
+		/// Только решение
+		/// </summary>
+		SolutionOnly,
+
+		/// <summary>
+		/// Игра
+		/// </summary>
+		Game,
+		}
+
+#endif
+
 	/// <summary>
 	/// Класс описывает основной функционал поиска решения
 	/// </summary>
 	public static class SudokuSolverMath
 		{
-		//////////////////////////////
-		// SudokuSolver.h
-
 		// Базовые параметры
 
 		// РАЗМЕР СУДОКУ
@@ -157,14 +195,8 @@ namespace RD_AAOW
 		// Максимальное количество итераций, рассматриваемое как нормальный поиск
 		private const UInt16 MAX_ITER = 50;
 
-		//////////////////////////////
-		// SudokuSolver.c
-
 		// Главная матрица
 		private static UInt16[,] Mtx = new UInt16[SDS, SDS];
-
-		//////////////////////////////
-		// IsPowOf2.cc
 
 		// Определение чисел, являющихся степенью числа 2
 		//
@@ -173,15 +205,6 @@ namespace RD_AAOW
 		//
 		private static bool IsPowOf2 (UInt16 Value)
 			{
-			/*UInt16 s;
-
-			// Чтобы число было степенью числа 2, бит, установленный в 1, должен
-			// встречаться в нём лишь единожды
-			for (UInt16 i = s = 0; i < 8 * sizeof (UInt16); i++)
-				s += (UInt16)((Value >> i) & 1u);
-
-			return (s == 1);*/
-
 			// Защита
 			if (Value == 0)
 				return false;
@@ -194,9 +217,6 @@ namespace RD_AAOW
 			// Нечётный бит должен быть единственным
 			return (v == 1);
 			}
-
-		//////////////////////////////
-		// CheckErrors.cc
 
 		// Проверка на ошибочность предположения (повторения цифр)
 		//
@@ -259,9 +279,6 @@ namespace RD_AAOW
 			return false;
 			}
 
-		//////////////////////////////
-		// CheckResult.cc
-
 		// Проверка матрицы на готовность в качестве конечного результата
 		//
 		// Возвращает true, если матрица получила законченный вид (нет «вилок»)
@@ -287,9 +304,6 @@ namespace RD_AAOW
 
 			return s;
 			}
-
-		//////////////////////////////
-		// UpdateMatrix.cc
 
 		// Пересчёт матрицы
 		//
@@ -387,9 +401,6 @@ namespace RD_AAOW
 				return 0;
 			}
 
-		////////////////////////
-		// Search.cc
-
 #if ANDROID
 
 		/// <summary>
@@ -442,12 +453,6 @@ namespace RD_AAOW
 				return 1;
 				}
 
-			/*// Переменные
-			UInt16[,] Mtc = new UInt16[SDS, SDS];
-
-			// Создание копии исходной матрицы для данного предположения
-			Mtc = (UInt16[,])Mtx.Clone ();*/
-
 			// Создание копии исходной матрицы для данного предположения
 			UInt16[,] Mtc = (UInt16[,])Mtx.Clone ();
 
@@ -468,8 +473,6 @@ namespace RD_AAOW
 			m1:
 			for (UInt16 k = 0; k < SDS; k++)
 				{
-				/*// Выполнение предположения (все цифры по порядку)
-				Mtx[i, j] = (UInt16)(1 << k);*/
 				UInt16 v = (UInt16)(1 << k);
 				if ((Mtx[i, j] & v) == 0)   // Пропускать заведомо недопустимые значения
 					continue;
@@ -487,7 +490,7 @@ namespace RD_AAOW
 					// Если результат требует уточнения
 					case 0:
 						// Делается новое предположение
-						short res = Search (/*Worker*/);
+						short res = Search ();
 						switch (res)
 							{
 							// Если оно дало конечный результат, нужно вернуть его наверх
@@ -592,7 +595,6 @@ namespace RD_AAOW
 				}
 
 			// Метод предположений
-			/*drop LongSolutions = false;*/
 			SetDroppingLongSolutions (false);
 			switch (Search ())
 				{
@@ -637,7 +639,6 @@ namespace RD_AAOW
 			//		Если предположение неверно, функция, обнаружившая это, завершает
 			//		работу, давая возможность вызвавшему её экземпляру сделать
 			//		другое предположение
-			/*drop LongSolutions = false;*/
 			SetDroppingLongSolutions (false);
 			RDInterface.RunWork (DoSearch, null, RDLocale.GetText ("DoingSearch"),
 				RDRunWorkFlags.CaptionInTheMiddle | RDRunWorkFlags.AllowOperationAbort);
@@ -773,7 +774,7 @@ namespace RD_AAOW
 		/// <summary>
 		/// Метод устанавливает сложность для метода генерации матриц судоку
 		/// </summary>
-		/// <param name="Difficulty"></param>
+		/// <param name="Difficulty">Требуемый уровень сложности</param>
 		public static void SetGenerationDifficulty (MatrixDifficulty Difficulty)
 			{
 			difficulty = Difficulty;
@@ -891,8 +892,7 @@ namespace RD_AAOW
 			UInt16[,] Mtc = (UInt16[,])Mtx.Clone ();    // Чистая копия, не содержащая прогонов
 
 			// Заполнение
-			/*bool continueRequired = false;*/
-			for (int k = 0; (k < KnownValues) /*|| continueRequired*/; k++)
+			for (int k = 0; k < KnownValues; k++)
 				{
 				// Выбор заполняемой ячейки
 				int idx = RDGenerics.RND.Next (cells.Count);
@@ -919,7 +919,6 @@ namespace RD_AAOW
 				int res = UpdateMatrix ();
 				if (res < 0)
 					return false;
-				/*continueRequired = (res == 0);*/
 				}
 
 			// Пока что успешно. Подмена просчитанной матрицы чистой копией
@@ -969,50 +968,6 @@ namespace RD_AAOW
 			RDInterface.GetInterfaceColor (RDInterfaceColors.AndroidTextColor),
 			};
 
-		/*/// <summary>
-		/// Возвращает цвет нового введённого значения
-		/// </summary>
-		public static Color NewNumberColor
-			{
-			get
-				{
-				return colors[0];
-				}
-			}*/
-
-		/*/// <summary>
-		/// Возвращает цвет уже присутствующего значения
-		/// </summary>
-		public static Color OldNumberColor
-			{
-			get
-				{
-				return colors[3];
-				}
-			}*/
-
-		/*/// <summary>
-		/// Возвращает цвет ошибочного решения
-		/// </summary>
-		public static Color ErrorNumberColor
-			{
-			get
-				{
-				return colors[1];
-				}
-			}*/
-
-		/*/// <summary>
-		/// Возвращает цвет успешного решения
-		/// </summary>
-		public static Color SuccessNumberColor
-			{
-			get
-				{
-				return colors[2];
-				}
-			}*/
-
 		/// <summary>
 		/// Метод проверяет указанное условие на истинность
 		/// </summary>
@@ -1048,13 +1003,6 @@ namespace RD_AAOW
 		/// <param name="Property">Проверяемое условие</param>
 		public static void SetProperty (Button InterfaceElement, PropertyTypes Property)
 			{
-			/*string text = InterfaceElement.Text;
-			if ANDROID
-			Color color = InterfaceElement.TextColor;
-			else
-			Color color = InterfaceElement.ForeColor;
-			endif*/
-
 			// Проверка условия
 			bool setColor = true;
 			Color color = colors[3];
@@ -1089,5 +1037,61 @@ namespace RD_AAOW
 				InterfaceElement.ForeColor = color;
 #endif
 			}
+
+		// Хранимые настройки приложения
+
+#if ANDROID
+
+		/// <summary>
+		/// Сохраняет или загружает ориентацию элементов экрана
+		/// </summary>
+		public static KeyboardPlacements KeyboardPlacement
+			{
+			get
+				{
+				return (KeyboardPlacements)RDGenerics.GetSettings (keyboardPlacementsPar,
+					(uint)KeyboardPlacements.Bottom);
+				}
+			set
+				{
+				RDGenerics.SetSettings (keyboardPlacementsPar, (uint)value);
+				}
+			}
+		private const string keyboardPlacementsPar = "KeyboardPlacements";
+
+		/// <summary>
+		/// Сохраняет или загружает режим работы приложения
+		/// </summary>
+		public static AppModes AppMode
+			{
+			get
+				{
+				return (AppModes)RDGenerics.GetSettings (appModePar,
+					(uint)AppModes.SolutionOnly);
+				}
+			set
+				{
+				RDGenerics.SetSettings (appModePar, (uint)value);
+				}
+			}
+		private const string appModePar = "AppMode";
+
+#endif
+
+		/// <summary>
+		/// Сохраняет или загружает текущее состояние поля ввода
+		/// </summary>
+		public static string SudokuField
+			{
+			get
+				{
+				return RDGenerics.GetSettings (sudokuFieldPar, "");
+				}
+			set
+				{
+				RDGenerics.SetSettings (sudokuFieldPar, value);
+				}
+			}
+		private const string sudokuFieldPar = "SudokuField";
 		}
 	}
