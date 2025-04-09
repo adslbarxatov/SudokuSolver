@@ -1,5 +1,5 @@
 # Sudoku solver: user guide
-> **ƒ** &nbsp;RD AAOW FDL; 9.04.2025; 21:14
+> **ƒ** &nbsp;RD AAOW FDL; 9.04.2025; 23:32
 
 
 
@@ -16,13 +16,14 @@
 This tool allows you to solve default (9 x 9) sudoku tables.
 
 Solution based on recursive function that builds series of “assumptions”
-and finds first one that doesn’t conflict with sudoku game rules. Also
-tool uses binary representation of known (`7 → 001000000b`) and unknown
-(`1 or 2 or 6 → 000100011b`) numbers for simplifying solution process.
+and finds first one that doesn’t conflict with sudoku game rules.
 
 > Warning! This method ***always*** finishes with some result (it is finite).
 > But in some cases it can take some time. This behavior is correct
 > for the application.
+
+In addition, the app now has a game mode: it can check for the presence
+of a solution, but not display it, only reporting its presence or absence.
 
 
 ***Controls (Android):***

@@ -1,5 +1,8 @@
 Sudoku solver: changes log
 
+ToDo:
+- Wake lock on Android in game mode
+
 Version 4.6:
 • Android: the app menu has been rebuilt to support the game mode;
 • Android: added the game mode, that changes the set of buttons on the main page;
