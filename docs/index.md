@@ -13,7 +13,7 @@
 
 ### General information
 
-This tool allows you to solve default (9 x 9) sudoku tables.
+This tool allows you to automatically or manually solve default (9 x 9) sudoku tables.
 
 Solution based on recursive function that builds series of “assumptions”
 and finds first one that doesn’t conflict with sudoku game rules.
