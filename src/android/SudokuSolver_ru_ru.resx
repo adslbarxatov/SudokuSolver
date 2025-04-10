@@ -136,7 +136,7 @@
     <value>(пусто)</value>
   </data>
   <data name="GenerateMatrix" xml:space="preserve">
-    <value>Сгенерировать таблицу</value>
+    <value>Начать новую игру</value>
   </data>
   <data name="InputLabel" xml:space="preserve">
     <value>Значения в таблице:</value>
@@ -189,6 +189,11 @@
   <data name="SolutionIsCorrect" xml:space="preserve">
     <value>Решение корректно, так держать!</value>
   </data>
+  <data name="SolutionIsCorrectNoScore" xml:space="preserve">
+    <value>Решение корректно, но Ваши очки были потеряны, потому что Вы изменили сгенерированную таблицу.
+
+Сгенерируйте новую таблицу, чтобы продолжить игру</value>
+  </data>
   <data name="SolutionIsIncorrect" xml:space="preserve">
     <value>В решении содержатся ошибки</value>
   </data>
@@ -197,5 +202,14 @@
   </data>
   <data name="SolveButton" xml:space="preserve">
     <value>Решить</value>
+  </data>
+  <data name="SolvedText" xml:space="preserve">
+    <value>Задача решена!</value>
+  </data>
+  <data name="StatsButton" xml:space="preserve">
+    <value>Статистика игры</value>
+  </data>
+  <data name="StatsText" xml:space="preserve">
+    <value>Результаты игрового режима:</value>
   </data>
 </root>

@@ -2,6 +2,7 @@
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Views;
 
 namespace RD_AAOW
 	{
@@ -42,6 +43,10 @@ namespace RD_AAOW
 			{
 			// Отмена темы для splash screen
 			base.SetTheme (Microsoft.Maui.Controls.Resource.Style.MainTheme);
+
+			// Запуск
+			if (SudokuSolverMath.AppMode == AppModes.Game)
+				this.Window.AddFlags (WindowManagerFlags.KeepScreenOn);
 
 			// Инициализация и запуск
 			base.OnCreate (savedInstanceState);

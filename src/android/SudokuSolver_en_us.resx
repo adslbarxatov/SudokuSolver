@@ -136,7 +136,7 @@
     <value>(empty)</value>
   </data>
   <data name="GenerateMatrix" xml:space="preserve">
-    <value>Generate table</value>
+    <value>Start new game</value>
   </data>
   <data name="InputLabel" xml:space="preserve">
     <value>Table values:</value>
@@ -189,6 +189,11 @@
   <data name="SolutionIsCorrect" xml:space="preserve">
     <value>Solution is correct, keep going!</value>
   </data>
+  <data name="SolutionIsCorrectNoScore" xml:space="preserve">
+    <value>Solution is correct, but your points were lost because you’ve changed the generated table.
+
+Create a new table to continue the game</value>
+  </data>
   <data name="SolutionIsIncorrect" xml:space="preserve">
     <value>This solution contains mistakes</value>
   </data>
@@ -197,5 +202,14 @@
   </data>
   <data name="SolveButton" xml:space="preserve">
     <value>Solve</value>
+  </data>
+  <data name="SolvedText" xml:space="preserve">
+    <value>Solved!</value>
+  </data>
+  <data name="StatsButton" xml:space="preserve">
+    <value>Game statistics</value>
+  </data>
+  <data name="StatsText" xml:space="preserve">
+    <value>Game mode results:</value>
   </data>
 </root>

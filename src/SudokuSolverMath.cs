@@ -60,17 +60,22 @@ namespace RD_AAOW
 		/// <summary>
 		/// Простой
 		/// </summary>
-		Easy,
+		Easy = 0,
 
 		/// <summary>
 		/// Средний
 		/// </summary>
-		Normal,
+		Medium = 1,
 
 		/// <summary>
 		/// Сложный
 		/// </summary>
-		Hard,
+		Hard = 2,
+
+		/// <summary>
+		/// Игровой режим отключён
+		/// </summary>
+		None = 255,
 		}
 
 	/// <summary>
@@ -87,6 +92,11 @@ namespace RD_AAOW
 		/// Элемент не содержит значения
 		/// </summary>
 		IsEmpty,
+
+		/// <summary>
+		/// Элемент содержит новое введённое значение
+		/// </summary>
+		ContainsNewValue,
 		}
 
 	/// <summary>
@@ -191,6 +201,9 @@ namespace RD_AAOW
 
 		// Линейный размер квадрата матрицы
 		private static UInt16 SQ = (UInt16)Math.Sqrt (SDS);
+
+		// Полный размер квадрата матрицы
+		private const UInt16 SDS2 = SDS * SDS;
 
 		// Максимальное количество итераций, рассматриваемое как нормальный поиск
 		private const UInt16 MAX_ITER = 50;
@@ -938,7 +951,7 @@ namespace RD_AAOW
 						knownValues = 24;
 						break;
 
-					case MatrixDifficulty.Normal:
+					case MatrixDifficulty.Medium:
 						knownValues = 30;
 						break;
 
@@ -986,10 +999,13 @@ namespace RD_AAOW
 			switch (Condition)
 				{
 				case ConditionTypes.ContainsFoundValue:
-					return color == colors[2];
+					return (color == colors[2]);
+
+				case ConditionTypes.ContainsNewValue:
+					return (color == colors[0]);
 
 				case ConditionTypes.IsEmpty:
-					return text == EmptySign;
+					return (text == EmptySign);
 				}
 
 			// Неприменимое условие
@@ -1093,5 +1109,177 @@ namespace RD_AAOW
 				}
 			}
 		private const string sudokuFieldPar = "SudokuField";
+
+		/*/// <summary>
+		/// Сохраняет или загружает текущее состояние поля ввода в игровом режиме
+		/// </summary>
+		public static string GameModeField
+			{
+			get
+				{
+				return RDGenerics.GetSettings (gameModeFieldPar, "");
+				}
+			set
+				{
+				RDGenerics.SetSettings (gameModeFieldPar, value);
+				}
+			}
+		private const string gameModeFieldPar = "GameModeField";*/
+
+		/// <summary>
+		/// Сохраняет или загружает последний использованный игровой режим
+		/// </summary>
+		public static MatrixDifficulty GameMode
+			{
+			get
+				{
+				return (MatrixDifficulty)RDGenerics.GetSettings (gameModePar,
+					(uint)MatrixDifficulty.None);
+				}
+			set
+				{
+				RDGenerics.SetSettings (gameModePar, (uint)value);
+				}
+			}
+		private const string gameModePar = "GameMode";
+
+		// Методы сохранения и загрузки статистики игрового режима
+		/*private static void LoadGameScore ()
+			{
+			}
+
+		private static void SaveGameScore ()
+			{
+			}*/
+
+		private static uint[] gameScore = new uint[] { 0, 0, 0, 0, 0 };
+		private const int gameScoreSize = 4;
+		private const string gameScorePar = "GameScore";
+		private static char[] gameScoreSplitter = new char[] { '\t' };
+
+		private static uint GetGameScore (byte Item)
+			{
+			if (gameScore[gameScoreSize] != 1)
+				{
+				// Флаг инициализации
+				gameScore[gameScoreSize] = 1;
+
+				// Извлечение
+				string v = RDGenerics.GetSettings (gameScorePar, "");
+				string[] values = v.Split (gameScoreSplitter, StringSplitOptions.RemoveEmptyEntries);
+				if (values.Length != gameScoreSize)
+					return gameScore[Item];
+
+				try
+					{
+					for (int i = 0; i < gameScoreSize; i++)
+						gameScore[i] = uint.Parse (values[i]);
+					}
+				catch
+					{
+					for (int i = 0; i < gameScoreSize; i++)
+						gameScore[i] = 0;
+					}
+
+				// Успешно
+				}
+
+			return gameScore[Item];
+			}
+
+		private static void SetGameScore (byte Item, uint Value)
+			{
+			gameScore[Item] = Value;
+
+			string line = "";
+			string sp = gameScoreSplitter[0].ToString ();
+
+			for (int i = 0; i < gameScoreSize - 1; i++)
+				line += (gameScore[i].ToString () + sp);
+			line += gameScore[gameScoreSize - 1].ToString ();
+
+			RDGenerics.SetSettings (gameScorePar, line);
+			}
+
+		/// <summary>
+		/// Возвращает или задаёт суммарный счёт игрового режима
+		/// </summary>
+		public static uint TotalScore
+			{
+			get
+				{
+				return GetGameScore (0);
+				}
+			set
+				{
+				SetGameScore (0, value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает или задаёт количество собранных таблиц на простом уровне
+		/// </summary>
+		public static uint EasyScore
+			{
+			get
+				{
+				return GetGameScore (1);
+				}
+			set
+				{
+				SetGameScore (1, value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает или задаёт количество собранных таблиц на среднем уровне
+		/// </summary>
+		public static uint MediumScore
+			{
+			get
+				{
+				return GetGameScore (2);
+				}
+			set
+				{
+				SetGameScore (2, value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает или задаёт количество собранных таблиц на сложном уровне
+		/// </summary>
+		public static uint HardScore
+			{
+			get
+				{
+				return GetGameScore (3);
+				}
+			set
+				{
+				SetGameScore (3, value);
+				}
+			}
+
+		/*/// <summary>
+		/// Метод сравнивает исходную сгенерированную матрицу с текущей.
+		/// Возвращает true, если сгенерированная часть таблицы совпадает (не была изменена)
+		/// </summary>
+		public static bool VerifyGameModeField ()
+			{
+			// Защита
+			if ((GameModeField.Length != SDS2) || (SudokuField.Length != SDS2))
+				return false;
+
+			// Проверка только заполненных ячеек
+			for (int i = 0; i < SDS2; i++)
+				{
+				char c = GameModeField[i];
+				if ((c != EmptySign[0]) && (c != SudokuField[i]))
+					return false;
+				}
+
+			return true;
+			}*/
 		}
 	}
