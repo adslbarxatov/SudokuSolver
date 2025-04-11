@@ -120,6 +120,15 @@
   <data name="CheckSolutionButton" xml:space="preserve">
     <value>Проверить решение</value>
   </data>
+  <data name="Color0" xml:space="preserve">
+    <value>Светлая</value>
+  </data>
+  <data name="Color1" xml:space="preserve">
+    <value>Тёмная</value>
+  </data>
+  <data name="ColorScheme" xml:space="preserve">
+    <value>Цветовая схема</value>
+  </data>
   <data name="Difficulty0" xml:space="preserve">
     <value>Простая</value>
   </data>
@@ -159,6 +168,15 @@
   <data name="LoadFromFile" xml:space="preserve">
     <value>Загрузить из файла</value>
   </data>
+  <data name="Menu0" xml:space="preserve">
+    <value>Задача</value>
+  </data>
+  <data name="Menu1" xml:space="preserve">
+    <value>Игровой режим</value>
+  </data>
+  <data name="Menu2" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
   <data name="MenuButton" xml:space="preserve">
     <value>Меню</value>
   </data>
@@ -169,7 +187,7 @@
     <value>Только решение</value>
   </data>
   <data name="Mode1" xml:space="preserve">
-    <value>Игра</value>
+    <value>Игровой режим</value>
   </data>
   <data name="ModeButton" xml:space="preserve">
     <value>Режим интерфейса</value>

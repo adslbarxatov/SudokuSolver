@@ -1,5 +1,14 @@
 Sudoku solver: changes log
 
+ToDo:
+- results sharing
+- score evaluators incapsulation
+
+Version 4.8:
+• Android: dark color scheme has been implemented;
+• Android: main menu divided into secondary options;
+• Android: some interface inconveniences have been fixed
+
 Version 4.7:
 • Android: implemented the score and results storage for the game mode;
 • Android: app now doesn't allow the device to go to sleep mode when game mode

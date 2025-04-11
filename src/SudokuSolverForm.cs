@@ -15,8 +15,8 @@ namespace RD_AAOW
 		// Переменные и константы
 		private const int buttonSize = 30;
 
-		private Color backgroundColor = Color.FromArgb (255, 255, 248);
-		private Color buttonsColor = Color.FromArgb (255, 255, 200);
+		/*private Color backgroundColor = Color.FromArgb (255, 255, 248);
+		private Color buttonsColor = Color.FromArgb (255, 255, 200);*/
 
 		private List<Button> buttons = new List<Button> ();
 
@@ -32,31 +32,31 @@ namespace RD_AAOW
 			RDGenerics.LoadWindowDimensions (this);
 
 			this.Text = ProgramDescription.AssemblyTitle;
-			this.ClientSize = new Size ((int)(SudokuSolverMath.SudokuSideSize + 2) * buttonSize,
-				(int)(SudokuSolverMath.SudokuSideSize + 2) * buttonSize + buttonSize);
-			this.BackColor = backgroundColor;
+			this.ClientSize = new Size ((int)(SudokuSolverMath.SideSize + 2) * buttonSize,
+				(int)(SudokuSolverMath.SideSize + 2) * buttonSize + buttonSize);
+			/*this.BackColor = backgroundColor;*/
+			this.BackColor = SudokuSolverMath.BackgroundColor;
 
 			// Формирование поля
-			int sqrt = (int)Math.Sqrt (SudokuSolverMath.SudokuSideSize);
-			for (int r = 0; r < SudokuSolverMath.SudokuSideSize; r++)
+			int sqrt = (int)Math.Sqrt (SudokuSolverMath.SideSize);
+			for (int r = 0; r < SudokuSolverMath.SideSize; r++)
 				{
-				for (int c = 0; c < SudokuSolverMath.SudokuSideSize; c++)
+				for (int c = 0; c < SudokuSolverMath.SideSize; c++)
 					{
 					Button lb = new Button ();
 
 					SudokuSolverMath.SetProperty (lb, PropertyTypes.EmptyValue);
 					SudokuSolverMath.SetProperty (lb, PropertyTypes.OldColor);
-					lb.BackColor = buttonsColor;
+					/*lb.BackColor = buttonsColor;*/
+					SudokuSolverMath.SetProperty (lb, PropertyTypes.DeselectedCell);
 					lb.TextAlign = ContentAlignment.MiddleCenter;
 					lb.Width = lb.Height = buttonSize;
 					lb.Left = lb.Width * (c + 1) + 3 * (c / sqrt - sqrt / 2);
 					lb.Top = lb.Height * (r + 1) + 3 * (r / sqrt - sqrt / 2) + buttonSize;
 					lb.Cursor = Cursors.UpArrow;
 					lb.KeyDown += Lb_KeyDown;
-					/*lb.Click += Lb_Click;*/
 					lb.FlatStyle = FlatStyle.Flat;
 					lb.MouseWheel += Lb_MouseWheel;
-					/*lb.MouseClick += Lb_MouseClick;*/
 					lb.MouseDown += Lb_MouseClick;
 
 					this.Controls.Add (lb);
@@ -66,7 +66,8 @@ namespace RD_AAOW
 
 			// Загрузка сохранённого состояния
 			string sudoku = SudokuSolverMath.SudokuField;
-			if (sudoku.Length == SudokuSolverMath.SudokuSideSize * SudokuSolverMath.SudokuSideSize)
+			/*if (sudoku.Length == SudokuSolverMath.SudokuSideSize * SudokuSolverMath.SudokuSideSize)*/
+			if (sudoku.Length == SudokuSolverMath.FullSize)
 				{
 				for (int i = 0; i < buttons.Count; i++)
 					{
@@ -105,19 +106,19 @@ namespace RD_AAOW
 				{
 				// Перенаправление движения по кнопкам
 				case Keys.Up:
-					for (int i = 0; i < SudokuSolverMath.SudokuSideSize; i++)
+					for (int i = 0; i < SudokuSolverMath.SideSize; i++)
 						this.SelectNextControl (this.ActiveControl, false, true, false, true);
 					return true;
 
 				case Keys.Down:
-					for (int i = 0; i < SudokuSolverMath.SudokuSideSize; i++)
+					for (int i = 0; i < SudokuSolverMath.SideSize; i++)
 						this.SelectNextControl (this.ActiveControl, true, true, false, true);
 					return true;
 
 				case Keys.Left:
-					if (buttons.IndexOf ((Button)this.ActiveControl) % SudokuSolverMath.SudokuSideSize == 0)
+					if (buttons.IndexOf ((Button)this.ActiveControl) % SudokuSolverMath.SideSize == 0)
 						{
-						for (int i = 1; i < SudokuSolverMath.SudokuSideSize; i++)
+						for (int i = 1; i < SudokuSolverMath.SideSize; i++)
 							this.SelectNextControl (this.ActiveControl, true, true, false, true);
 						}
 					else
@@ -127,9 +128,9 @@ namespace RD_AAOW
 					return true;
 
 				case Keys.Right:
-					if ((buttons.IndexOf ((Button)this.ActiveControl) + 1) % SudokuSolverMath.SudokuSideSize == 0)
+					if ((buttons.IndexOf ((Button)this.ActiveControl) + 1) % SudokuSolverMath.SideSize == 0)
 						{
-						for (int i = 1; i < SudokuSolverMath.SudokuSideSize; i++)
+						for (int i = 1; i < SudokuSolverMath.SideSize; i++)
 							this.SelectNextControl (this.ActiveControl, false, true, false, true);
 						}
 					else
@@ -344,37 +345,16 @@ namespace RD_AAOW
 			SudokuSolverMath.SetProperty (b, PropertyTypes.NewColor);
 			}
 
-		/*private void Lb_Click (object sender, EventArgs e)
-			{
-			Button b = (Button)sender;
-			uint v = 0;
-
-			try
-				{
-				v = uint.Parse (b.Text) + 1;
-				}
-			catch { }
-
-			if (v == 0)
-				b.Text = "1";
-			else if (v > 9)
-				SudokuSolverMath.SetProperty (b, PropertyTypes.EmptyValue);
-			else
-				b.Text = v.ToString ();
-
-			SudokuSolverMath.SetProperty (b, PropertyTypes.NewColor);
-			}*/
-
 		// Решение задачи
 		private bool Solve (bool LoadResults)
 			{
 			// Сборка массива
-			Byte[,] matrix = new Byte[SudokuSolverMath.SudokuSideSize, SudokuSolverMath.SudokuSideSize];
-			for (int r = 0; r < SudokuSolverMath.SudokuSideSize; r++)
+			Byte[,] matrix = new Byte[SudokuSolverMath.SideSize, SudokuSolverMath.SideSize];
+			for (int r = 0; r < SudokuSolverMath.SideSize; r++)
 				{
-				for (int c = 0; c < SudokuSolverMath.SudokuSideSize; c++)
+				for (int c = 0; c < SudokuSolverMath.SideSize; c++)
 					{
-					Button ct = buttons[r * (int)SudokuSolverMath.SudokuSideSize + c];
+					Button ct = buttons[r * (int)SudokuSolverMath.SideSize + c];
 					if (!SudokuSolverMath.CheckCondition (ct, ConditionTypes.IsEmpty) &&
 						!SudokuSolverMath.CheckCondition (ct, ConditionTypes.ContainsFoundValue))
 						matrix[r, c] = Byte.Parse (ct.Text);
@@ -423,11 +403,11 @@ namespace RD_AAOW
 				return true;
 				}
 
-			for (int r = 0; r < SudokuSolverMath.SudokuSideSize; r++)
+			for (int r = 0; r < SudokuSolverMath.SideSize; r++)
 				{
-				for (int c = 0; c < SudokuSolverMath.SudokuSideSize; c++)
+				for (int c = 0; c < SudokuSolverMath.SideSize; c++)
 					{
-					Button ct = buttons[r * (int)SudokuSolverMath.SudokuSideSize + c];
+					Button ct = buttons[r * (int)SudokuSolverMath.SideSize + c];
 					if (!SudokuSolverMath.CheckCondition (ct, ConditionTypes.IsEmpty) &&
 						!SudokuSolverMath.CheckCondition (ct, ConditionTypes.ContainsFoundValue))
 						{
@@ -459,22 +439,6 @@ namespace RD_AAOW
 			RDGenerics.SaveWindowDimensions (this);
 			}
 
-		/*/// <summary>
-		/// Сохраняет или загружает текущее состояние поля ввода
-		/// </summary>
-		private static string SudokuField
-			{
-			get
-				{
-				return RDGenerics.GetSettings (sudokuFieldPar, "");
-				}
-			set
-				{
-				RDGenerics.SetSettings (sudokuFieldPar, value);
-				}
-			}
-		private const string sudokuFieldPar = "SudokuField";*/
-
 		// Генерация матрицы судоку
 		private void MGenerate_Click (object sender, EventArgs e)
 			{
@@ -486,11 +450,11 @@ namespace RD_AAOW
 			SudokuSolverMath.GenerateMatrix ();
 
 			// Отображение результата
-			for (int r = 0; r < SudokuSolverMath.SudokuSideSize; r++)
+			for (int r = 0; r < SudokuSolverMath.SideSize; r++)
 				{
-				for (int c = 0; c < SudokuSolverMath.SudokuSideSize; c++)
+				for (int c = 0; c < SudokuSolverMath.SideSize; c++)
 					{
-					Button ct = buttons[r * (int)SudokuSolverMath.SudokuSideSize + c];
+					Button ct = buttons[r * (int)SudokuSolverMath.SideSize + c];
 					if (SudokuSolverMath.ResultMatrix[r, c] == 0)
 						SudokuSolverMath.SetProperty (ct, PropertyTypes.EmptyValue);
 					else

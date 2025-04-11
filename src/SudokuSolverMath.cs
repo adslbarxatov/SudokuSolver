@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 
 #if ANDROID
-using Microsoft.Maui.Controls;
+	using Microsoft.Maui.Controls;
 #else
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
+	using System.ComponentModel;
+	using System.Drawing;
+	using System.Windows.Forms;
 #endif
 
 namespace RD_AAOW
@@ -97,6 +97,21 @@ namespace RD_AAOW
 		/// Элемент содержит новое введённое значение
 		/// </summary>
 		ContainsNewValue,
+
+		/// <summary>
+		/// Ячейка уже была выбрана ранее
+		/// </summary>
+		SelectedCell,
+
+		/// <summary>
+		/// Элемент содержит определённое ранее значение
+		/// </summary>
+		ContainsOldValue,
+
+		/// <summary>
+		/// Элемент содержит ошибочное значение
+		/// </summary>
+		ContainsErrorValue,
 		}
 
 	/// <summary>
@@ -128,6 +143,21 @@ namespace RD_AAOW
 		/// Задать цвет нового указанного значения
 		/// </summary>
 		NewColor,
+
+		/// <summary>
+		/// Невыбранная ячейка
+		/// </summary>
+		DeselectedCell,
+
+		/// <summary>
+		/// Выбранная ячейка
+		/// </summary>
+		SelectedCell,
+
+		/// <summary>
+		/// Другая кнопка интерфейса
+		/// </summary>
+		OtherButton,
 		}
 
 #if ANDROID
@@ -169,6 +199,22 @@ namespace RD_AAOW
 		Game,
 		}
 
+	/// <summary>
+	/// Возможные цветовые схемы приложения
+	/// </summary>
+	public enum ColorSchemes
+		{
+		/// <summary>
+		/// Светлая
+		/// </summary>
+		Light,
+
+		/// <summary>
+		/// Тёмная
+		/// </summary>
+		Dark,
+		}
+
 #endif
 
 	/// <summary>
@@ -176,40 +222,360 @@ namespace RD_AAOW
 	/// </summary>
 	public static class SudokuSolverMath
 		{
-		// Базовые параметры
-
-		// РАЗМЕР СУДОКУ
-		private const UInt16 SDS = 9;
-
-		/// <summary>
-		/// Размер стороны судоку
-		/// </summary>
-		public const uint SudokuSideSize = SDS;
-
 		//	Данная программа использует двоичную систему счисления в качестве
 		//	базового средства решения задачи. Т.е. если значения ячеек матрицы
 		//	представить	в двоичном виде, то номера бит, установленных в 1, будут
 		//	теми цифрами, которые в данный момент предполагается проставить в 
-		//	соответствующую клетку судоку
+		//	соответствующую клетку судоку.
 		//	Соответственно, если бит, равный 1, в значении ячейки остался лишь
 		//	один, клетка считается вычисленной. При	этом очевидно, что её
 		//	значение будет степенью числа 2. Определение этого состояния
 		//	является критерием решения задачи
 
+		#region Константы
+
+		/// <summary>
+		/// Размер стороны судоку
+		/// </summary>
+		public const UInt16 SideSize = 9;   // SquareSize ^ 2
+		/*private const UInt16 SDS = 9;*/
+
+		/// <summary>
+		/// Полный размер судоку
+		/// </summary>
+		public const UInt16 FullSize = 81;  // SideSize ^ 2
+
+		/// <summary>
+		/// Размер стороны квадрата судоку
+		/// </summary>
+		public const UInt16 SquareSize = 3; // SideSize ^ 0.5
+
 		// Полная флаговая переменная (123456789), используемая для решения
-		private const UInt16 SDS_FULL = ((1 << SDS) - 1);
-
-		// Линейный размер квадрата матрицы
-		private static UInt16 SQ = (UInt16)Math.Sqrt (SDS);
-
-		// Полный размер квадрата матрицы
-		private const UInt16 SDS2 = SDS * SDS;
+		private const UInt16 SDS_FULL = ((1 << SideSize) - 1);
 
 		// Максимальное количество итераций, рассматриваемое как нормальный поиск
 		private const UInt16 MAX_ITER = 50;
 
-		// Главная матрица
-		private static UInt16[,] Mtx = new UInt16[SDS, SDS];
+		// Контрольная строка заполнения ячейки
+		private const string fileDataChecker = "123456789";
+
+		// Признак незаполненной ячейки матрицы
+		private const string EmptySign = " ";
+
+		// Количество секунд, по истечении которого выполняется прерывание решения,
+		// если активен режим сброса слишком затянувшихся вычислений
+		private const uint dropSolutionLimit = 5;
+
+		// Имена ключей, используемые для хранения настроек
+#if ANDROID
+		private const string keyboardPlacementsPar = "KeyboardPlacements";
+		private const string appModePar = "AppMode";
+		private const string colorSchemePar = "ColorScheme";
+#endif
+
+		private const string sudokuFieldPar = "SudokuField";
+		private const string gameModePar = "GameMode";
+		private const string gameScorePar = "GameScore";
+
+		#endregion
+
+		#region Поля
+
+		/*// Линейный размер квадрата матрицы
+		private static UInt16 SQ = (UInt16)Math.Sqrt (SDS);*/
+
+		// Главная расчётная матрица
+		private static UInt16[,] mtx = new UInt16[SideSize, SideSize];
+
+		// Результирующая матрица
+		private static Byte[,] resultMatrix;
+
+		// Поля, обеспечивающие разбор сохранённой статистики игры
+		private static uint[] gameScore = new uint[] { 0, 0, 0, 0, 0 };
+		private const int gameScoreSize = 4;
+		private static char[] gameScoreSplitter = new char[] { '\t' };
+
+#if !ANDROID
+
+		// Оператор нагрузочных процессов
+		private static BackgroundWorker bw;
+
+#endif
+
+		// Флаг запроса прерывания вычислений
+		private static bool stopRequested = false;
+
+		// Флаг ограничения времени выполнения расчёта
+		private static bool dropLongSolutions = false;
+
+		// Временная метка начала вычисления
+		private static DateTime searchStart;
+
+		// Результат инициализации или решения
+		private static SolutionResults currentStatus = SolutionResults.NotInited;
+
+		// Цветовая схема
+		private static Color[][] colors = new Color[][] {
+			// Цвета новых, ошибочных и решённых ячеек
+#if ANDROID
+			new Color[] { Color.FromArgb ("#0000FF"), Color.FromArgb ("#FFFF40") },
+			new Color[] { Color.FromArgb ("#C80000"), Color.FromArgb ("#FF4040") },
+			new Color[] { Color.FromArgb ("#00C800"), Color.FromArgb ("#40FF40") },
+#else
+			new Color[] { Color.FromArgb (0, 0, 255), Color.FromArgb (255, 255, 64) },
+			new Color[] { Color.FromArgb (200, 0, 0), Color.FromArgb (255, 64, 64) },
+			new Color[] { Color.FromArgb (0, 200, 0), Color.FromArgb (64, 255, 64) },
+#endif
+
+			// Цвет имеющегося значения
+			new Color[] { RDInterface.GetInterfaceColor (RDInterfaceColors.AndroidTextColor),
+				RDInterface.GetInterfaceColor (RDInterfaceColors.MediumGrey) },
+
+			// Цвет фона страницы или окна; цвет кнопок; цвет невыбранных и выбранных ячеек
+#if ANDROID
+			new Color[] { Color.FromArgb ("#FFFFE7"), Color.FromArgb ("#1C201C"), },
+			new Color[] { Color.FromArgb ("#FFFFDE"), Color.FromArgb ("#222822"), },
+			new Color[] { Color.FromArgb ("#C0FFFF"), Color.FromArgb ("#381C38"), },
+			new Color[] { Color.FromArgb ("#00FFFF"), Color.FromArgb ("#603060"), },
+#else
+			new Color[] { Color.FromArgb (255, 255, 231), Color.FromArgb (28, 32, 28), },
+			new Color[] { Color.FromArgb (255, 255, 222), Color.FromArgb (34, 40, 34), },
+			new Color[] { Color.FromArgb (192, 255, 255), Color.FromArgb (56, 28, 56), },
+			new Color[] { Color.FromArgb (0, 255, 255), Color.FromArgb (96, 48, 96), },
+#endif
+			};
+
+		// Индекс текущей цветовой схемы
+		private static int colorIndex = 0;
+
+		// Файловые разделители
+		private static string[] fileSplitters = new string[] { "\r", "\n", "\t", " ", ";" };
+
+		// Уровень сложности генерируемой матрицы
+		private static MatrixDifficulty difficulty;
+
+		#endregion
+
+		#region Свойства
+
+		/// <summary>
+		/// Возвращает текущий результат инициализации или решения задачи
+		/// </summary>
+		public static SolutionResults CurrentStatus
+			{
+			get
+				{
+				return currentStatus;
+				}
+			}
+
+		/// <summary>
+		/// Возвращает матрицу, полученную при решении задачи, или null, если решение не было найдено
+		/// </summary>
+		public static Byte[,] ResultMatrix
+			{
+			get
+				{
+				return resultMatrix;
+				}
+			}
+
+		// Внутреннее свойство, возвращающее число известных значений по уровню сложности
+		private static uint KnownValues
+			{
+			get
+				{
+				uint knownValues;
+				switch (difficulty)
+					{
+					case MatrixDifficulty.Hard:
+						knownValues = 24;
+						break;
+
+					case MatrixDifficulty.Medium:
+						knownValues = 30;
+						break;
+
+					case MatrixDifficulty.Easy:
+					default:
+						knownValues = 36;
+						break;
+					}
+
+				knownValues += (uint)RDGenerics.RND.Next (6);
+				return knownValues;
+				}
+			}
+
+#if ANDROID
+
+		/// <summary>
+		/// Возвращает или задаёт ориентацию элементов экрана
+		/// </summary>
+		public static KeyboardPlacements KeyboardPlacement
+			{
+			get
+				{
+				return (KeyboardPlacements)RDGenerics.GetSettings (keyboardPlacementsPar,
+					(uint)KeyboardPlacements.Bottom);
+				}
+			set
+				{
+				RDGenerics.SetSettings (keyboardPlacementsPar, (uint)value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает или задаёт режим работы приложения
+		/// </summary>
+		public static AppModes AppMode
+			{
+			get
+				{
+				return (AppModes)RDGenerics.GetSettings (appModePar,
+					(uint)AppModes.SolutionOnly);
+				}
+			set
+				{
+				RDGenerics.SetSettings (appModePar, (uint)value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает или задаёт цветовую схему приложения
+		/// </summary>
+		public static ColorSchemes ColorScheme
+			{
+			get
+				{
+				colorIndex = (int)RDGenerics.GetSettings (colorSchemePar, (uint)ColorSchemes.Light);
+				return (ColorSchemes)colorIndex;
+				}
+			set
+				{
+				colorIndex = (int)value;
+				RDGenerics.SetSettings (colorSchemePar, (uint)colorIndex);
+				}
+			}
+
+#endif
+
+		/// <summary>
+		/// Возвращает или задаёт текущее состояние поля ввода
+		/// </summary>
+		public static string SudokuField
+			{
+			get
+				{
+				return RDGenerics.GetSettings (sudokuFieldPar, "");
+				}
+			set
+				{
+				RDGenerics.SetSettings (sudokuFieldPar, value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает или задаёт последний использованный игровой режим
+		/// </summary>
+		public static MatrixDifficulty GameMode
+			{
+			get
+				{
+				return (MatrixDifficulty)RDGenerics.GetSettings (gameModePar,
+					(uint)MatrixDifficulty.None);
+				}
+			set
+				{
+				RDGenerics.SetSettings (gameModePar, (uint)value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает или задаёт суммарный счёт игрового режима
+		/// </summary>
+		public static uint TotalScore
+			{
+			get
+				{
+				return GetGameScore (0);
+				}
+			set
+				{
+				SetGameScore (0, value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает или задаёт количество собранных таблиц на простом уровне
+		/// </summary>
+		public static uint EasyScore
+			{
+			get
+				{
+				return GetGameScore (1);
+				}
+			set
+				{
+				SetGameScore (1, value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает или задаёт количество собранных таблиц на среднем уровне
+		/// </summary>
+		public static uint MediumScore
+			{
+			get
+				{
+				return GetGameScore (2);
+				}
+			set
+				{
+				SetGameScore (2, value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает или задаёт количество собранных таблиц на сложном уровне
+		/// </summary>
+		public static uint HardScore
+			{
+			get
+				{
+				return GetGameScore (3);
+				}
+			set
+				{
+				SetGameScore (3, value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает цвет фона страницы или окна для текущей цветовой схемы
+		/// </summary>
+		public static Color BackgroundColor
+			{
+			get
+				{
+				return colors[4][colorIndex];
+				}
+			}
+
+		/*/// <summary>
+		/// Возвращает цвет элементов страницы или окна для текущей цветовой схемы
+		/// </summary>
+		public static Color ElementsColor
+			{
+			get
+				{
+				return colors2[5][colorIndex];
+				}
+			}*/
+
+		#endregion
+
+		#region Вспомогательные методы
 
 		// Определение чисел, являющихся степенью числа 2
 		//
@@ -241,50 +607,52 @@ namespace RD_AAOW
 			UInt16 s;
 
 			// Горизонтальные линии
-			for (UInt16 i = 0; i < SDS; i++)
+			for (UInt16 i = 0; i < SideSize; i++)
 				{
-				for (UInt16 j = s = 0; j < SDS; j++)
+				for (UInt16 j = s = 0; j < SideSize; j++)
 					{
 					// Чтобы определить, были ли повторы, создаётся переменная s, в
 					// которую заносятся уже встреченные биты вычисленных ячеек.
 					// Если ячейка обозначена как вычисленная (is_pow_2 == 1), но
 					// операция дизъюнкции этой ячейки с s не изменяет s, значит,
 					// эта цифра уже есть в строке, что означает наличие ошибки
-					if (IsPowOf2 (Mtx[i, j]) && ((s | Mtx[i, j]) == s))
+					if (IsPowOf2 (mtx[i, j]) && ((s | mtx[i, j]) == s))
 						return true;
 
-					if (IsPowOf2 (Mtx[i, j]))
-						s |= Mtx[i, j]; // Добавляет бит в s, если он получен из вычисленной ячейки
+					if (IsPowOf2 (mtx[i, j]))
+						s |= mtx[i, j]; // Добавляет бит в s, если он получен из вычисленной ячейки
 					}
 				}
 
 			// Вертикальные линии
-			for (UInt16 j = 0; j < SDS; j++)
+			for (UInt16 j = 0; j < SideSize; j++)
 				{
-				for (UInt16 i = s = 0; i < SDS; i++)
+				for (UInt16 i = s = 0; i < SideSize; i++)
 					{
-					if (IsPowOf2 (Mtx[i, j]) && ((s | Mtx[i, j]) == s))
+					if (IsPowOf2 (mtx[i, j]) && ((s | mtx[i, j]) == s))
 						return true;
 
-					if (IsPowOf2 (Mtx[i, j]))
-						s |= Mtx[i, j];
+					if (IsPowOf2 (mtx[i, j]))
+						s |= mtx[i, j];
 					}
 				}
 
 			// Квадраты
-			for (UInt16 i = 0; i < SDS; i++)
+			for (UInt16 i = 0; i < SideSize; i++)
 				{
-				for (UInt16 j = s = 0; j < SDS; j++)
+				for (UInt16 j = s = 0; j < SideSize; j++)
 					{
 					// Пересчитываемые параметры, позволяющие использовать линейные коэффициенты для зигзагообразного движения
-					UInt16 SQI = (UInt16)(j % SQ + (i % SQ) * SQ);
-					UInt16 SQJ = (UInt16)(j / SQ + (i / SQ) * SQ);
+					/*UInt16 SQI = (UInt16)(j % SQ + (i % SQ) * SQ);
+					UInt16 SQJ = (UInt16)(j / SQ + (i / SQ) * SQ);*/
+					UInt16 SQI = (UInt16)(j % SquareSize + (i % SquareSize) * SquareSize);
+					UInt16 SQJ = (UInt16)(j / SquareSize + (i / SquareSize) * SquareSize);
 
-					if (IsPowOf2 (Mtx[SQI, SQJ]) && ((s | Mtx[SQI, SQJ]) == s))
+					if (IsPowOf2 (mtx[SQI, SQJ]) && ((s | mtx[SQI, SQJ]) == s))
 						return true;
 
-					if (IsPowOf2 (Mtx[SQI, SQJ]))
-						s |= Mtx[SQI, SQJ];
+					if (IsPowOf2 (mtx[SQI, SQJ]))
+						s |= mtx[SQI, SQJ];
 					}
 				}
 
@@ -304,11 +672,11 @@ namespace RD_AAOW
 			// клетки вычислены, т.е. все их значения являются степенями
 			// числа 2. Соответственно, переменная s не должна изменить
 			// своего значения после всех конъюнкций
-			for (UInt16 i = 0; i < SDS; i++)
+			for (UInt16 i = 0; i < SideSize; i++)
 				{
-				for (UInt16 j = 0; j < SDS; j++)
+				for (UInt16 j = 0; j < SideSize; j++)
 					{
-					s &= IsPowOf2 (Mtx[i, j]);
+					s &= IsPowOf2 (mtx[i, j]);
 
 					if (!s)
 						return s;   // Быстрый выход
@@ -334,7 +702,7 @@ namespace RD_AAOW
 				iterations++;
 
 				// Горизонтальные линии
-				for (UInt16 i = 0; i < SDS; i++)
+				for (UInt16 i = 0; i < SideSize; i++)
 					{
 					// Здесь происходит удаление бит, неудовлетворяющих условиям задачи.
 					// Для этого в числе p, заданном изначально значением 0x1FF,
@@ -345,58 +713,62 @@ namespace RD_AAOW
 					// вычисление ещё не было завершено (is_pow_2 == false)
 					p = SDS_FULL;
 
-					for (UInt16 j = 0; j < SDS; j++)
+					for (UInt16 j = 0; j < SideSize; j++)
 						{
-						if (IsPowOf2 (Mtx[i, j]))
-							p &= (UInt16)(~Mtx[i, j]);  // Mij = 010000000; p = 111111111; [&=~] = 101111111
+						if (IsPowOf2 (mtx[i, j]))
+							p &= (UInt16)(~mtx[i, j]);  // Mij = 010000000; p = 111111111; [&=~] = 101111111
 						}
 
-					for (UInt16 j = 0; j < SDS; j++)
+					for (UInt16 j = 0; j < SideSize; j++)
 						{
-						if (!IsPowOf2 (Mtx[i, j]))
-							Mtx[i, j] &= p;     // Mij = 010010001; p = 101111111; Mij' = 000010001
+						if (!IsPowOf2 (mtx[i, j]))
+							mtx[i, j] &= p;     // Mij = 010010001; p = 101111111; Mij' = 000010001
 						}
 					}
 
 				// Вертикальные линии
-				for (UInt16 j = 0; j < SDS; j++)
+				for (UInt16 j = 0; j < SideSize; j++)
 					{
 					p = SDS_FULL;
 
-					for (UInt16 i = 0; i < SDS; i++)
+					for (UInt16 i = 0; i < SideSize; i++)
 						{
-						if (IsPowOf2 (Mtx[i, j]))
-							p &= (UInt16)(~Mtx[i, j]);
+						if (IsPowOf2 (mtx[i, j]))
+							p &= (UInt16)(~mtx[i, j]);
 						}
 
-					for (UInt16 i = 0; i < SDS; i++)
+					for (UInt16 i = 0; i < SideSize; i++)
 						{
-						if (!IsPowOf2 (Mtx[i, j]))
-							Mtx[i, j] &= p;
+						if (!IsPowOf2 (mtx[i, j]))
+							mtx[i, j] &= p;
 						}
 					}
 
 				// Квадраты
-				for (UInt16 i = 0; i < SDS; i++)
+				for (UInt16 i = 0; i < SideSize; i++)
 					{
 					p = SDS_FULL;
 
-					for (UInt16 j = 0; j < SDS; j++)
+					for (UInt16 j = 0; j < SideSize; j++)
 						{
-						UInt16 SQI = (UInt16)(j % SQ + (i % SQ) * SQ);
-						UInt16 SQJ = (UInt16)(j / SQ + (i / SQ) * SQ);
+						/*UInt16 SQI = (UInt16)(j % SQ + (i % SQ) * SQ);
+						UInt16 SQJ = (UInt16)(j / SQ + (i / SQ) * SQ);*/
+						UInt16 SQI = (UInt16)(j % SquareSize + (i % SquareSize) * SquareSize);
+						UInt16 SQJ = (UInt16)(j / SquareSize + (i / SquareSize) * SquareSize);
 
-						if (IsPowOf2 (Mtx[SQI, SQJ]))
-							p &= (UInt16)(~Mtx[SQI, SQJ]);
+						if (IsPowOf2 (mtx[SQI, SQJ]))
+							p &= (UInt16)(~mtx[SQI, SQJ]);
 						}
 
-					for (UInt16 j = 0; j < SDS; j++)
+					for (UInt16 j = 0; j < SideSize; j++)
 						{
-						UInt16 SQI = (UInt16)(j % SQ + (i % SQ) * SQ);
-						UInt16 SQJ = (UInt16)(j / SQ + (i / SQ) * SQ);
+						/*UInt16 SQI = (UInt16)(j % SQ + (i % SQ) * SQ);
+						UInt16 SQJ = (UInt16)(j / SQ + (i / SQ) * SQ);*/
+						UInt16 SQI = (UInt16)(j % SquareSize + (i % SquareSize) * SquareSize);
+						UInt16 SQJ = (UInt16)(j / SquareSize + (i / SquareSize) * SquareSize);
 
-						if (!IsPowOf2 (Mtx[SQI, SQJ]))
-							Mtx[SQI, SQJ] &= p;
+						if (!IsPowOf2 (mtx[SQI, SQJ]))
+							mtx[SQI, SQJ] &= p;
 						}
 					}
 				}
@@ -417,7 +789,7 @@ namespace RD_AAOW
 #if ANDROID
 
 		/// <summary>
-		/// Метод взводит флаг досрочного завершения выполнения операции
+		/// Метод взводит флаг досрочного завершения операции
 		/// </summary>
 		public static void RequestStop ()
 			{
@@ -426,16 +798,14 @@ namespace RD_AAOW
 
 #else
 
+		// Метод переносит флаг досрочного прерывания из оператора задачи в свойство stopRequested
 		private static void CheckBW ()
 			{
 			if (bw.CancellationPending)
 				stopRequested = true;
 			}
-		private static BackgroundWorker bw;
 
 #endif
-
-		private static bool stopRequested = false;
 
 		// Метод взводит или отключает пропуск решений, занимающих слишком много времени
 		private static void SetDroppingLongSolutions (bool Enable)
@@ -444,8 +814,6 @@ namespace RD_AAOW
 			if (dropLongSolutions)
 				searchStart = DateTime.Now;
 			}
-		private static bool dropLongSolutions = false;
-		private static DateTime searchStart;
 
 		// Функция изучения предположений
 		//
@@ -460,22 +828,23 @@ namespace RD_AAOW
 			CheckBW ();
 #endif
 
-			if (stopRequested || dropLongSolutions && ((DateTime.Now - searchStart).Seconds > 5))
+			if (stopRequested || dropLongSolutions &&
+				((DateTime.Now - searchStart).Seconds >= dropSolutionLimit))
 				{
 				stopRequested = false;
 				return 1;
 				}
 
 			// Создание копии исходной матрицы для данного предположения
-			UInt16[,] Mtc = (UInt16[,])Mtx.Clone ();
+			UInt16[,] mtc = (UInt16[,])mtx.Clone ();
 
 			// Поиск первой невычисленной ячейки
 			UInt16 i = 0, j = 0;
-			for (i = 0; i < SDS; i++)
+			for (i = 0; i < SideSize; i++)
 				{
-				for (j = 0; j < SDS; j++)
+				for (j = 0; j < SideSize; j++)
 					{
-					if (!IsPowOf2 (Mtx[i, j]))
+					if (!IsPowOf2 (mtx[i, j]))
 						goto m1;
 					}
 				}
@@ -484,12 +853,12 @@ namespace RD_AAOW
 			return 0;
 
 			m1:
-			for (UInt16 k = 0; k < SDS; k++)
+			for (UInt16 k = 0; k < SideSize; k++)
 				{
 				UInt16 v = (UInt16)(1 << k);
-				if ((Mtx[i, j] & v) == 0)   // Пропускать заведомо недопустимые значения
+				if ((mtx[i, j] & v) == 0)   // Пропускать заведомо недопустимые значения
 					continue;
-				Mtx[i, j] = v;
+				mtx[i, j] = v;
 
 				// Прогонка матрицы с данным предположением
 				// (копия матрицы с каждым вызовом функции является вынужденной мерой, т.к.
@@ -515,14 +884,14 @@ namespace RD_AAOW
 
 							// Если нет, нужно восстановить матрицу
 							default:
-								Mtx = (UInt16[,])Mtc.Clone ();
+								mtx = (UInt16[,])mtc.Clone ();
 								break;
 							}
 						break;
 
 					// Если получена ошибка при прогонке, нужно восстановить матрицу
 					default:
-						Mtx = (UInt16[,])Mtc.Clone ();
+						mtx = (UInt16[,])mtc.Clone ();
 						break;
 					}
 				}
@@ -531,20 +900,140 @@ namespace RD_AAOW
 			return -1;
 			}
 
-		//////////////////////////////
-		// Собственный интерфейс
-
-		/// <summary>
-		/// Возвращает результат решения задачи
-		/// </summary>
-		public static SolutionResults CurrentStatus
+		// Метод выгружает полученную матрицу в результат
+		private static void UploadResultMatrix ()
 			{
-			get
+			resultMatrix = new Byte[SideSize, SideSize];
+			for (UInt16 i = 0; i < SideSize; i++)
 				{
-				return currentStatus;
+				for (UInt16 j = 0; j < SideSize; j++)
+					if (IsPowOf2 (mtx[i, j]))
+						resultMatrix[i, j] = (Byte)(Math.Log (mtx[i, j], 2) + 1);
+					else
+						resultMatrix[i, j] = 0;
 				}
 			}
-		private static SolutionResults currentStatus = SolutionResults.NotInited;
+
+#if !ANDROID
+
+		// Образец метода, выполняющего длительные вычисления
+		private static void DoSearch (object sender, DoWorkEventArgs e)
+			{
+			bw = (BackgroundWorker)sender;
+
+			switch (Search ())
+				{
+				case -1:
+					e.Result = (int)SolutionResults.NoSolutionsFound;
+					return;
+
+				case 1:
+					e.Result = (int)SolutionResults.SearchAborted;
+					return;
+				}
+
+			e.Result = (int)SolutionResults.SolutionFound;
+			}
+
+#endif
+
+		// Метод выполняет заполнение матрицы неконфликтующими значениями.
+		// Полученная матрица может не иметь решения, несмотря на первичный контроль
+		private static bool FillMatrix ()
+			{
+			// Заполнение всех возможных вероятностей
+			List<int> cells = new List<int> ();
+			for (UInt16 i = 0; i < SideSize; i++)
+				{
+				for (UInt16 j = 0; j < SideSize; j++)
+					{
+					mtx[i, j] = SDS_FULL;
+					cells.Add (i * SideSize + j);
+					}
+				}
+			UInt16[,] mtc = (UInt16[,])mtx.Clone ();    // Чистая копия, не содержащая прогонов
+
+			// Заполнение
+			for (int k = 0; k < KnownValues; k++)
+				{
+				// Выбор заполняемой ячейки
+				int idx = RDGenerics.RND.Next (cells.Count);
+				int cell = cells[idx];
+				cells.RemoveAt (idx);
+
+				// Выбор значения для ячейки
+				int i = cell / SideSize;
+				int j = cell % SideSize;
+				uint value = mtx[i, j];
+				if (value == 0) // Такого не должно быть, но почему-то бывает
+					return false;
+
+				List<uint> digits = new List<uint> ();
+				for (int b = 0; b < SideSize; b++)
+					if ((value & (1 << b)) != 0)
+						digits.Add ((uint)b + 1);
+
+				value = digits[RDGenerics.RND.Next (digits.Count)];
+				mtx[i, j] = (UInt16)(1 << ((int)value - 1));
+				mtc[i, j] = mtx[i, j];
+
+				// Допускать только матрицы, решаемые прогонами
+				int res = UpdateMatrix ();
+				if (res < 0)
+					return false;
+				}
+
+			// Пока что успешно. Подмена просчитанной матрицы чистой копией
+			mtx = (UInt16[,])mtc.Clone ();
+			return true;
+			}
+
+		// Методы сохранения и загрузки статистики игрового режима
+		private static uint GetGameScore (byte Item)
+			{
+			if (gameScore[gameScoreSize] != 1)
+				{
+				// Флаг инициализации
+				gameScore[gameScoreSize] = 1;
+
+				// Извлечение
+				string v = RDGenerics.GetSettings (gameScorePar, "");
+				string[] values = v.Split (gameScoreSplitter, StringSplitOptions.RemoveEmptyEntries);
+				if (values.Length != gameScoreSize)
+					return gameScore[Item];
+
+				try
+					{
+					for (int i = 0; i < gameScoreSize; i++)
+						gameScore[i] = uint.Parse (values[i]);
+					}
+				catch
+					{
+					for (int i = 0; i < gameScoreSize; i++)
+						gameScore[i] = 0;
+					}
+
+				// Успешно
+				}
+
+			return gameScore[Item];
+			}
+
+		private static void SetGameScore (byte Item, uint Value)
+			{
+			gameScore[Item] = Value;
+
+			string line = "";
+			string sp = gameScoreSplitter[0].ToString ();
+
+			for (int i = 0; i < gameScoreSize - 1; i++)
+				line += (gameScore[i].ToString () + sp);
+			line += gameScore[gameScoreSize - 1].ToString ();
+
+			RDGenerics.SetSettings (gameScorePar, line);
+			}
+
+		#endregion
 
 		/// <summary>
 		/// Метод инициализирует матрицу и готовит класс к выполнению решения
@@ -555,22 +1044,23 @@ namespace RD_AAOW
 		public static SolutionResults InitializeSolution (Byte[,] SourceMatrix)
 			{
 			// Контроль
-			if ((SourceMatrix == null) || (SourceMatrix.GetLength (0) != SDS) || (SourceMatrix.GetLength (1) != SDS))
+			if ((SourceMatrix == null) || (SourceMatrix.GetLength (0) != SideSize) ||
+				(SourceMatrix.GetLength (1) != SideSize))
 				{
 				currentStatus = SolutionResults.InitialMatrixIsInvalid;
 				return currentStatus;
 				}
 
 			// Инициализация
-			for (UInt16 i = 0; i < SDS; i++)
+			for (UInt16 i = 0; i < SideSize; i++)
 				{
-				for (UInt16 j = 0; j < SDS; j++)
+				for (UInt16 j = 0; j < SideSize; j++)
 					{
 					Byte digit = (Byte)(SourceMatrix[i, j] % 10);
 					if (digit != 0)
-						Mtx[i, j] = (UInt16)(1 << (digit - 1));
+						mtx[i, j] = (UInt16)(1 << (digit - 1));
 					else
-						Mtx[i, j] = SDS_FULL;
+						mtx[i, j] = SDS_FULL;
 					}
 				}
 
@@ -673,58 +1163,9 @@ namespace RD_AAOW
 
 #endif
 
-		// Метод выгружает полученную матрицу в результат
-		private static void UploadResultMatrix ()
-			{
-			resultMatrix = new Byte[SDS, SDS];
-			for (UInt16 i = 0; i < SDS; i++)
-				{
-				for (UInt16 j = 0; j < SDS; j++)
-					if (IsPowOf2 (Mtx[i, j]))
-						resultMatrix[i, j] = (Byte)(Math.Log (Mtx[i, j], 2) + 1);
-					else
-						resultMatrix[i, j] = 0;
-				}
-			}
-
-		/// <summary>
-		/// Возвращает матрицу, полученную при решении задачи или null, если решение не было найдено
-		/// </summary>
-		public static Byte[,] ResultMatrix
-			{
-			get
-				{
-				return resultMatrix;
-				}
-			}
-		private static Byte[,] resultMatrix;
-
-#if !ANDROID
-
-		// Образец метода, выполняющего длительные вычисления
-		private static void DoSearch (object sender, DoWorkEventArgs e)
-			{
-			bw = (BackgroundWorker)sender;
-
-			switch (Search (/*(BackgroundWorker)sender)*/))
-				{
-				case -1:
-					e.Result = (int)SolutionResults.NoSolutionsFound;
-					return;
-
-				case 1:
-					e.Result = (int)SolutionResults.SearchAborted;
-					return;
-				}
-
-			e.Result = (int)SolutionResults.SolutionFound;
-			}
-
-#endif
-
 		/// <summary>
 		/// Метод извлекает матрицу из содержимого файла и возвращает её, если это возможно,
-		/// в виде сплошной строки длиной SDS * SDS
+		/// в виде сплошной строки длиной FullSize
 		/// </summary>
 		/// <param name="FileContents">Содержимое текстового файла</param>
 		public static string ParseMatrixFromFile (string FileContents)
@@ -737,12 +1178,12 @@ namespace RD_AAOW
 			for (int i = 0; i < fileSplitters.Length; i++)
 				data = data.Replace (fileSplitters[i], "");
 
-			if (data.Length < SudokuSideSize * SudokuSideSize)
+			if (data.Length < /*SudokuSideSize * SudokuSideSize*/ FullSize)
 				return "";
 
 			// Загрузка
 			string resultLine = "";
-			for (int i = 0; i < SudokuSideSize * SudokuSideSize; i++)
+			for (int i = 0; i < /*SudokuSideSize * SudokuSideSize*/ FullSize; i++)
 				{
 				string c = data[i].ToString ();
 				if (fileDataChecker.Contains (c))
@@ -753,8 +1194,6 @@ namespace RD_AAOW
 
 			return resultLine;
 			}
-		private static string[] fileSplitters = new string[] { "\r", "\n", "\t", " ", ";" };
-		private const string fileDataChecker = "123456789";
 
 		/// <summary>
 		/// Метод оформляет матрицу для сохранения в файл
@@ -763,26 +1202,26 @@ namespace RD_AAOW
 		public static string BuildMatrixToSave (string Line)
 			{
 			string file = "";
-			int sqrt = (int)Math.Sqrt (SudokuSideSize);
-			int cubedSqrt = sqrt * sqrt * sqrt;
+			/*int sqrt = (int)Math.Sqrt (SudokuSideSize);
+			int cubedSqrt = sqrt * sqrt * sqrt;*/
 
 			for (int i = 1; i <= Line.Length; i++)
 				{
 				file += Line[i - 1].ToString ().Replace (EmptySign, "-");
 
-				if (i % cubedSqrt == 0)
+				/*if (i % cubedSqrt == 0)*/
+				if ((i % (SquareSize * SideSize)) == 0)
 					file += RDLocale.RNRN;
-				else if (i % SudokuSideSize == 0)
+				/*else if (i % SudokuSideSize == 0)*/
+				else if ((i % SideSize) == 0)
 					file += RDLocale.RN;
-				else if (i % sqrt == 0)
+				/*else if (i % sqrt == 0)*/
+				else if ((i % SquareSize) == 0)
 					file += " ";
 				}
 
 			return file;
 			}
-
-		// Признак незаполненной ячейки матрицы
-		private const string EmptySign = " ";
 
 		/// <summary>
 		/// Метод устанавливает сложность для метода генерации матриц судоку
@@ -792,7 +1231,6 @@ namespace RD_AAOW
 			{
 			difficulty = Difficulty;
 			}
-		private static MatrixDifficulty difficulty;
 
 #if ANDROID
 
@@ -803,7 +1241,7 @@ namespace RD_AAOW
 			{
 			// Поиск решаемой матрицы
 			bool solved = false;
-			UInt16[,] Mtc = (UInt16[,])Mtx.Clone ();
+			UInt16[,] mtc = (UInt16[,])mtx.Clone ();
 
 			while (!solved)
 				{
@@ -813,7 +1251,7 @@ namespace RD_AAOW
 					;
 
 				// Поиск решения для полученной матрицы
-				Mtc = (UInt16[,])Mtx.Clone ();
+				mtc = (UInt16[,])mtx.Clone ();
 
 				// Слишком долгие решения игнорируются
 				SetDroppingLongSolutions (true);
@@ -834,7 +1272,7 @@ namespace RD_AAOW
 				}
 
 			// Успешно. Возврат результата
-			Mtx = (UInt16[,])Mtc.Clone ();
+			mtx = (UInt16[,])mtc.Clone ();
 			UploadResultMatrix ();
 			currentStatus = SolutionResults.SolutionFound;
 			return true;
@@ -849,7 +1287,7 @@ namespace RD_AAOW
 			{
 			// Поиск решаемой матрицы
 			bool solved = false;
-			UInt16[,] Mtc = (UInt16[,])Mtx.Clone ();
+			UInt16[,] mtc = (UInt16[,])mtx.Clone ();
 
 			while (!solved)
 				{
@@ -859,12 +1297,9 @@ namespace RD_AAOW
 					;
 
 				// Поиск решения для полученной матрицы
-				Mtc = (UInt16[,])Mtx.Clone ();
+				mtc = (UInt16[,])mtx.Clone ();
 
 				// Слишком долгие решения игнорируются
-				/*drop LongSolutions = true;
-				searchStart = DateTime.Now;*/
-
 				SetDroppingLongSolutions (true);
 				RDInterface.RunWork (DoSearch, null, RDLocale.GetText ("DoingSearch"),
 					RDRunWorkFlags.CaptionInTheMiddle);
@@ -881,105 +1316,12 @@ namespace RD_AAOW
 				}
 
 			// Успешно. Возврат результата
-			Mtx = (UInt16[,])Mtc.Clone ();
+			mtx = (UInt16[,])mtc.Clone ();
 			UploadResultMatrix ();
 			currentStatus = SolutionResults.SolutionFound;
 			}
 
 #endif
-
-		// Метод выполняет заполнение матрицы неконфликтующими значениями.
-		// Полученная матрица может не иметь решения, несмотря на первичный контроль
-		private static bool FillMatrix ()
-			{
-			// Заполнение всех возможных вероятностей
-			List<int> cells = new List<int> ();
-			for (UInt16 i = 0; i < SDS; i++)
-				{
-				for (UInt16 j = 0; j < SDS; j++)
-					{
-					Mtx[i, j] = SDS_FULL;
-					cells.Add (i * SDS + j);
-					}
-				}
-			UInt16[,] Mtc = (UInt16[,])Mtx.Clone ();    // Чистая копия, не содержащая прогонов
-
-			// Заполнение
-			for (int k = 0; k < KnownValues; k++)
-				{
-				// Выбор заполняемой ячейки
-				int idx = RDGenerics.RND.Next (cells.Count);
-				int cell = cells[idx];
-				cells.RemoveAt (idx);
-
-				// Выбор значения для ячейки
-				int i = cell / SDS;
-				int j = cell % SDS;
-				uint value = Mtx[i, j];
-				if (value == 0) // Такого не должно быть, но почему-то бывает
-					return false;
-
-				List<uint> digits = new List<uint> ();
-				for (int b = 0; b < SDS; b++)
-					if ((value & (1 << b)) != 0)
-						digits.Add ((uint)b + 1);
-
-				value = digits[RDGenerics.RND.Next (digits.Count)];
-				Mtx[i, j] = (UInt16)(1 << ((int)value - 1));
-				Mtc[i, j] = Mtx[i, j];
-
-				// Допускать только матрицы, решаемые прогонами
-				int res = UpdateMatrix ();
-				if (res < 0)
-					return false;
-				}
-
-			// Пока что успешно. Подмена просчитанной матрицы чистой копией
-			Mtx = (UInt16[,])Mtc.Clone ();
-			return true;
-			}
-
-		// Внутреннее свойство, возвращающее число известных значений по уровню сложности
-		private static uint KnownValues
-			{
-			get
-				{
-				uint knownValues;
-				switch (difficulty)
-					{
-					case MatrixDifficulty.Hard:
-						knownValues = 24;
-						break;
-
-					case MatrixDifficulty.Medium:
-						knownValues = 30;
-						break;
-
-					case MatrixDifficulty.Easy:
-					default:
-						knownValues = 36;
-						break;
-					}
-
-				knownValues += (uint)RDGenerics.RND.Next (6);
-				return knownValues;
-				}
-			}
-
-		// Цветовая схема
-
-		private static Color[] colors = new Color[] {
-#if ANDROID
-			Color.FromArgb ("#0000C8"),
-			Color.FromArgb ("#C80000"),
-			Color.FromArgb ("#00C800"),
-#else
-			Color.FromArgb (0, 0, 200),
-			Color.FromArgb (200, 0, 0),
-			Color.FromArgb (0, 200, 0),
-#endif
-			RDInterface.GetInterfaceColor (RDInterfaceColors.AndroidTextColor),
-			};
 
 		/// <summary>
 		/// Метод проверяет указанное условие на истинность
@@ -990,22 +1332,46 @@ namespace RD_AAOW
 			{
 			string text = InterfaceElement.Text;
 #if ANDROID
-			Color color = InterfaceElement.TextColor;
+			Color textColor = InterfaceElement.TextColor;
+			Color backColor = InterfaceElement.BackgroundColor;
 #else
-			Color color = InterfaceElement.ForeColor;
+			Color textColor = InterfaceElement.ForeColor;
+			Color backColor = InterfaceElement.BackColor;
 #endif
 
 			// Проверка условия
-			switch (Condition)
+			for (int i = 0; i < colors[0].Length; i++)
 				{
-				case ConditionTypes.ContainsFoundValue:
-					return (color == colors[2]);
+				switch (Condition)
+					{
+					case ConditionTypes.ContainsFoundValue:
+						if (textColor == colors[2][i])
+							return true;
+						break;
 
-				case ConditionTypes.ContainsNewValue:
-					return (color == colors[0]);
+					case ConditionTypes.ContainsNewValue:
+						if (textColor == colors[0][i])
+							return true;
+						break;
 
-				case ConditionTypes.IsEmpty:
-					return (text == EmptySign);
+					case ConditionTypes.IsEmpty:
+						return (text == EmptySign);
+
+					case ConditionTypes.SelectedCell:
+						if (backColor == colors[7][i])
+							return true;
+						break;
+
+					case ConditionTypes.ContainsOldValue:
+						if (textColor == colors[3][i])
+							return true;
+						break;
+
+					case ConditionTypes.ContainsErrorValue:
+						if (textColor == colors[1][i])
+							return true;
+						break;
+					}
 				}
 
 			// Неприменимое условие
@@ -1020,266 +1386,63 @@ namespace RD_AAOW
 		public static void SetProperty (Button InterfaceElement, PropertyTypes Property)
 			{
 			// Проверка условия
-			bool setColor = true;
-			Color color = colors[3];
+			bool setForeColor = false, setBackColor = false;
+			Color color = colors[3][colorIndex];
 
 			switch (Property)
 				{
 				case PropertyTypes.EmptyValue:
 					InterfaceElement.Text = EmptySign;
-					setColor = false;
 					break;
 
 				case PropertyTypes.SuccessColor:
-					color = colors[2];
+					color = colors[2][colorIndex];
+					setForeColor = true;
 					break;
 
 				case PropertyTypes.ErrorColor:
-					color = colors[1];
+					color = colors[1][colorIndex];
+					setForeColor = true;
 					break;
 
 				case PropertyTypes.NewColor:
-					color = colors[0];
+					color = colors[0][colorIndex];
+					setForeColor = true;
 					break;
 
 				case PropertyTypes.OldColor:
+					setForeColor = true;
+					break;
+
+				case PropertyTypes.DeselectedCell:
+					color = colors[6][colorIndex];
+					setBackColor = true;
+					break;
+
+				case PropertyTypes.SelectedCell:
+					color = colors[7][colorIndex];
+					setBackColor = true;
+					break;
+
+				case PropertyTypes.OtherButton:
+					color = colors[5][colorIndex];
+					setBackColor = true;
 					break;
 				}
 
-			if (setColor)
+			if (setForeColor)
 #if ANDROID
 				InterfaceElement.TextColor = color;
 #else
 				InterfaceElement.ForeColor = color;
 #endif
-			}
 
-		// Хранимые настройки приложения
-
+			else if (setBackColor)
 #if ANDROID
-
-		/// <summary>
-		/// Сохраняет или загружает ориентацию элементов экрана
-		/// </summary>
-		public static KeyboardPlacements KeyboardPlacement
-			{
-			get
-				{
-				return (KeyboardPlacements)RDGenerics.GetSettings (keyboardPlacementsPar,
-					(uint)KeyboardPlacements.Bottom);
-				}
-			set
-				{
-				RDGenerics.SetSettings (keyboardPlacementsPar, (uint)value);
-				}
-			}
-		private const string keyboardPlacementsPar = "KeyboardPlacements";
-
-		/// <summary>
-		/// Сохраняет или загружает режим работы приложения
-		/// </summary>
-		public static AppModes AppMode
-			{
-			get
-				{
-				return (AppModes)RDGenerics.GetSettings (appModePar,
-					(uint)AppModes.SolutionOnly);
-				}
-			set
-				{
-				RDGenerics.SetSettings (appModePar, (uint)value);
-				}
-			}
-		private const string appModePar = "AppMode";
-
+				InterfaceElement.BackgroundColor = color;
+#else
+				InterfaceElement.BackColor = color;
 #endif
-
-		/// <summary>
-		/// Сохраняет или загружает текущее состояние поля ввода
-		/// </summary>
-		public static string SudokuField
-			{
-			get
-				{
-				return RDGenerics.GetSettings (sudokuFieldPar, "");
-				}
-			set
-				{
-				RDGenerics.SetSettings (sudokuFieldPar, value);
-				}
 			}
-		private const string sudokuFieldPar = "SudokuField";
-
-		/*/// <summary>
-		/// Сохраняет или загружает текущее состояние поля ввода в игровом режиме
-		/// </summary>
-		public static string GameModeField
-			{
-			get
-				{
-				return RDGenerics.GetSettings (gameModeFieldPar, "");
-				}
-			set
-				{
-				RDGenerics.SetSettings (gameModeFieldPar, value);
-				}
-			}
-		private const string gameModeFieldPar = "GameModeField";*/
-
-		/// <summary>
-		/// Сохраняет или загружает последний использованный игровой режим
-		/// </summary>
-		public static MatrixDifficulty GameMode
-			{
-			get
-				{
-				return (MatrixDifficulty)RDGenerics.GetSettings (gameModePar,
-					(uint)MatrixDifficulty.None);
-				}
-			set
-				{
-				RDGenerics.SetSettings (gameModePar, (uint)value);
-				}
-			}
-		private const string gameModePar = "GameMode";
-
-		// Методы сохранения и загрузки статистики игрового режима
-		/*private static void LoadGameScore ()
-			{
-			}
-
-		private static void SaveGameScore ()
-			{
-			}*/
-
-		private static uint[] gameScore = new uint[] { 0, 0, 0, 0, 0 };
-		private const int gameScoreSize = 4;
-		private const string gameScorePar = "GameScore";
-		private static char[] gameScoreSplitter = new char[] { '\t' };
-
-		private static uint GetGameScore (byte Item)
-			{
-			if (gameScore[gameScoreSize] != 1)
-				{
-				// Флаг инициализации
-				gameScore[gameScoreSize] = 1;
-
-				// Извлечение
-				string v = RDGenerics.GetSettings (gameScorePar, "");
-				string[] values = v.Split (gameScoreSplitter, StringSplitOptions.RemoveEmptyEntries);
-				if (values.Length != gameScoreSize)
-					return gameScore[Item];
-
-				try
-					{
-					for (int i = 0; i < gameScoreSize; i++)
-						gameScore[i] = uint.Parse (values[i]);
-					}
-				catch
-					{
-					for (int i = 0; i < gameScoreSize; i++)
-						gameScore[i] = 0;
-					}
-
-				// Успешно
-				}
-
-			return gameScore[Item];
-			}
-
-		private static void SetGameScore (byte Item, uint Value)
-			{
-			gameScore[Item] = Value;
-
-			string line = "";
-			string sp = gameScoreSplitter[0].ToString ();
-
-			for (int i = 0; i < gameScoreSize - 1; i++)
-				line += (gameScore[i].ToString () + sp);
-			line += gameScore[gameScoreSize - 1].ToString ();
-
-			RDGenerics.SetSettings (gameScorePar, line);
-			}
-
-		/// <summary>
-		/// Возвращает или задаёт суммарный счёт игрового режима
-		/// </summary>
-		public static uint TotalScore
-			{
-			get
-				{
-				return GetGameScore (0);
-				}
-			set
-				{
-				SetGameScore (0, value);
-				}
-			}
-
-		/// <summary>
-		/// Возвращает или задаёт количество собранных таблиц на простом уровне
-		/// </summary>
-		public static uint EasyScore
-			{
-			get
-				{
-				return GetGameScore (1);
-				}
-			set
-				{
-				SetGameScore (1, value);
-				}
-			}
-
-		/// <summary>
-		/// Возвращает или задаёт количество собранных таблиц на среднем уровне
-		/// </summary>
-		public static uint MediumScore
-			{
-			get
-				{
-				return GetGameScore (2);
-				}
-			set
-				{
-				SetGameScore (2, value);
-				}
-			}
-
-		/// <summary>
-		/// Возвращает или задаёт количество собранных таблиц на сложном уровне
-		/// </summary>
-		public static uint HardScore
-			{
-			get
-				{
-				return GetGameScore (3);
-				}
-			set
-				{
-				SetGameScore (3, value);
-				}
-			}
-
-		/*/// <summary>
-		/// Метод сравнивает исходную сгенерированную матрицу с текущей.
-		/// Возвращает true, если сгенерированная часть таблицы совпадает (не была изменена)
-		/// </summary>
-		public static bool VerifyGameModeField ()
-			{
-			// Защита
-			if ((GameModeField.Length != SDS2) || (SudokuField.Length != SDS2))
-				return false;
-
-			// Проверка только заполненных ячеек
-			for (int i = 0; i < SDS2; i++)
-				{
-				char c = GameModeField[i];
-				if ((c != EmptySign[0]) && (c != SudokuField[i]))
-					return false;
-				}
-
-			return true;
-			}*/
 		}
 	}

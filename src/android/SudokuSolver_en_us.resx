@@ -120,6 +120,15 @@
   <data name="CheckSolutionButton" xml:space="preserve">
     <value>Check solution</value>
   </data>
+  <data name="Color0" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Color1" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="ColorScheme" xml:space="preserve">
+    <value>Color scheme</value>
+  </data>
   <data name="Difficulty0" xml:space="preserve">
     <value>Easy</value>
   </data>
@@ -159,6 +168,15 @@
   <data name="LoadFromFile" xml:space="preserve">
     <value>Load from file</value>
   </data>
+  <data name="Menu0" xml:space="preserve">
+    <value>Task</value>
+  </data>
+  <data name="Menu1" xml:space="preserve">
+    <value>Game mode</value>
+  </data>
+  <data name="Menu2" xml:space="preserve">
+    <value>Settings</value>
+  </data>
   <data name="MenuButton" xml:space="preserve">
     <value>Menu</value>
   </data>
@@ -169,7 +187,7 @@
     <value>Solution only</value>
   </data>
   <data name="Mode1" xml:space="preserve">
-    <value>Game</value>
+    <value>Game mode</value>
   </data>
   <data name="ModeButton" xml:space="preserve">
     <value>Interface mode</value>
