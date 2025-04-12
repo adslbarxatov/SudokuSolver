@@ -127,12 +127,12 @@
     <value>&amp;Очистить решение</value>
   </data>
   <data name="MActivities_MGenerate" xml:space="preserve">
-    <value>С&amp;генерировать таблицу</value>
+    <value>&amp;Новая игра</value>
   </data>
-  <data name="MActivities_MHelp" xml:space="preserve">
+  <data name="MInfo_MHelp" xml:space="preserve">
     <value>&amp;Помощь</value>
   </data>
-  <data name="MActivities_MLanguage" xml:space="preserve">
+  <data name="MSettings_MLanguage" xml:space="preserve">
     <value>&amp;Язык</value>
   </data>
   <data name="MActivities_MLoad" xml:space="preserve">
@@ -154,13 +154,13 @@
     <value>В указанном файле недостаточно чисел для построения таблицы судоку</value>
   </data>
   <data name="MGenerate_MDifficulty0" xml:space="preserve">
-    <value>Простая</value>
+    <value>&amp;Простая</value>
   </data>
   <data name="MGenerate_MDifficulty1" xml:space="preserve">
-    <value>Средняя</value>
+    <value>С&amp;редняя</value>
   </data>
   <data name="MGenerate_MDifficulty2" xml:space="preserve">
-    <value>Сложная</value>
+    <value>С&amp;ложная</value>
   </data>
   <data name="OFFilter" xml:space="preserve">
     <value>Текстовые документы (*.txt, *.csv)|*.txt;*.csv</value>
@@ -179,5 +179,37 @@
   </data>
   <data name="SolutionIsIncorrect" xml:space="preserve">
     <value>В решении содержатся ошибки</value>
+  </data>
+  <data name="MainMenu_MSettings" xml:space="preserve">
+    <value>&amp;Настройки</value>
+  </data>
+  <data name="MainMenu_MInfo" xml:space="preserve">
+    <value>&amp;Справка</value>
+  </data>
+  <data name="MSettings_MColorScheme" xml:space="preserve">
+    <value>&amp;Цветовая схема</value>
+  </data>
+  <data name="MSettings_MCellsApp" xml:space="preserve">
+    <value>&amp;Представление ячеек</value>
+  </data>
+  <data name="MInfo_MStats" xml:space="preserve">
+    <value>С&amp;татистика игры</value>
+  </data>
+  <data name="SolvedText" xml:space="preserve">
+    <value>Задача решена!</value>
+  </data>
+  <data name="StatsText" xml:space="preserve">
+    <value>Результаты игрового режима:
+
+Очков (всего): {0:S}
+Простых игр: {1:D}
+Средних игр: {2:D}
+Сложных игр: {3:D}</value>
+  </data>
+  <data name="Color0" xml:space="preserve">
+    <value>Светлая</value>
+  </data>
+  <data name="Color1" xml:space="preserve">
+    <value>Тёмная</value>
   </data>
 </root>

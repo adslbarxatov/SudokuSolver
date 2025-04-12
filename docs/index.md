@@ -1,12 +1,12 @@
 # Sudoku solver: user guide
-> **ƒ** &nbsp;RD AAOW FDL; 11.04.2025; 2:11
+> **ƒ** &nbsp;RD AAOW FDL; 13.04.2025; 3:02
 
 
 
 ### Page contents
 
 - [General information](#general-information)
-- [Game mode (Android)](#game-mode-android)
+- [Game mode (Android)](#game-mode)
 - [Controls (Android)](#controls-android)
 - [Controls (Windows)](#controls-windows)
 - [Download links](https://adslbarxatov.github.io/DPArray#sudoku-solver)
@@ -33,7 +33,7 @@ of a solution, but not display it, only reporting its presence or absence.
 
 
 
-### Game mode (Android)
+### Game mode
 
 A new game can be launched from any state of the app. However, we recommend
 switching the interface to the game mode to display buttons more suitable
@@ -49,10 +49,10 @@ the values in the cells filled in when generating the table.
 Exit from the active game state occurs if:
 - reset all values in all cells
 - switch the interface to the table-solving mode or exit the app in this mode
-- make the complete sudoku solution (with the result displayed) from the menu (green checkmark)
+- make the complete sudoku solution (with the result displayed) from the menu (green checkmark or `F5` key)
 - finish solving the table manually
 
-In the active game state, the main function is to check for a solution (blue checkmark).
+In the active game state, the main function is to check for a solution (blue checkmark or `F3` key).
 When you click this button, the current state of the table is checked for the possibility
 of a successful solution. If there is no solution, the user is notified of an error.
 Otherwise, it is not displayed in the interface, but the user can see a message about
@@ -105,4 +105,4 @@ is saved until the next launch, so the game can be continued at any time.
 - `Ctrl` + `3` – to generate hard table
 - `F3` – to check the availability of solution without showing it (game mode)
 - `F1` – to get the quick help
-- `Alt` + `F4` – to exit the app
+- `Alt` + `F4`, `Ctrl` + `X` – to exit the app

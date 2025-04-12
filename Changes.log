@@ -1,8 +1,11 @@
 Sudoku solver: changes log
 
-ToDo:
-- results sharing
-- score evaluators incapsulation
+Version 4.9:
+• Windows: previous changes have been adapted for the Windows version of the app;
+• Some code refactoring has been applied;
+• Added the penalty evaluation;
+• Added different appearances for digits in cells;
+• Android: results sharing is now available in the menu
 
 Version 4.8:
 • Android: dark color scheme has been implemented;

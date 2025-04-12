@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CellsAppearance" xml:space="preserve">
+    <value>Cells appearance</value>
+  </data>
   <data name="CheckSolutionButton" xml:space="preserve">
     <value>Check solution</value>
   </data>
@@ -203,6 +206,9 @@
   </data>
   <data name="SaveToFile" xml:space="preserve">
     <value>Save to file</value>
+  </data>
+  <data name="ShareButton" xml:space="preserve">
+    <value>Share results</value>
   </data>
   <data name="SolutionIsCorrect" xml:space="preserve">
     <value>Solution is correct, keep going!</value>

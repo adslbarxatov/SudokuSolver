@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CellsAppearance" xml:space="preserve">
+    <value>Представление ячеек</value>
+  </data>
   <data name="CheckSolutionButton" xml:space="preserve">
     <value>Проверить решение</value>
   </data>
@@ -203,6 +206,9 @@
   </data>
   <data name="SaveToFile" xml:space="preserve">
     <value>Сохранить в файл</value>
+  </data>
+  <data name="ShareButton" xml:space="preserve">
+    <value>Поделиться</value>
   </data>
   <data name="SolutionIsCorrect" xml:space="preserve">
     <value>Решение корректно, так держать!</value>

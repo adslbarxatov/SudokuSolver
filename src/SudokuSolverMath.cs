@@ -160,6 +160,87 @@ namespace RD_AAOW
 		OtherButton,
 		}
 
+	/// <summary>
+	/// Возможные варианты вознаграждения
+	/// </summary>
+	public enum ScoreTypes
+		{
+		/// <summary>
+		/// Текущий выигрыш
+		/// </summary>
+		RegularWinning,
+
+		/// <summary>
+		/// Штраф
+		/// </summary>
+		Penalty,
+
+		/// <summary>
+		/// Окончание игры
+		/// </summary>
+		GameCompletion,
+		}
+
+	/// <summary>
+	/// Возможные варианты представления значений ячеек
+	/// </summary>
+	public enum CellsAppearances
+		{
+		/// <summary>
+		/// Цифры
+		/// </summary>
+		Digits,
+
+		/// <summary>
+		/// Латинские прописные буквы
+		/// </summary>
+		LatinUppercase,
+
+		/// <summary>
+		/// Латинские строчные буквы
+		/// </summary>
+		LatinLowercase,
+
+		/// <summary>
+		/// Кириллические прописные буквы
+		/// </summary>
+		CyrillicUppercase,
+
+		/// <summary>
+		/// Кириллические строчные буквы
+		/// </summary>
+		CyrillicLowercase,
+
+		/// <summary>
+		/// Греческие прописные буквы
+		/// </summary>
+		GreekUppercase,
+
+		/// <summary>
+		/// Греческие строчные буквы
+		/// </summary>
+		GreekLowercase,
+
+		/// <summary>
+		/// Римские цифры
+		/// </summary>
+		RomanNumerals,
+
+#if ANDROID
+
+		/// <summary>
+		/// Кости маджонга, набор 1
+		/// </summary>
+		Mahjong1,
+
+		/// <summary>
+		/// Кости маджонга, набор 2
+		/// </summary>
+		Mahjong2,
+
+#endif
+		};
+
 #if ANDROID
 
 	/// <summary>
@@ -199,6 +280,9 @@ namespace RD_AAOW
 		Game,
 		}
 
+#endif
+
+
 	/// <summary>
 	/// Возможные цветовые схемы приложения
 	/// </summary>
@@ -214,8 +298,6 @@ namespace RD_AAOW
 		/// </summary>
 		Dark,
 		}
-
-#endif
 
 	/// <summary>
 	/// Класс описывает основной функционал поиска решения
@@ -238,7 +320,6 @@ namespace RD_AAOW
 		/// Размер стороны судоку
 		/// </summary>
 		public const UInt16 SideSize = 9;   // SquareSize ^ 2
-		/*private const UInt16 SDS = 9;*/
 
 		/// <summary>
 		/// Полный размер судоку
@@ -256,8 +337,8 @@ namespace RD_AAOW
 		// Максимальное количество итераций, рассматриваемое как нормальный поиск
 		private const UInt16 MAX_ITER = 50;
 
-		// Контрольная строка заполнения ячейки
-		private const string fileDataChecker = "123456789";
+		/*// Контрольная строка заполнения ячейки
+		private const string fileDataChecker = "123456789";*/
 
 		// Признак незаполненной ячейки матрицы
 		private const string EmptySign = " ";
@@ -270,19 +351,17 @@ namespace RD_AAOW
 #if ANDROID
 		private const string keyboardPlacementsPar = "KeyboardPlacements";
 		private const string appModePar = "AppMode";
-		private const string colorSchemePar = "ColorScheme";
 #endif
 
 		private const string sudokuFieldPar = "SudokuField";
 		private const string gameModePar = "GameMode";
 		private const string gameScorePar = "GameScore";
+		private const string colorSchemePar = "ColorScheme";
+		private const string cellsAppearancePar = "CellsAppearance";
 
 		#endregion
 
 		#region Поля
-
-		/*// Линейный размер квадрата матрицы
-		private static UInt16 SQ = (UInt16)Math.Sqrt (SDS);*/
 
 		// Главная расчётная матрица
 		private static UInt16[,] mtx = new UInt16[SideSize, SideSize];
@@ -353,6 +432,54 @@ namespace RD_AAOW
 
 		// Уровень сложности генерируемой матрицы
 		private static MatrixDifficulty difficulty;
+
+		// Варианты представления значений в ячейках
+		private static List<List<string>> cellsApps = new List<List<string>> {
+			new List<string> { "1", "2", "3", "4", "5", "6", "7", "8", "9" },
+			new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I" },
+			new List<string> { "a", "b", "c", "d", "e", "f", "g", "h", "i" },
+			new List<string> { "А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И" },
+			new List<string> { "а", "б", "в", "г", "д", "е", "ж", "з", "и" },
+			new List<string> { "Α", "Β", "Γ", "Δ", "Ε", "Ζ", "Η", "Θ", "Ι" },
+			new List<string> { "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι" },
+			new List<string> { "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ" },
+#if ANDROID
+			new List<string> { "🀙", "🀚", "🀛", "🀜", "🀝", "🀞", "🀟", "🀠", "🀡" },
+			new List<string> { "🀐", "🀑", "🀒", "🀓", "🀔", "🀕", "🀖", "🀗", "🀘" },
+#endif
+			};
+		private static string[][] cellsAppsNames = new string[][] {
+			new string[] { "Цифры", "Digits" },
+			new string[] { "Латинские прописные буквы", "Latin uppercase letters" },
+			new string[] { "Латинские строчные буквы", "Latin lowercase letters" },
+			new string[] { "Русские прописные буквы", "Cyrillic uppercase letters" },
+			new string[] { "Русские строчные буквы", "Cyrillic lowercase letters" },
+			new string[] { "Греческие прописные буквы", "Greek uppercase letters" },
+			new string[] { "Греческие строчные буквы", "Greek lowercase letters" },
+			new string[] { "Римские цифры", "Roman numerals" },
+#if ANDROID
+			new string[] { "Кости маджонг, набор 1", "Mahjong, set 1" },
+			new string[] { "Кости маджонг, набор 2", "Mahjong, set 2" },
+#endif
+			};
+
+#if ANDROID
+		private static double[] cellsAppsFontSizes = new double[] {
+			1.25,
+			1.25,
+			1.25,
+			1.25,
+			1.25,
+			1.25,
+			1.25,
+			1.25,
+			1.95,
+			1.95,
+			};
+#endif
+
+		// Индекс текущего представления значений в ячейках
+		private static int cellsAppIndex = 0;
 
 		#endregion
 
@@ -441,6 +568,9 @@ namespace RD_AAOW
 				}
 			}
 
+#endif
+
+
 		/// <summary>
 		/// Возвращает или задаёт цветовую схему приложения
 		/// </summary>
@@ -458,20 +588,60 @@ namespace RD_AAOW
 				}
 			}
 
-#endif
+		/// <summary>
+		/// Возвращает или задаёт представление значений в ячейках
+		/// </summary>
+		public static CellsAppearances CellsAppearance
+			{
+			get
+				{
+				cellsAppIndex = (int)RDGenerics.GetSettings (cellsAppearancePar, (uint)CellsAppearances.Digits);
+				return (CellsAppearances)cellsAppIndex;
+				}
+			set
+				{
+				cellsAppIndex = (int)value;
+				RDGenerics.SetSettings (cellsAppearancePar, (uint)cellsAppIndex);
+				}
+			}
 
 		/// <summary>
-		/// Возвращает или задаёт текущее состояние поля ввода
+		/// Возвращает или задаёт текущее состояние поля ввода в представлении «цифры».
+		/// Всегда возвращает строку длиной FullSize
 		/// </summary>
 		public static string SudokuField
 			{
 			get
 				{
-				return RDGenerics.GetSettings (sudokuFieldPar, "");
+				// Защита верхних вызовов
+				string line = RDGenerics.GetSettings (sudokuFieldPar, "");
+#if !ANDROID
+				try
+					{
+					byte[] conv = Convert.FromBase64String (line.Replace ('А', 'A').Replace ('М', 'M'));
+					line = RDGenerics.GetEncoding (RDEncodings.UTF8).GetString (conv);
+					}
+				catch
+					{
+					line = "";
+					}
+#endif
+
+				if (line.Length == FullSize)
+					return line;
+
+				return EmptySign.PadLeft (FullSize, EmptySign[0]);
 				}
 			set
 				{
-				RDGenerics.SetSettings (sudokuFieldPar, value);
+				string line = value;
+#if !ANDROID
+				byte[] conv = RDGenerics.GetEncoding (RDEncodings.UTF8).GetBytes (line);
+				line = Convert.ToBase64String (conv, Base64FormattingOptions.None);
+				line = line.Replace ('A', 'А').Replace ('M', 'М');
+#endif
+
+				RDGenerics.SetSettings (sudokuFieldPar, line);
 				}
 			}
 
@@ -515,10 +685,10 @@ namespace RD_AAOW
 				{
 				return GetGameScore (1);
 				}
-			set
+			/*set
 				{
 				SetGameScore (1, value);
-				}
+				}*/
 			}
 
 		/// <summary>
@@ -530,10 +700,10 @@ namespace RD_AAOW
 				{
 				return GetGameScore (2);
 				}
-			set
+			/*set
 				{
 				SetGameScore (2, value);
-				}
+				}*/
 			}
 
 		/// <summary>
@@ -545,10 +715,10 @@ namespace RD_AAOW
 				{
 				return GetGameScore (3);
 				}
-			set
+			/*set
 				{
 				SetGameScore (3, value);
-				}
+				}*/
 			}
 
 		/// <summary>
@@ -562,16 +732,53 @@ namespace RD_AAOW
 				}
 			}
 
-		/*/// <summary>
-		/// Возвращает цвет элементов страницы или окна для текущей цветовой схемы
+		/// <summary>
+		/// Возвращает количество доступных цветовых схем
 		/// </summary>
-		public static Color ElementsColor
+		public static uint ColorSchemesCount
 			{
 			get
 				{
-				return colors2[5][colorIndex];
+				return (uint)colors[0].Length;
 				}
-			}*/
+			}
+
+		/// <summary>
+		/// Возвращает количество доступных представлений значений в ячейках
+		/// </summary>
+		public static uint CellsAppearancesCount
+			{
+			get
+				{
+				return (uint)cellsApps.Count;
+				}
+			}
+
+#if ANDROID
+
+		/// <summary>
+		/// Возвращает множитель размера шрифта для текущего представления значений в ячейках
+		/// </summary>
+		public static double CellsAppearancesFontSize
+			{
+			get
+				{
+				return cellsAppsFontSizes[cellsAppIndex] * RDInterface.MasterFontSize;
+				}
+			}
+
+		/// <summary>
+		/// Возвращает флаг жирного начертания для текущего представления значений в ячейках
+		/// </summary>
+		public static bool CellsAppearancesBoldFont
+			{
+			get
+				{
+				return (cellsAppsFontSizes[cellsAppIndex] < 1.5);
+				}
+			}
+
+#endif
 
 		#endregion
 
@@ -997,8 +1204,19 @@ namespace RD_AAOW
 				gameScore[gameScoreSize] = 1;
 
 				// Извлечение
-				string v = RDGenerics.GetSettings (gameScorePar, "");
-				string[] values = v.Split (gameScoreSplitter, StringSplitOptions.RemoveEmptyEntries);
+				string line = RDGenerics.GetSettings (gameScorePar, "");
+#if !ANDROID
+				try
+					{
+					byte[] conv = Convert.FromBase64String (line.Replace ('А', 'A'));
+					line = RDGenerics.GetEncoding (RDEncodings.Unicode32).GetString (conv);
+					}
+				catch
+					{
+					line = "";
+					}
+#endif
+				string[] values = line.Split (gameScoreSplitter, StringSplitOptions.RemoveEmptyEntries);
 				if (values.Length != gameScoreSize)
 					return gameScore[Item];
 
@@ -1030,7 +1248,34 @@ namespace RD_AAOW
 				line += (gameScore[i].ToString () + sp);
 			line += gameScore[gameScoreSize - 1].ToString ();
 
+#if !ANDROID
+			byte[] conv = RDGenerics.GetEncoding (RDEncodings.Unicode32).GetBytes (line);
+			line = Convert.ToBase64String (conv, Base64FormattingOptions.None).Replace ('A', 'А');
+#endif
 			RDGenerics.SetSettings (gameScorePar, line);
+			}
+
+		// Метод рассчитывает выигрыш по типу расчёта и количеству найденных ячеек
+		private static uint GetScore (ScoreTypes ScoreType, uint Value)
+			{
+			// Контроль
+			if (GameMode == MatrixDifficulty.None)
+				return 0;
+			uint multiplier = (uint)GameMode + 1;
+
+			switch (ScoreType)
+				{
+				case ScoreTypes.RegularWinning:
+				default:
+					return multiplier * Value * Value;
+
+				case ScoreTypes.Penalty:
+					return 10 * (4 - multiplier);
+
+				case ScoreTypes.GameCompletion:
+					gameScore[multiplier]++;
+					return 1000 * multiplier;
+				}
 			}
 
 		#endregion
@@ -1178,15 +1423,15 @@ namespace RD_AAOW
 			for (int i = 0; i < fileSplitters.Length; i++)
 				data = data.Replace (fileSplitters[i], "");
 
-			if (data.Length < /*SudokuSideSize * SudokuSideSize*/ FullSize)
+			if (data.Length < FullSize)
 				return "";
 
 			// Загрузка
 			string resultLine = "";
-			for (int i = 0; i < /*SudokuSideSize * SudokuSideSize*/ FullSize; i++)
+			for (int i = 0; i < FullSize; i++)
 				{
 				string c = data[i].ToString ();
-				if (fileDataChecker.Contains (c))
+				if (cellsApps[0].Contains (c))
 					resultLine += c;
 				else
 					resultLine += EmptySign;
@@ -1202,20 +1447,15 @@ namespace RD_AAOW
 		public static string BuildMatrixToSave (string Line)
 			{
 			string file = "";
-			/*int sqrt = (int)Math.Sqrt (SudokuSideSize);
-			int cubedSqrt = sqrt * sqrt * sqrt;*/
 
 			for (int i = 1; i <= Line.Length; i++)
 				{
 				file += Line[i - 1].ToString ().Replace (EmptySign, "-");
 
-				/*if (i % cubedSqrt == 0)*/
 				if ((i % (SquareSize * SideSize)) == 0)
 					file += RDLocale.RNRN;
-				/*else if (i % SudokuSideSize == 0)*/
 				else if ((i % SideSize) == 0)
 					file += RDLocale.RN;
-				/*else if (i % sqrt == 0)*/
 				else if ((i % SquareSize) == 0)
 					file += " ";
 				}
@@ -1443,6 +1683,87 @@ namespace RD_AAOW
 #else
 				InterfaceElement.BackColor = color;
 #endif
+			}
+
+		/// <summary>
+		/// Метод получает размер текущего выигрыша по указанному количеству найденных ячеек
+		/// </summary>
+		/// <param name="Value">Количество найденных ячеек</param>
+		/// <returns>Возвращает количество очков или 0, если игровой режим неактивен</returns>
+		public static uint GetScore (uint Value)
+			{
+			return GetScore (ScoreTypes.RegularWinning, Value);
+			}
+
+		/// <summary>
+		/// Метод получает размер выигрыша по указанному типу расчёта.
+		/// В случае победы в игре также обновляет счётчик побед
+		/// </summary>
+		/// <param name="ScoreType">Тип рассчитываемого выигрыша</param>
+		/// <returns>Возвращает количество очков или 0, если игровой режим неактивен,
+		/// или выбран режим RegularScore (для него существует отдельная перегрузка)</returns>
+		public static uint GetScore (ScoreTypes ScoreType)
+			{
+			return GetScore (ScoreType, 0);
+			}
+
+		/// <summary>
+		/// Метод возвращает представление ячейки в текущей настройке
+		/// </summary>
+		/// <param name="Value">Цифра, для которой требуется представление (1 – 9)</param>
+		/// <returns>Возвращает представление или EmptySign, если переданная цифра некорректна
+		/// или является представлением пустой ячейки</returns>
+		public static string GetAppearance (Byte Value)
+			{
+			// Контроль
+			if ((Value < 1) || (Value > SideSize))
+				return EmptySign;
+
+			// Результат
+			return cellsApps[cellsAppIndex][Value - 1];
+			}
+
+		/// <summary>
+		/// Метод возвращает представление ячейки в текущей настройке
+		/// </summary>
+		/// <param name="Value">Цифра, для которой требуется представление (1 – 9)</param>
+		/// <returns>Возвращает представление или EmptySign, если переданная цифра некорректна
+		/// или является представлением пустой ячейки</returns>
+		public static string GetAppearance (string Value)
+			{
+			// Контроль
+			int idx = cellsApps[0].IndexOf (Value);
+			if (idx < 0)
+				return EmptySign;
+
+			// Результат
+			return cellsApps[cellsAppIndex][idx];
+			}
+
+		/// <summary>
+		/// Возвращает цифру по её представлению
+		/// </summary>
+		/// <param name="Appearance">Представление цифры в любой настройке</param>
+		/// <returns>Возвращает цифру или 0, если указанное представление не определено</returns>
+		public static Byte GetDigit (string Appearance)
+			{
+			int idx = cellsApps[cellsAppIndex].IndexOf (Appearance);
+			if (idx < 0)
+				return 0;
+
+			return (Byte)(idx + 1);
+			}
+
+		/// <summary>
+		/// Метод возвращает название представления содержимого ячеек для текущего языка
+		/// </summary>
+		/// <param name="Number">Номер представления</param>
+		public static string GetCellsAppearanceName (uint Number)
+			{
+			if (Number >= cellsAppsNames.Length)
+				return "";
+
+			return cellsAppsNames[(int)Number][(int)RDLocale.CurrentLanguage];
 			}
 		}
 	}

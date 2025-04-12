@@ -127,12 +127,12 @@
     <value>&amp;Clear the solution</value>
   </data>
   <data name="MActivities_MGenerate" xml:space="preserve">
-    <value>&amp;Generate table</value>
+    <value>&amp;New game</value>
   </data>
-  <data name="MActivities_MHelp" xml:space="preserve">
+  <data name="MInfo_MHelp" xml:space="preserve">
     <value>&amp;Help</value>
   </data>
-  <data name="MActivities_MLanguage" xml:space="preserve">
+  <data name="MSettings_MLanguage" xml:space="preserve">
     <value>La&amp;nguage</value>
   </data>
   <data name="MActivities_MLoad" xml:space="preserve">
@@ -154,13 +154,13 @@
     <value>There is not enough numbers in the specified file to build the sudoku table</value>
   </data>
   <data name="MGenerate_MDifficulty0" xml:space="preserve">
-    <value>Easy</value>
+    <value>&amp;Easy</value>
   </data>
   <data name="MGenerate_MDifficulty1" xml:space="preserve">
-    <value>Medium</value>
+    <value>&amp;Medium</value>
   </data>
   <data name="MGenerate_MDifficulty2" xml:space="preserve">
-    <value>Hard</value>
+    <value>&amp;Hard</value>
   </data>
   <data name="OFFilter" xml:space="preserve">
     <value>Text documents (*.txt, *.csv)|*.txt;*.csv</value>
@@ -179,5 +179,37 @@
   </data>
   <data name="SolutionIsIncorrect" xml:space="preserve">
     <value>This solution contains mistakes</value>
+  </data>
+  <data name="MainMenu_MSettings" xml:space="preserve">
+    <value>&amp;Settings</value>
+  </data>
+  <data name="MainMenu_MInfo" xml:space="preserve">
+    <value>&amp;Info</value>
+  </data>
+  <data name="MSettings_MColorScheme" xml:space="preserve">
+    <value>&amp;Color scheme</value>
+  </data>
+  <data name="MSettings_MCellsApp" xml:space="preserve">
+    <value>C&amp;ells appearance</value>
+  </data>
+  <data name="MInfo_MStats" xml:space="preserve">
+    <value>&amp;Game statistics</value>
+  </data>
+  <data name="SolvedText" xml:space="preserve">
+    <value>Solve</value>
+  </data>
+  <data name="StatsText" xml:space="preserve">
+    <value>Game mode results:
+
+{0:S} points (total)
+{1:D} easy games
+{2:D} medium games
+{3:D} hard games</value>
+  </data>
+  <data name="Color0" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Color1" xml:space="preserve">
+    <value>Dark</value>
   </data>
 </root>
