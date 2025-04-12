@@ -5,7 +5,7 @@ Version 4.9:
 • Some code refactoring has been applied;
 • Added the penalty evaluation;
 • Added different appearances for digits in cells;
-• Android: results sharing is now available in the menu
+• Android: sharing of results is now available in the menu
 
 Version 4.8:
 • Android: dark color scheme has been implemented;
