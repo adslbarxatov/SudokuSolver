@@ -124,7 +124,7 @@
     <value>Chec&amp;k solution</value>
   </data>
   <data name="MActivities_MClear" xml:space="preserve">
-    <value>&amp;Clear the solution</value>
+    <value>&amp;Cancel the solution</value>
   </data>
   <data name="MActivities_MGenerate" xml:space="preserve">
     <value>&amp;New game</value>
@@ -139,7 +139,7 @@
     <value>&amp;Load from file...</value>
   </data>
   <data name="MActivities_MReset" xml:space="preserve">
-    <value>&amp;Reset the field</value>
+    <value>&amp;Reset the table</value>
   </data>
   <data name="MActivities_MSave" xml:space="preserve">
     <value>&amp;Save to file...</value>
@@ -211,5 +211,25 @@
   </data>
   <data name="Color1" xml:space="preserve">
     <value>Dark</value>
+  </data>
+  <data name="NewGameButton" xml:space="preserve">
+    <value>New game</value>
+  </data>
+  <data name="CheckButton" xml:space="preserve">
+    <value>Check</value>
+  </data>
+  <data name="ClearButton" xml:space="preserve">
+    <value>Return</value>
+  </data>
+  <data name="AppModeMessage" xml:space="preserve">
+    <value>Enable game mode?
+
+In game mode, the app keeps track of winnings and adds additional buttons to the main screen. In addition, changing the cells filled by the app at the beginning of a new game is blocked</value>
+  </data>
+  <data name="MSettings_MAppMode" xml:space="preserve">
+    <value>Interface &amp;mode</value>
+  </data>
+  <data name="DifficultyMessage" xml:space="preserve">
+    <value>Select the difficulty level</value>
   </data>
 </root>

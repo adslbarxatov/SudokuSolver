@@ -172,10 +172,10 @@
     <value>Load from file</value>
   </data>
   <data name="Menu0" xml:space="preserve">
-    <value>Task</value>
+    <value>Table</value>
   </data>
   <data name="Menu1" xml:space="preserve">
-    <value>Game mode</value>
+    <value>Game</value>
   </data>
   <data name="Menu2" xml:space="preserve">
     <value>Settings</value>
@@ -196,13 +196,13 @@
     <value>Interface mode</value>
   </data>
   <data name="ResetField" xml:space="preserve">
-    <value>Reset entire table</value>
+    <value>Reset the table</value>
   </data>
-  <data name="ResetSolution" xml:space="preserve">
-    <value>Reset the solution</value>
+  <data name="ClearSolution" xml:space="preserve">
+    <value>Cancel the solution</value>
   </data>
   <data name="ResetWarning" xml:space="preserve">
-    <value>Reset all values in all cells?</value>
+    <value>Clear all values in all cells?</value>
   </data>
   <data name="SaveToFile" xml:space="preserve">
     <value>Save to file</value>
@@ -224,6 +224,9 @@ Create a new table to continue the game</value>
   <data name="SolutionPage" xml:space="preserve">
     <value>Sudoku solution</value>
   </data>
+  <data name="SolutionTip" xml:space="preserve">
+    <value>Solution in progress...</value>
+  </data>
   <data name="SolveButton" xml:space="preserve">
     <value>Solve</value>
   </data>
@@ -235,5 +238,14 @@ Create a new table to continue the game</value>
   </data>
   <data name="StatsText" xml:space="preserve">
     <value>Game mode results:</value>
+  </data>
+  <data name="WelcomeTip" xml:space="preserve">
+    <value>Welcome to Sudoku solver – a sudoku solving tool!
+
+In this app you can solve classic (9 x 9) sudokus both manually and automatically. The first option (game mode) also allows you to accumulate winnings and share results. The second is a simple calculator that displays the solution for the specified table.
+
+• To switch to the game mode, use section Menu &gt; Interface mode &gt; Game mode. All the necessary buttons will then appear on the screen.
+
+• You can find the controls and detailed information in the Menu &gt; About the app section</value>
   </data>
 </root>

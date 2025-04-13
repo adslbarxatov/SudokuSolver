@@ -1,4 +1,12 @@
-_Changes for v 4.9_:
+_Changes for v 4.9.5_:
+- `Android`: added the tip for the first start;
+- `Android`: added the text tip about the solution operation;
+- `Android`: fixed the inability to interrupt the solution;
+- `Android`: menu has been reordered to make the game mode more accessible;
+- `Android`: added color, food and dots appearances for numbers in cells;
+- `Windows`: added separate buttons to the main window for the game mode;
+- Renamed some ambiguous menu options;
+- `Android`: MAUI support packages have been updated;
 - `Windows`: previous changes have been adapted for the Windows version of the app;
 - Some code refactoring has been applied;
 - Added the penalty evaluation;
@@ -6,7 +14,4 @@ _Changes for v 4.9_:
 - `Android`: results sharing is now available in the menu;
 - `Android`: dark color scheme has been implemented;
 - `Android`: main menu divided into secondary options;
-- `Android`: implemented the score and results storage for the game mode;
-- `Android`: app now doesn't allow the device to go to sleep mode when game mode is enabled;
-- `Android`: added the ***game mode***, that changes the set of buttons on the main page;
-- `Windows`: cells now support the mouse wheel and right mouse button when setting their values
+- `Android`: implemented the score and results storage for the game mode

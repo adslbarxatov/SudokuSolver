@@ -172,10 +172,10 @@
     <value>Загрузить из файла</value>
   </data>
   <data name="Menu0" xml:space="preserve">
-    <value>Задача</value>
+    <value>Таблица</value>
   </data>
   <data name="Menu1" xml:space="preserve">
-    <value>Игровой режим</value>
+    <value>Игра</value>
   </data>
   <data name="Menu2" xml:space="preserve">
     <value>Настройки</value>
@@ -196,13 +196,13 @@
     <value>Режим интерфейса</value>
   </data>
   <data name="ResetField" xml:space="preserve">
-    <value>Сбросить всю таблицу</value>
+    <value>Сбросить таблицу</value>
   </data>
-  <data name="ResetSolution" xml:space="preserve">
-    <value>Сбросить решение</value>
+  <data name="ClearSolution" xml:space="preserve">
+    <value>Отменить решение</value>
   </data>
   <data name="ResetWarning" xml:space="preserve">
-    <value>Сбросить все значения во всех ячейках?</value>
+    <value>Очистить все значения во всех ячейках?</value>
   </data>
   <data name="SaveToFile" xml:space="preserve">
     <value>Сохранить в файл</value>
@@ -224,6 +224,9 @@
   <data name="SolutionPage" xml:space="preserve">
     <value>Решение судоку</value>
   </data>
+  <data name="SolutionTip" xml:space="preserve">
+    <value>Решение выполняется...</value>
+  </data>
   <data name="SolveButton" xml:space="preserve">
     <value>Решить</value>
   </data>
@@ -235,5 +238,14 @@
   </data>
   <data name="StatsText" xml:space="preserve">
     <value>Результаты игрового режима:</value>
+  </data>
+  <data name="WelcomeTip" xml:space="preserve">
+    <value>Добро пожаловать в Sudoku solver – инструмент решения судоку!
+
+В этом приложении Вы можете решать классические (9 x 9) судоку как вручную, так и автоматически. Первый вариант (игровой режим) позволяет также накапливать выигрыш и делиться результатами. Второй – простой калькулятор, отображающий решение для указанной таблицы.
+
+• Чтобы переключиться в игровой режим, используйте раздел Меню &gt; Режим интерфейса &gt; Игровой режим. Все необходимые кнопки после этого появятся на экране.
+
+• Ознакомиться с управлением и подробными сведениями можно в разделе Меню &gt; О приложении</value>
   </data>
 </root>

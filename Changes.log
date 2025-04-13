@@ -1,5 +1,15 @@
 Sudoku solver: changes log
 
+Version 4.9.5:
+• Android: added the tip for the first start;
+• Android: added the text tip about the solution operation;
+• Android: fixed the inability to interrupt the solution;
+• Android: menu has been reordered to make the game mode more accessible;
+• Android: added color, food and dots appearances for numbers in cells;
+• Windows: added separate buttons to the main window for the game mode;
+• Renamed some ambiguous menu options;
+• Android: MAUI support packages have been updated
+
 Version 4.9:
 • Windows: previous changes have been adapted for the Windows version of the app;
 • Some code refactoring has been applied;

@@ -191,30 +191,30 @@ namespace RD_AAOW
 		/// </summary>
 		Digits,
 
-		/// <summary>
+		/*/// <summary>
 		/// Латинские прописные буквы
 		/// </summary>
-		LatinUppercase,
+		LatinUppercase,*/
 
 		/// <summary>
 		/// Латинские строчные буквы
 		/// </summary>
 		LatinLowercase,
 
-		/// <summary>
+		/*/// <summary>
 		/// Кириллические прописные буквы
 		/// </summary>
-		CyrillicUppercase,
+		CyrillicUppercase,*/
 
 		/// <summary>
 		/// Кириллические строчные буквы
 		/// </summary>
 		CyrillicLowercase,
 
-		/// <summary>
+		/*/// <summary>
 		/// Греческие прописные буквы
 		/// </summary>
-		GreekUppercase,
+		GreekUppercase,*/
 
 		/// <summary>
 		/// Греческие строчные буквы
@@ -229,14 +229,19 @@ namespace RD_AAOW
 #if ANDROID
 
 		/// <summary>
-		/// Кости маджонга, набор 1
+		/// Точки
 		/// </summary>
-		Mahjong1,
+		Dots,
 
 		/// <summary>
-		/// Кости маджонга, набор 2
+		/// Радуга
 		/// </summary>
-		Mahjong2,
+		Rainbow,
+
+		/// <summary>
+		/// Еда
+		/// </summary>
+		Food,
 
 #endif
 		};
@@ -264,6 +269,9 @@ namespace RD_AAOW
 		Bottom,
 		}
 
+#endif
+
+
 	/// <summary>
 	/// Возможные режимы работы программы
 	/// </summary>
@@ -279,9 +287,6 @@ namespace RD_AAOW
 		/// </summary>
 		Game,
 		}
-
-#endif
-
 
 	/// <summary>
 	/// Возможные цветовые схемы приложения
@@ -337,9 +342,6 @@ namespace RD_AAOW
 		// Максимальное количество итераций, рассматриваемое как нормальный поиск
 		private const UInt16 MAX_ITER = 50;
 
-		/*// Контрольная строка заполнения ячейки
-		private const string fileDataChecker = "123456789";*/
-
 		// Признак незаполненной ячейки матрицы
 		private const string EmptySign = " ";
 
@@ -350,9 +352,9 @@ namespace RD_AAOW
 		// Имена ключей, используемые для хранения настроек
 #if ANDROID
 		private const string keyboardPlacementsPar = "KeyboardPlacements";
-		private const string appModePar = "AppMode";
 #endif
 
+		private const string appModePar = "AppMode";
 		private const string sudokuFieldPar = "SudokuField";
 		private const string gameModePar = "GameMode";
 		private const string gameScorePar = "GameScore";
@@ -436,46 +438,61 @@ namespace RD_AAOW
 		// Варианты представления значений в ячейках
 		private static List<List<string>> cellsApps = new List<List<string>> {
 			new List<string> { "1", "2", "3", "4", "5", "6", "7", "8", "9" },
-			new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I" },
+			/*new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I" },*/
 			new List<string> { "a", "b", "c", "d", "e", "f", "g", "h", "i" },
-			new List<string> { "А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И" },
+			/*new List<string> { "А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И" },*/
 			new List<string> { "а", "б", "в", "г", "д", "е", "ж", "з", "и" },
-			new List<string> { "Α", "Β", "Γ", "Δ", "Ε", "Ζ", "Η", "Θ", "Ι" },
+			/*new List<string> { "Α", "Β", "Γ", "Δ", "Ε", "Ζ", "Η", "Θ", "Ι" },*/
 			new List<string> { "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι" },
 			new List<string> { "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ" },
 #if ANDROID
-			new List<string> { "🀙", "🀚", "🀛", "🀜", "🀝", "🀞", "🀟", "🀠", "🀡" },
-			new List<string> { "🀐", "🀑", "🀒", "🀓", "🀔", "🀕", "🀖", "🀗", "🀘" },
+			new List<string> {
+				"     \n  ●  \n     ",
+				"    ●\n     \n●    ",
+				"    ●\n  ●  \n●    ",
+				"●   ●\n     \n●   ●",
+				"●   ●\n  ●  \n●   ●",
+				"●   ●\n●   ●\n●   ●",
+				"●   ●\n● ● ●\n●   ●",
+				"● ● ●\n●   ●\n● ● ●",
+				"● ● ●\n● ● ●\n● ● ●",
+				},
+			new List<string> { "❤️", "🧡", "💛", "💚", "🩵", "💙", "💜", "🩷", "🤍" },
+			new List<string> { "🍎", "🍊", "🍋", "🍏", "🧊", "🫐", "🍇", "🍗", "🥚" },
 #endif
 			};
 		private static string[][] cellsAppsNames = new string[][] {
 			new string[] { "Цифры", "Digits" },
-			new string[] { "Латинские прописные буквы", "Latin uppercase letters" },
-			new string[] { "Латинские строчные буквы", "Latin lowercase letters" },
-			new string[] { "Русские прописные буквы", "Cyrillic uppercase letters" },
-			new string[] { "Русские строчные буквы", "Cyrillic lowercase letters" },
-			new string[] { "Греческие прописные буквы", "Greek uppercase letters" },
-			new string[] { "Греческие строчные буквы", "Greek lowercase letters" },
+			/*new string[] { "Латинские прописные буквы", "Latin uppercase letters" },*/
+			new string[] { "Латинские буквы", "Latin letters" },
+			/*new string[] { "Русские прописные буквы", "Cyrillic uppercase letters" },*/
+			new string[] { "Русские буквы", "Cyrillic letters" },
+			/*new string[] { "Греческие прописные буквы", "Greek uppercase letters" },*/
+			new string[] { "Греческие буквы", "Greek letters" },
 			new string[] { "Римские цифры", "Roman numerals" },
 #if ANDROID
-			new string[] { "Кости маджонг, набор 1", "Mahjong, set 1" },
-			new string[] { "Кости маджонг, набор 2", "Mahjong, set 2" },
+			new string[] { "Точки", "Dots" },
+			new string[] { "Радуга", "Rainbow" },
+			new string[] { "Еда", "Food" },
 #endif
 			};
 
 #if ANDROID
+
 		private static double[] cellsAppsFontSizes = new double[] {
 			1.25,
+			/*1.25,
+			1.25,
+			1.25,*/
 			1.25,
 			1.25,
 			1.25,
 			1.25,
-			1.25,
-			1.25,
-			1.25,
-			1.95,
-			1.95,
+			0.55,
+			1.55,
+			1.55,
 			};
+
 #endif
 
 		// Индекс текущего представления значений в ячейках
@@ -552,6 +569,9 @@ namespace RD_AAOW
 				}
 			}
 
+#endif
+
+
 		/// <summary>
 		/// Возвращает или задаёт режим работы приложения
 		/// </summary>
@@ -567,9 +587,6 @@ namespace RD_AAOW
 				RDGenerics.SetSettings (appModePar, (uint)value);
 				}
 			}
-
-#endif
-
 
 		/// <summary>
 		/// Возвращает или задаёт цветовую схему приложения
@@ -596,6 +613,8 @@ namespace RD_AAOW
 			get
 				{
 				cellsAppIndex = (int)RDGenerics.GetSettings (cellsAppearancePar, (uint)CellsAppearances.Digits);
+				if (cellsAppIndex >= cellsApps.Count)
+					cellsAppIndex = 0;
 				return (CellsAppearances)cellsAppIndex;
 				}
 			set
@@ -677,7 +696,7 @@ namespace RD_AAOW
 			}
 
 		/// <summary>
-		/// Возвращает или задаёт количество собранных таблиц на простом уровне
+		/// Возвращает количество собранных таблиц на простом уровне
 		/// </summary>
 		public static uint EasyScore
 			{
@@ -685,14 +704,10 @@ namespace RD_AAOW
 				{
 				return GetGameScore (1);
 				}
-			/*set
-				{
-				SetGameScore (1, value);
-				}*/
 			}
 
 		/// <summary>
-		/// Возвращает или задаёт количество собранных таблиц на среднем уровне
+		/// Возвращает количество собранных таблиц на среднем уровне
 		/// </summary>
 		public static uint MediumScore
 			{
@@ -700,14 +715,10 @@ namespace RD_AAOW
 				{
 				return GetGameScore (2);
 				}
-			/*set
-				{
-				SetGameScore (2, value);
-				}*/
 			}
 
 		/// <summary>
-		/// Возвращает или задаёт количество собранных таблиц на сложном уровне
+		/// Возвращает количество собранных таблиц на сложном уровне
 		/// </summary>
 		public static uint HardScore
 			{
@@ -715,10 +726,6 @@ namespace RD_AAOW
 				{
 				return GetGameScore (3);
 				}
-			/*set
-				{
-				SetGameScore (3, value);
-				}*/
 			}
 
 		/// <summary>
@@ -850,8 +857,6 @@ namespace RD_AAOW
 				for (UInt16 j = s = 0; j < SideSize; j++)
 					{
 					// Пересчитываемые параметры, позволяющие использовать линейные коэффициенты для зигзагообразного движения
-					/*UInt16 SQI = (UInt16)(j % SQ + (i % SQ) * SQ);
-					UInt16 SQJ = (UInt16)(j / SQ + (i / SQ) * SQ);*/
 					UInt16 SQI = (UInt16)(j % SquareSize + (i % SquareSize) * SquareSize);
 					UInt16 SQJ = (UInt16)(j / SquareSize + (i / SquareSize) * SquareSize);
 
@@ -958,8 +963,6 @@ namespace RD_AAOW
 
 					for (UInt16 j = 0; j < SideSize; j++)
 						{
-						/*UInt16 SQI = (UInt16)(j % SQ + (i % SQ) * SQ);
-						UInt16 SQJ = (UInt16)(j / SQ + (i / SQ) * SQ);*/
 						UInt16 SQI = (UInt16)(j % SquareSize + (i % SquareSize) * SquareSize);
 						UInt16 SQJ = (UInt16)(j / SquareSize + (i / SquareSize) * SquareSize);
 
@@ -969,8 +972,6 @@ namespace RD_AAOW
 
 					for (UInt16 j = 0; j < SideSize; j++)
 						{
-						/*UInt16 SQI = (UInt16)(j % SQ + (i % SQ) * SQ);
-						UInt16 SQJ = (UInt16)(j / SQ + (i / SQ) * SQ);*/
 						UInt16 SQI = (UInt16)(j % SquareSize + (i % SquareSize) * SquareSize);
 						UInt16 SQJ = (UInt16)(j / SquareSize + (i / SquareSize) * SquareSize);
 

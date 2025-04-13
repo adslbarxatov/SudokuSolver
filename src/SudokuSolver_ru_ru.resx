@@ -124,7 +124,7 @@
     <value>Про&amp;верить решение</value>
   </data>
   <data name="MActivities_MClear" xml:space="preserve">
-    <value>&amp;Очистить решение</value>
+    <value>&amp;Отменить решение</value>
   </data>
   <data name="MActivities_MGenerate" xml:space="preserve">
     <value>&amp;Новая игра</value>
@@ -139,7 +139,7 @@
     <value>&amp;Загрузить из файла...</value>
   </data>
   <data name="MActivities_MReset" xml:space="preserve">
-    <value>С&amp;бросить поле</value>
+    <value>С&amp;бросить таблицу</value>
   </data>
   <data name="MActivities_MSave" xml:space="preserve">
     <value>&amp;Сохранить в файл...</value>
@@ -211,5 +211,25 @@
   </data>
   <data name="Color1" xml:space="preserve">
     <value>Тёмная</value>
+  </data>
+  <data name="NewGameButton" xml:space="preserve">
+    <value>Новая игра</value>
+  </data>
+  <data name="CheckButton" xml:space="preserve">
+    <value>Проверить</value>
+  </data>
+  <data name="ClearButton" xml:space="preserve">
+    <value>Вернуть</value>
+  </data>
+  <data name="AppModeMessage" xml:space="preserve">
+    <value>Включить игровой режим?
+
+В игровом режиме приложение ведёт учёт выигрышей и добавляет дополнительные кнопки на главный экран. Кроме того, блокируется изменение ячеек, заполненных приложением в начале новой игры</value>
+  </data>
+  <data name="MSettings_MAppMode" xml:space="preserve">
+    <value>Ре&amp;жим интерфейса</value>
+  </data>
+  <data name="DifficultyMessage" xml:space="preserve">
+    <value>Выберите уровень сложности</value>
   </data>
 </root>
