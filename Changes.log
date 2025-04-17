@@ -2,6 +2,7 @@ Sudoku solver: changes log
 
 ToDo:
 - Выполнять отмену решения при выходе из приложения для исключения блокировки некорректного ввода как проверенного
+- Max moves without pause
 
 Version 4.9.5:
 • Android: added the tip for the first start;
