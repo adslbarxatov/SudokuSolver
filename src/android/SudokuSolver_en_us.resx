@@ -237,7 +237,11 @@ Create a new table to continue the game</value>
     <value>Game statistics</value>
   </data>
   <data name="StatsText" xml:space="preserve">
-    <value>Game mode results:</value>
+    <value>Game mode results:
+{0:S}
+
+Best solution time: {1:S}
+Longest unchecked chain: {2:S}</value>
   </data>
   <data name="WelcomeTip" xml:space="preserve">
     <value>Welcome to Sudoku solver – a sudoku solving tool!

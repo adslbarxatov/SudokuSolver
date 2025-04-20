@@ -202,9 +202,11 @@
     <value>Game mode results:
 
 {0:S} points (total)
-{1:D} easy games
-{2:D} medium games
-{3:D} hard games</value>
+{1:S} easy games
+{2:S} medium games
+{3:S} hard games
+Best solution time: {4:S}
+Longest unchecked chain: {5:S}</value>
   </data>
   <data name="Color0" xml:space="preserve">
     <value>Light</value>

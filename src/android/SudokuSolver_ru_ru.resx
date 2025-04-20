@@ -237,7 +237,11 @@
     <value>Статистика игры</value>
   </data>
   <data name="StatsText" xml:space="preserve">
-    <value>Результаты игрового режима:</value>
+    <value>Результаты игрового режима:
+{0:S}
+
+Лучшее время решения: {1:S}
+Длиннейшая цепочка без проверок: {2:S}</value>
   </data>
   <data name="WelcomeTip" xml:space="preserve">
     <value>Добро пожаловать в Sudoku solver – инструмент решения судоку!

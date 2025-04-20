@@ -20,12 +20,12 @@ namespace RD_AAOW
 		private Color stubColor = RDInterface.GetInterfaceColor (RDInterfaceColors.MediumGrey);
 
 		// Контекстные меню
-		private List<string> keyboardVariants = new List<string> ();
-		private List<string> difficultyVariants = new List<string> ();
-		private List<string> appModeVariants = new List<string> ();
-		private List<string> colorSchemeVariants = new List<string> ();
-		private List<List<string>> menuVariants = new List<List<string>> ();
-		private List<string> appearanceVariants = new List<string> ();
+		private List<string> keyboardVariants = [];
+		private List<string> difficultyVariants = [];
+		private List<string> appModeVariants = [];
+		private List<string> colorSchemeVariants = [];
+		private List<List<string>> menuVariants = [];
+		private List<string> appearanceVariants = [];
 
 		// Номер текущей выбранной кнопки
 		private int currentButtonIndex = -1;
@@ -40,12 +40,12 @@ namespace RD_AAOW
 
 		private Button languageButton, solutionButton, checkButton, generateButton,
 			clearButton, menuButton;
-		private List<Button> numberButtons = new List<Button> ();
-		private List<Button> inputButtons = new List<Button> ();
+		private List<Button> numberButtons = [];
+		private List<Button> inputButtons = [];
 
 		private StackLayout masterField;
-		private StackLayout numbersField = new StackLayout ();
-		private StackLayout inputField = new StackLayout ();
+		private StackLayout numbersField = [];
+		private StackLayout inputField = [];
 
 		#endregion
 
@@ -58,10 +58,22 @@ namespace RD_AAOW
 			{
 			// Инициализация
 			InitializeComponent ();
+			}
+
+		// Замена определению MainPage = new MasterPage ()
+		protected override Window CreateWindow (IActivationState activationState)
+			{
+			return new Window (AppShell ());
+			}
+
+		// Инициализация разметки страниц
+		private Page AppShell ()
+			{
+			Page mainPage = new MasterPage ();
 			flags = RDGenerics.GetAppStartupFlags (RDAppStartupFlags.DisableXPUN);
 
 			// Общая конструкция страниц приложения
-			MainPage = new MasterPage ();
+			/*MainPage = new MasterPage ();*/
 
 			solutionPage = RDInterface.ApplyPageSettings (new SolutionPage (), "SolutionPage",
 				RDLocale.GetText ("SolutionPage"), stubColor);
@@ -69,18 +81,18 @@ namespace RD_AAOW
 				RDLocale.GetDefaultText (RDLDefaultTexts.Control_AppAbout),
 				aboutMasterBackColor);
 
-			RDInterface.SetMasterPage (MainPage, solutionPage, stubColor);
+			/*RDInterface.SetMasterPage (MainPage, solutionPage, stubColor);*/
+			RDInterface.SetMasterPage (mainPage, solutionPage, stubColor);
 
 			#region Основная страница
 
 			masterField = (StackLayout)solutionPage.FindByName ("MasterField");
 
-			/*StackLayout numbersField = new StackLayout ();*/
 			numbersField.HorizontalOptions = numbersField.VerticalOptions = LayoutOptions.Center;
 			numbersField.Orientation = StackOrientation.Vertical;
 
 			// Сборка поля ввода матрицы
-			List<StackLayout> numbersSL = new List<StackLayout> ();
+			List<StackLayout> numbersSL = [];
 
 			for (int i = 0; i < SudokuSolverMath.FullSize; i++)
 				{
@@ -95,7 +107,7 @@ namespace RD_AAOW
 				// Добавление строковых полей и вертикальных пробелов
 				if ((i % SudokuSolverMath.SideSize) == 0)
 					{
-					StackLayout sl = new StackLayout ();
+					StackLayout sl = [];
 					sl.Orientation = StackOrientation.Horizontal;
 					sl.HorizontalOptions = LayoutOptions.Center;
 					numbersSL.Add (sl);
@@ -136,14 +148,14 @@ namespace RD_AAOW
 			inputField.HorizontalOptions = inputField.VerticalOptions = LayoutOptions.Center;
 			inputField.Orientation = StackOrientation.Vertical;
 
-			List<StackLayout> inputSL = new List<StackLayout> ();
+			List<StackLayout> inputSL = [];
 
 			for (int i = 9; i >= 0; i--)
 				{
 				// Добавление строковых полей
 				if (i % 3 == 0)
 					{
-					StackLayout sl = new StackLayout ();
+					StackLayout sl = [];
 					sl.Orientation = StackOrientation.Horizontal;
 					sl.HorizontalOptions = LayoutOptions.Center;
 					inputSL.Add (sl);
@@ -186,7 +198,7 @@ namespace RD_AAOW
 			msp.WidthRequest = msp.HeightRequest = 10;
 			inputField.Add (msp);
 
-			StackLayout msl = new StackLayout ();
+			StackLayout msl = [];
 			msl.Orientation = StackOrientation.Horizontal;
 			msl.HorizontalOptions = LayoutOptions.Center;
 			inputSL.Add (msl);
@@ -284,6 +296,7 @@ namespace RD_AAOW
 
 			// Отображение подсказок первого старта
 			ShowStartupTips ();
+			return mainPage;
 			}
 
 		// Метод отображает подсказки при первом запуске
@@ -294,17 +307,11 @@ namespace RD_AAOW
 				await RDInterface.XPUNLoop ();
 
 			// Требование принятия Политики
-			/*if (((TipTypes)RDGenerics.TipsState).HasFlag (TipTypes.PolicyTip))
-				return;
-
+			/*if (!((TipTypes)RDGenerics.TipsState).HasFlag (TipTypes.PolicyTip))
+				{*/
 			await RDInterface.PolicyLoop ();
-			RDGenerics.TipsState |= (uint)TipTypes.PolicyTip;*/
-
-			if (!((TipTypes)RDGenerics.TipsState).HasFlag (TipTypes.PolicyTip))
-				{
-				await RDInterface.PolicyLoop ();
-				RDGenerics.TipsState |= (uint)TipTypes.PolicyTip;
-				}
+			/*RDGenerics.TipsState |= (uint)TipTypes.PolicyTip;
+			}*/
 
 			// Приветствие
 			if (!((TipTypes)RDGenerics.TipsState).HasFlag (TipTypes.WelcomeTip))
@@ -320,34 +327,22 @@ namespace RD_AAOW
 		/// </summary>
 		protected override void OnSleep ()
 			{
+			// Сброс текущего решения
+			ClearSolution_Clicked (null, null);
+
+			// Сохранение
 			FlushMatrix ();
 			}
-
-		/*/// <summary>
-		/// Возвращает или задаёт состав флагов просмотра справочных сведений
-		/// </summary>
-		public static TipTypes TipsState
-			{
-			get
-				{
-				return (TipTypes)RDGenerics.GetSettings (tipsStatePar, 0);
-				}
-			set
-				{
-				RDGenerics.SetSettings (tipsStatePar, (uint)value);
-				}
-			}
-		private const string tipsStatePar = "TipsState";*/
 
 		/// <summary>
 		/// Доступные типы уведомлений
 		/// </summary>
 		public enum TipTypes
 			{
-			/// <summary>
+			/*/// <summary>
 			/// Принятие Политики
 			/// </summary>
-			PolicyTip = 0x01,
+			PolicyTip = 0x01,*/
 
 			/// <summary>
 			/// Первая подсказка
@@ -402,35 +397,34 @@ namespace RD_AAOW
 			// Выбор варианта
 			if (menuVariants.Count < 1)
 				{
-				menuVariants.Add (new List<string> ());
+				menuVariants.Add ([]);
 				menuVariants[0].Add ("🔢\t " + RDLocale.GetText ("Menu0"));
 				menuVariants[0].Add ("🕹\t " + RDLocale.GetText ("Menu1"));
 				menuVariants[0].Add ("📱\t " + RDLocale.GetText ("ModeButton"));   // [8]
 				menuVariants[0].Add ("⚙️\t " + RDLocale.GetText ("Menu2"));
 				menuVariants[0].Add ("ℹ️\t " + RDLocale.GetDefaultText (RDLDefaultTexts.Control_AppAbout));
 
-				menuVariants.Add (new List<string> ());
+				menuVariants.Add ([]);
 				menuVariants[1].Add ("✅\t " + RDLocale.GetText ("SolveButton"));   // [0]
 				menuVariants[1].Add ("↩️\t " + RDLocale.GetText ("ClearSolution"));    // [2]
 				menuVariants[1].Add ("❌\t " + RDLocale.GetText ("ResetField"));    // [3]
 				menuVariants[1].Add ("📄\t " + RDLocale.GetText ("LoadFromFile")); // [5]
 				menuVariants[1].Add ("💾\t " + RDLocale.GetText ("SaveToFile"));   // [6]
 
-				menuVariants.Add (new List<string> ());
+				menuVariants.Add ([]);
 				menuVariants[2].Add ("🆕\t " + RDLocale.GetText ("GenerateMatrix"));   // [4]
 				menuVariants[2].Add ("☑️\t " + RDLocale.GetText ("CheckSolutionButton"));  // [1]
 				menuVariants[2].Add ("📊\t " + RDLocale.GetText ("StatsButton"));  // [9]
 
-				menuVariants.Add (new List<string> ());
+				menuVariants.Add ([]);
 				menuVariants[3].Add ("🔢\t " + RDLocale.GetText ("KeyboardButton"));   // [7]
 				menuVariants[3].Add ("🔳\t " + RDLocale.GetText ("ColorScheme"));  // [10]
 				menuVariants[3].Add ("*️⃣\t " + RDLocale.GetText ("CellsAppearance"));  // [10]
 				}
-			/*List<int> directMenu = new List<int> { 2, 4 };*/
-			List<List<int>> indirectMenu = new List<List<int>> {
-				new List<int> { 0, 1, 3 },
-				new List<int> { 1, 2, 3 },
-				};
+			List<List<int>> indirectMenu = [
+				[ 0, 1, 3 ],
+				[ 1, 2, 3 ],
+				];
 
 			// Верхнее меню
 			int firstMenu = await RDInterface.ShowList (RDLocale.GetText ("MenuButton") + ":",
@@ -439,7 +433,6 @@ namespace RD_AAOW
 				return;
 
 			// Второе меню
-			/*if (firstMenu < 3)*/
 			if (indirectMenu[0].Contains (firstMenu))
 				{
 				firstMenu = indirectMenu[1][indirectMenu[0].IndexOf (firstMenu)];
@@ -532,13 +525,15 @@ namespace RD_AAOW
 			}
 
 		// Метод применяет штраф
-		private void ApplyPenalty ()
+		private static void ApplyPenalty ()
 			{
 			uint score = SudokuSolverMath.GetScore (ScoreTypes.Penalty);
-			if (score > SudokuSolverMath.TotalScore)
+			/*if (score > SudokuSolverMath.TotalScore)
 				score = SudokuSolverMath.TotalScore;
 
-			SudokuSolverMath.TotalScore -= score;
+			SudokuSolverMath.TotalScore -= score;*/
+			SudokuSolverMath.UpdateGameScore (true, score);
+
 			string text = "❌ " + RDLocale.GetText ("SolutionIsIncorrect");
 			if (SudokuSolverMath.GameMode != MatrixDifficulty.None)
 				text += (RDLocale.RNRN + "–" + score.ToString () + " 💎");
@@ -685,7 +680,6 @@ namespace RD_AAOW
 		private async Task<bool> FindSolution (bool LoadResults)
 			{
 			// Остановка решения
-			/*if (!master Field.IsEnabled)*/
 			if (!numbersField.IsEnabled)
 				{
 				SudokuSolverMath.RequestStop ();
@@ -741,7 +735,7 @@ namespace RD_AAOW
 					return false;
 
 				case SolutionResults.SearchAborted: // Не перекрашивать поле
-					return true;	// Не считать нарушением правил
+					return true;    // Не считать нарушением правил
 				}
 
 			// Игровой режим
@@ -772,7 +766,8 @@ namespace RD_AAOW
 					if (emptyCellsCount < 2)
 						score += SudokuSolverMath.GetScore (ScoreTypes.GameCompletion);
 
-					SudokuSolverMath.TotalScore += score;
+					/*SudokuSolverMath.TotalScore += score;*/
+					SudokuSolverMath.UpdateGameScore (false, score);
 
 					// Отображение результата и отключение игрового режима до следующей генерации
 					RDInterface.ShowBalloon ("✅ " + RDLocale.GetText ("SolutionIsCorrect") + RDLocale.RNRN +
@@ -820,7 +815,7 @@ namespace RD_AAOW
 			}
 
 		// Метод отображает игровую статистику
-		private async Task<bool> ShowScore (bool AsWin)
+		private static async Task<bool> ShowScore (bool AsWin)
 			{
 			// Сборка
 			string text = "";
@@ -828,11 +823,17 @@ namespace RD_AAOW
 			if (AsWin)
 				text += (RDLocale.GetText ("SolvedText") + RDLocale.RNRN);
 
-			text += (RDLocale.GetText ("StatsText") + RDLocale.RNRN);
-			text += ("💎\t" + SudokuSolverMath.TotalScore.ToString ("#,#0") + "\t\t");
+			string[] stats = SudokuSolverMath.StatsValues;
+			/*text += ("💎\t" + SudokuSolverMath.TotalScore.ToString ("#,#0") + "\t\t");
 			text += ("🟢\t" + SudokuSolverMath.EasyScore.ToString () + "\t\t");
 			text += ("🟡\t" + SudokuSolverMath.MediumScore.ToString () + "\t\t");
-			text += ("🔴\t" + SudokuSolverMath.HardScore.ToString ());
+			text += ("🔴\t" + SudokuSolverMath.HardScore.ToString ());*/
+			string s0 = ("💎\t" + stats[0] + "\t\t");
+			s0 += ("🟢\t" + stats[1] + "\t\t");
+			s0 += ("🟡\t" + stats[2] + "\t\t");
+			s0 += ("🔴\t" + stats[3]);
+
+			text += (string.Format (RDLocale.GetText ("StatsText"), s0, stats[4], stats[5]) + RDLocale.RNRN);
 
 			// Отображение
 			if (AsWin)

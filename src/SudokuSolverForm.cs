@@ -14,11 +14,11 @@ namespace RD_AAOW
 		{
 		// Переменные и константы
 		private const int buttonSize = 30;
-		private List<Button> buttons = new List<Button> ();
+		private List<Button> buttons = [];
 		private Button newGameButton, checkButton, clearButton;
 
-		private ContextMenu appearanceMenu = new ContextMenu ();
-		private ContextMenu colorSchemeMenu = new ContextMenu ();
+		private ContextMenuStrip appearanceMenu;
+		private ContextMenuStrip colorSchemeMenu;
 
 		/// <summary>
 		/// Конструктор. Настраивает главную форму приложения
@@ -30,8 +30,11 @@ namespace RD_AAOW
 			RDGenerics.LoadWindowDimensions (this);
 
 			this.Text = ProgramDescription.AssemblyTitle;
-			/*this.ClientSize = new Size ((int)(SudokuSolverMath.SideSize + 2) * buttonSize,
-				(int)(SudokuSolverMath.SideSize + 2) * buttonSize + 3 * buttonSize);*/
+
+			appearanceMenu = new ContextMenuStrip ();
+			appearanceMenu.ShowImageMargin = false;
+			colorSchemeMenu = new ContextMenuStrip ();
+			colorSchemeMenu.ShowImageMargin = false;
 
 			// Формирование поля
 			for (int r = 0; r < SudokuSolverMath.SideSize; r++)
@@ -63,6 +66,7 @@ namespace RD_AAOW
 			newGameButton = new Button ();
 			checkButton = new Button ();
 			clearButton = new Button ();
+
 			LocalizeForm ();
 
 			newGameButton.TextAlign = checkButton.TextAlign = clearButton.TextAlign =
@@ -122,15 +126,15 @@ namespace RD_AAOW
 			OFDialog.Filter = SFDialog.Filter = RDLocale.GetText ("OFFilter");
 
 			// Контекстные меню
-			appearanceMenu.MenuItems.Clear ();
+			appearanceMenu.Items.Clear ();
 			for (uint i = 0; i < SudokuSolverMath.CellsAppearancesCount; i++)
-				appearanceMenu.MenuItems.Add (new MenuItem (SudokuSolverMath.GetCellsAppearanceName (i),
-					ChangeAppearance));
+				appearanceMenu.Items.Add (SudokuSolverMath.GetCellsAppearanceName (i), null,
+					ChangeAppearance);
 
-			colorSchemeMenu.MenuItems.Clear ();
+			colorSchemeMenu.Items.Clear ();
 			for (uint i = 0; i < SudokuSolverMath.ColorSchemesCount; i++)
-				colorSchemeMenu.MenuItems.Add (new MenuItem (RDLocale.GetText ("Color" + i.ToString ()),
-					ChangeColorScheme));
+				colorSchemeMenu.Items.Add (RDLocale.GetText ("Color" + i.ToString ()), null,
+					ChangeColorScheme);
 
 			// Вспомогательные кнопки
 			newGameButton.Text = RDLocale.GetText ("NewGameButton");
@@ -258,7 +262,8 @@ namespace RD_AAOW
 		private void OFDialog_FileOk (object sender, CancelEventArgs e)
 			{
 			// Попытка считывания файла
-			string file = "";
+			/*string file = "";*/
+			string file;
 			try
 				{
 				file = File.ReadAllText (OFDialog.FileName, RDGenerics.GetEncoding (RDEncodings.UTF8));
@@ -457,7 +462,6 @@ namespace RD_AAOW
 					return false;
 
 				case SolutionResults.SearchAborted: // Не перекрашивать поле
-					/*return false;*/
 					return true;    // Не считать нарушением правил
 				}
 
@@ -489,7 +493,7 @@ namespace RD_AAOW
 					if (emptyCellsCount < 2)
 						score += SudokuSolverMath.GetScore (ScoreTypes.GameCompletion);
 
-					SudokuSolverMath.TotalScore += score;
+					SudokuSolverMath.UpdateGameScore (false, score);
 
 					// Отображение результата и отключение игрового режима до следующей генерации
 					RDInterface.MessageBox (RDMessageTypes.Success_Center,
@@ -541,6 +545,9 @@ namespace RD_AAOW
 		// Закрытие окна
 		private void SudokuSolverForm_FormClosing (object sender, FormClosingEventArgs e)
 			{
+			// Отмена текущего решения
+			MClear_Click (null, null);
+
 			// Сохранение поля судоку
 			FlushMatrix ();
 
@@ -591,13 +598,15 @@ namespace RD_AAOW
 			}
 
 		// Метод применяет штраф
-		private void ApplyPenalty ()
+		private static void ApplyPenalty ()
 			{
 			uint score = SudokuSolverMath.GetScore (ScoreTypes.Penalty);
-			if (score > SudokuSolverMath.TotalScore)
+			/*if (score > SudokuSolverMath.TotalScore)
 				score = SudokuSolverMath.TotalScore;
 
-			SudokuSolverMath.TotalScore -= score;
+			SudokuSolverMath.TotalScore -= score;*/
+			SudokuSolverMath.UpdateGameScore (true, score);
+
 			string text = RDLocale.GetText ("SolutionIsIncorrect");
 			if (SudokuSolverMath.GameMode != MatrixDifficulty.None)
 				{
@@ -623,8 +632,9 @@ namespace RD_AAOW
 			text += ("🟢\t" + SudokuSolverMath.EasyScore.ToString () + "\t\t");
 			text += ("🟡\t" + SudokuSolverMath.MediumScore.ToString () + "\t\t");
 			text += ("🔴\t" + SudokuSolverMath.HardScore.ToString ());*/
-			text += string.Format (RDLocale.GetText ("StatsText"), SudokuSolverMath.TotalScore.ToString ("#,#0"),
-				SudokuSolverMath.EasyScore, SudokuSolverMath.MediumScore, SudokuSolverMath.HardScore);
+			string[] stats = SudokuSolverMath.StatsValues;
+			text += string.Format (RDLocale.GetText ("StatsText"), stats[0], stats[1], stats[2],
+				stats[3], stats[4], stats[5]);
 
 			RDInterface.MessageBox (RDMessageTypes.Success_Center, text);
 			}
@@ -637,14 +647,15 @@ namespace RD_AAOW
 
 		private void ChangeAppearance (object sender, EventArgs e)
 			{
-			int res;
+			/*int res;
 			if (sender == null)
 				{
 				res = (int)SudokuSolverMath.CellsAppearance;
 				}
-			else
+			else*/
+			if (sender != null)
 				{
-				res = appearanceMenu.MenuItems.IndexOf ((MenuItem)sender);
+				int res = appearanceMenu.Items.IndexOf ((ToolStripItem)sender);
 
 				// Подготовка к настройке для неначального вызова
 				FlushMatrix ();
@@ -656,8 +667,6 @@ namespace RD_AAOW
 			for (int i = 0; i < buttons.Count; i++)
 				{
 				buttons[i].Text = SudokuSolverMath.GetAppearance (line[i].ToString ());
-				/*buttons[i].Font = new Font (buttons[i].Font.FontFamily,
-					(float)SudokuSolverMath.CellsAppearancesFontSize);*/
 
 				if ((sender == null) && !SudokuSolverMath.CheckCondition (buttons[i], ConditionTypes.IsEmpty))
 					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.OldColor);
@@ -672,14 +681,15 @@ namespace RD_AAOW
 
 		private void ChangeColorScheme (object sender, EventArgs e)
 			{
-			int res;
+			/*int res;
 			if (sender == null)
 				{
 				res = (int)SudokuSolverMath.ColorScheme;
 				}
-			else
+			else*/
+			if (sender != null)
 				{
-				res = colorSchemeMenu.MenuItems.IndexOf ((MenuItem)sender);
+				int res = colorSchemeMenu.Items.IndexOf ((ToolStripItem)sender);
 				SudokuSolverMath.ColorScheme = (ColorSchemes)res;
 				}
 

@@ -1,8 +1,10 @@
 Sudoku solver: changes log
 
-ToDo:
-- Выполнять отмену решения при выходе из приложения для исключения блокировки некорректного ввода как проверенного
-- Max moves without pause
+Version 5.0:
+• App now can show the best solution time and the longest chain without checking;
+• The current unchecked solution will be discarded when exiting the app to avoid
+  locking invalid values as checked;
+• Windows: the application has been migrated to .NET 9.0 from .NET Framework 4.8.1
 
 Version 4.9.5:
 • Android: added the tip for the first start;

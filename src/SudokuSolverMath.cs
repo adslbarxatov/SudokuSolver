@@ -4,9 +4,9 @@ using System.Collections.Generic;
 #if ANDROID
 	using Microsoft.Maui.Controls;
 #else
-	using System.ComponentModel;
-	using System.Drawing;
-	using System.Windows.Forms;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 #endif
 
 namespace RD_AAOW
@@ -361,6 +361,10 @@ namespace RD_AAOW
 		private const string colorSchemePar = "ColorScheme";
 		private const string cellsAppearancePar = "CellsAppearance";
 
+		private const string gameStartDatePar = "GameStartDate";
+		/*private const string bestTimePar = "BestTime";
+		private const string bestChainPar = "BestChain";*/
+
 		#endregion
 
 		#region Поля
@@ -372,9 +376,9 @@ namespace RD_AAOW
 		private static Byte[,] resultMatrix;
 
 		// Поля, обеспечивающие разбор сохранённой статистики игры
-		private static uint[] gameScore = new uint[] { 0, 0, 0, 0, 0 };
-		private const int gameScoreSize = 4;
-		private static char[] gameScoreSplitter = new char[] { '\t' };
+		private static uint[] gameScore = [0, 0, 0, 0, 0, uint.MaxValue, 0];
+		private const int gameScoreSize = 6;
+		private static char[] gameScoreSplitter = ['\t'];
 
 #if !ANDROID
 
@@ -396,94 +400,85 @@ namespace RD_AAOW
 		private static SolutionResults currentStatus = SolutionResults.NotInited;
 
 		// Цветовая схема
-		private static Color[][] colors = new Color[][] {
+		private static Color[][] colors = [
 			// Цвета новых, ошибочных и решённых ячеек
 #if ANDROID
-			new Color[] { Color.FromArgb ("#0000FF"), Color.FromArgb ("#FFFF40") },
-			new Color[] { Color.FromArgb ("#C80000"), Color.FromArgb ("#FF4040") },
-			new Color[] { Color.FromArgb ("#00C800"), Color.FromArgb ("#40FF40") },
+			[ Color.FromArgb ("#0000FF"), Color.FromArgb ("#FFFF40") ],
+			[ Color.FromArgb ("#C80000"), Color.FromArgb ("#FF4040") ],
+			[ Color.FromArgb ("#00C800"), Color.FromArgb ("#40FF40") ],
 #else
-			new Color[] { Color.FromArgb (0, 0, 255), Color.FromArgb (255, 255, 64) },
-			new Color[] { Color.FromArgb (200, 0, 0), Color.FromArgb (255, 64, 64) },
-			new Color[] { Color.FromArgb (0, 200, 0), Color.FromArgb (64, 255, 64) },
+			[ Color.FromArgb (0, 0, 255), Color.FromArgb (255, 255, 64) ],
+			[ Color.FromArgb (200, 0, 0), Color.FromArgb (255, 64, 64) ],
+			[ Color.FromArgb (0, 200, 0), Color.FromArgb (64, 255, 64) ],
 #endif
 
 			// Цвет имеющегося значения
-			new Color[] { RDInterface.GetInterfaceColor (RDInterfaceColors.AndroidTextColor),
-				RDInterface.GetInterfaceColor (RDInterfaceColors.MediumGrey) },
+			[ RDInterface.GetInterfaceColor (RDInterfaceColors.AndroidTextColor),
+				RDInterface.GetInterfaceColor (RDInterfaceColors.MediumGrey) ],
 
 			// Цвет фона страницы или окна; цвет кнопок; цвет невыбранных и выбранных ячеек
 #if ANDROID
-			new Color[] { Color.FromArgb ("#FFFFE7"), Color.FromArgb ("#1C201C"), },
-			new Color[] { Color.FromArgb ("#FFFFDE"), Color.FromArgb ("#222822"), },
-			new Color[] { Color.FromArgb ("#C0FFFF"), Color.FromArgb ("#381C38"), },
-			new Color[] { Color.FromArgb ("#00FFFF"), Color.FromArgb ("#603060"), },
+			[ Color.FromArgb ("#FFFFE7"), Color.FromArgb ("#1C201C"), ],
+			[ Color.FromArgb ("#FFFFDE"), Color.FromArgb ("#222822"), ],
+			[ Color.FromArgb ("#C0FFFF"), Color.FromArgb ("#381C38"), ],
+			[ Color.FromArgb ("#00FFFF"), Color.FromArgb ("#603060"), ],
 #else
-			new Color[] { Color.FromArgb (255, 255, 231), Color.FromArgb (28, 32, 28), },
-			new Color[] { Color.FromArgb (255, 255, 222), Color.FromArgb (34, 40, 34), },
-			new Color[] { Color.FromArgb (192, 255, 255), Color.FromArgb (56, 28, 56), },
-			new Color[] { Color.FromArgb (0, 255, 255), Color.FromArgb (96, 48, 96), },
+			[ Color.FromArgb (255, 255, 231), Color.FromArgb (28, 32, 28), ],
+			[ Color.FromArgb (255, 255, 222), Color.FromArgb (34, 40, 34), ],
+			[ Color.FromArgb (192, 255, 255), Color.FromArgb (56, 28, 56), ],
+			[ Color.FromArgb (0, 255, 255), Color.FromArgb (96, 48, 96), ],
 #endif
-			};
+			];
 
 		// Индекс текущей цветовой схемы
 		private static int colorIndex = 0;
 
 		// Файловые разделители
-		private static string[] fileSplitters = new string[] { "\r", "\n", "\t", " ", ";" };
+		private static string[] fileSplitters = ["\r", "\n", "\t", " ", ";"];
 
 		// Уровень сложности генерируемой матрицы
 		private static MatrixDifficulty difficulty;
 
 		// Варианты представления значений в ячейках
-		private static List<List<string>> cellsApps = new List<List<string>> {
-			new List<string> { "1", "2", "3", "4", "5", "6", "7", "8", "9" },
-			/*new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I" },*/
-			new List<string> { "a", "b", "c", "d", "e", "f", "g", "h", "i" },
-			/*new List<string> { "А", "Б", "В", "Г", "Д", "Е", "Ж", "З", "И" },*/
-			new List<string> { "а", "б", "в", "г", "д", "е", "ж", "з", "и" },
-			/*new List<string> { "Α", "Β", "Γ", "Δ", "Ε", "Ζ", "Η", "Θ", "Ι" },*/
-			new List<string> { "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι" },
-			new List<string> { "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ" },
+		private static List<List<string>> cellsApps = [
+			[ "1", "2", "3", "4", "5", "6", "7", "8", "9" ],
+			[ "a", "b", "c", "d", "e", "f", "g", "h", "i" ],
+			[ "а", "б", "в", "г", "д", "е", "ж", "з", "и" ],
+			[ "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι" ],
+			[ "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ" ],
 #if ANDROID
-			new List<string> {
-				"     \n  ●  \n     ",
-				"    ●\n     \n●    ",
-				"    ●\n  ●  \n●    ",
-				"●   ●\n     \n●   ●",
-				"●   ●\n  ●  \n●   ●",
-				"●   ●\n●   ●\n●   ●",
-				"●   ●\n● ● ●\n●   ●",
-				"● ● ●\n●   ●\n● ● ●",
-				"● ● ●\n● ● ●\n● ● ●",
-				},
-			new List<string> { "❤️", "🧡", "💛", "💚", "🩵", "💙", "💜", "🩷", "🤍" },
-			new List<string> { "🍎", "🍊", "🍋", "🍏", "🧊", "🫐", "🍇", "🍗", "🥚" },
+			[
+			"     \n  ●  \n     ",
+			"    ●\n     \n●    ",
+			"    ●\n  ●  \n●    ",
+			"●   ●\n     \n●   ●",
+			"●   ●\n  ●  \n●   ●",
+			"●   ●\n●   ●\n●   ●",
+			"●   ●\n● ● ●\n●   ●",
+			"● ● ●\n●   ●\n● ● ●",
+			"● ● ●\n● ● ●\n● ● ●",
+			],
+			[ "❤️", "🧡", "💛", "💚", "🩵", "💙", "💜", "🩷", "🤍" ],
+			[ "🍎", "🍊", "🍋", "🍏", "🧊", "🫐", "🍇", "🍗", "🥚" ],
 #endif
-			};
-		private static string[][] cellsAppsNames = new string[][] {
-			new string[] { "Цифры", "Digits" },
-			/*new string[] { "Латинские прописные буквы", "Latin uppercase letters" },*/
-			new string[] { "Латинские буквы", "Latin letters" },
-			/*new string[] { "Русские прописные буквы", "Cyrillic uppercase letters" },*/
-			new string[] { "Русские буквы", "Cyrillic letters" },
-			/*new string[] { "Греческие прописные буквы", "Greek uppercase letters" },*/
-			new string[] { "Греческие буквы", "Greek letters" },
-			new string[] { "Римские цифры", "Roman numerals" },
+			];
+		private static string[][] cellsAppsNames = [
+			[ "Цифры", "Digits" ],
+			[ "Латинские буквы", "Latin letters" ],
+			[ "Русские буквы", "Cyrillic letters" ],
+			[ "Греческие буквы", "Greek letters" ],
+			[ "Римские цифры", "Roman numerals" ],
 #if ANDROID
-			new string[] { "Точки", "Dots" },
-			new string[] { "Радуга", "Rainbow" },
-			new string[] { "Еда", "Food" },
+			[ "Точки", "Dots" ],
+			[ "Радуга", "Rainbow" ],
+			[ "Еда", "Food" ],
 #endif
-			};
+			];
 
 #if ANDROID
 
-		private static double[] cellsAppsFontSizes = new double[] {
+		private static double[] cellsAppsFontSizes = [
 			1.25,
-			/*1.25,
-			1.25,
-			1.25,*/
 			1.25,
 			1.25,
 			1.25,
@@ -491,7 +486,7 @@ namespace RD_AAOW
 			0.55,
 			1.55,
 			1.55,
-			};
+			];
 
 #endif
 
@@ -680,7 +675,7 @@ namespace RD_AAOW
 				}
 			}
 
-		/// <summary>
+		/*/// <summary>
 		/// Возвращает или задаёт суммарный счёт игрового режима
 		/// </summary>
 		public static uint TotalScore
@@ -726,7 +721,7 @@ namespace RD_AAOW
 				{
 				return GetGameScore (3);
 				}
-			}
+			}*/
 
 		/// <summary>
 		/// Возвращает цвет фона страницы или окна для текущей цветовой схемы
@@ -786,6 +781,87 @@ namespace RD_AAOW
 			}
 
 #endif
+
+		// Возвращает или задаёт временной штамп начала игры
+		private static DateTime GameStartDate
+			{
+			get
+				{
+				string date = RDGenerics.GetSettings (gameStartDatePar, "");
+				try
+					{
+					return DateTime.Parse (date, RDLocale.GetCulture (RDLanguages.en_us));
+					}
+				catch
+					{
+					return new DateTime (2025, 1, 1, 0, 0, 0);
+					}
+				}
+			set
+				{
+				RDGenerics.SetSettings (gameStartDatePar,
+					value.ToString (RDLocale.GetCulture (RDLanguages.en_us)));
+				}
+			}
+
+		/*// Возвращает или задаёт лучшее время прохождения игры
+		private static uint BestTime
+			{
+			get
+				{
+				return RDGenerics.GetSettings (bestTimePar, 0);
+				}
+			set
+				{
+				RDGenerics.SetSettings (bestTimePar, value);
+				}
+			}
+
+		// Возвращает или задаёт лучшую длину цепочки
+		private static uint BestChain
+			{
+			get
+				{
+				return RDGenerics.GetSettings (bestChainPar, 0);
+				}
+			set
+				{
+				RDGenerics.SetSettings (bestChainPar, value);
+				}
+			}*/
+
+		/// <summary>
+		/// Возвращает список полей статистики в следующем порядке:
+		/// - общий выигрыш игрока
+		/// - число завершённых простых игр
+		/// - число завершённых средних игр
+		/// - число завершённых сложных игр
+		/// - лучшее время прохождения
+		/// - самая длинная цепочка без проверок
+		/// </summary>
+		public static string[] StatsValues
+			{
+			get
+				{
+				uint bestTime = GetGameScore (5);
+				bool showTime = (bestTime <= 60 * 60 * 24 * 7);
+
+				string s = (bestTime % 60).ToString ("D2");
+				bestTime /= 60;
+				string m = (bestTime % 60).ToString ("D2");
+				bestTime /= 60;
+				string h = bestTime.ToString ();
+
+				return [
+					gameScore[0].ToString ("#,#0"),
+					gameScore[1].ToString (),
+					gameScore[2].ToString(),
+					gameScore[3].ToString(),
+					showTime ? (h + ":" + m + ":" + s) : "—",
+					GetGameScore(4).ToString (),
+					];
+				}
+			}
 
 		#endregion
 
@@ -1150,7 +1226,7 @@ namespace RD_AAOW
 		private static bool FillMatrix ()
 			{
 			// Заполнение всех возможных вероятностей
-			List<int> cells = new List<int> ();
+			List<int> cells = [];
 			for (UInt16 i = 0; i < SideSize; i++)
 				{
 				for (UInt16 j = 0; j < SideSize; j++)
@@ -1176,7 +1252,7 @@ namespace RD_AAOW
 				if (value == 0) // Такого не должно быть, но почему-то бывает
 					return false;
 
-				List<uint> digits = new List<uint> ();
+				List<uint> digits = [];
 				for (int b = 0; b < SideSize; b++)
 					if ((value & (1 << b)) != 0)
 						digits.Add ((uint)b + 1);
@@ -1218,19 +1294,20 @@ namespace RD_AAOW
 					}
 #endif
 				string[] values = line.Split (gameScoreSplitter, StringSplitOptions.RemoveEmptyEntries);
-				if (values.Length != gameScoreSize)
+				if (values.Length < 4)
 					return gameScore[Item];
 
-				try
-					{
-					for (int i = 0; i < gameScoreSize; i++)
+				for (int i = 0; i < gameScoreSize; i++)
+					try
+						{
 						gameScore[i] = uint.Parse (values[i]);
-					}
-				catch
-					{
-					for (int i = 0; i < gameScoreSize; i++)
+						if ((i == 5) && (gameScore[i] < 1))
+							gameScore[i] = uint.MaxValue;
+						}
+					catch
+						{
 						gameScore[i] = 0;
-					}
+						}
 
 				// Успешно
 				}
@@ -1266,17 +1343,58 @@ namespace RD_AAOW
 
 			switch (ScoreType)
 				{
+				// Обычный выигрыш
 				case ScoreTypes.RegularWinning:
 				default:
+					uint v = GetGameScore (4);
+					if (Value > v)
+						SetGameScore (4, Value);
+
 					return multiplier * Value * Value;
 
+				// Штраф
 				case ScoreTypes.Penalty:
 					return 10 * (4 - multiplier);
 
+				// Победа
 				case ScoreTypes.GameCompletion:
+					// Количество выигранных игр
 					gameScore[multiplier]++;
+
+					// Лучшее время
+					TimeSpan ts = DateTime.Now - GameStartDate;
+					if (ts.TotalSeconds <= 60 * 60 * 24 * 7)
+						SetGameScore (5, (uint)ts.TotalSeconds);
+
 					return 1000 * multiplier;
 				}
+			}
+
+		/// <summary>
+		/// Метод обновляет суммарный выигрыш
+		/// </summary>
+		/// <param name="Penalty">Режим штрафа</param>
+		/// <param name="Value">Величина выигрыша или штрафа</param>
+		public static void UpdateGameScore (bool Penalty, uint Value)
+			{
+			// Загрузка значения
+			uint v = GetGameScore (0);
+
+			// Обновление
+			if (Penalty)
+				{
+				if (v > Value)
+					v -= Value;
+				else
+					v = 0;
+				}
+			else
+				{
+				v += Value;
+				}
+
+			// Запись значения
+			SetGameScore (0, v);
 			}
 
 		#endregion
@@ -1471,6 +1589,7 @@ namespace RD_AAOW
 		public static void SetGenerationDifficulty (MatrixDifficulty Difficulty)
 			{
 			difficulty = Difficulty;
+			GameStartDate = DateTime.Now;
 			}
 
 #if ANDROID
