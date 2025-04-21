@@ -30,6 +30,12 @@ namespace RD_AAOW
 		// Номер текущей выбранной кнопки
 		private int currentButtonIndex = -1;
 
+		// Префиксы режимов
+		private const string easyPrefix = "🟢\t ";
+		private const string mediumPrefix = "🟡\t ";
+		private const string hardPrefix = "🔴\t ";
+		private const string gemSuffix = "💎";
+
 		#endregion
 
 		#region Переменные страниц
@@ -73,15 +79,12 @@ namespace RD_AAOW
 			flags = RDGenerics.GetAppStartupFlags (RDAppStartupFlags.DisableXPUN);
 
 			// Общая конструкция страниц приложения
-			/*MainPage = new MasterPage ();*/
-
 			solutionPage = RDInterface.ApplyPageSettings (new SolutionPage (), "SolutionPage",
 				RDLocale.GetText ("SolutionPage"), stubColor);
 			aboutPage = RDInterface.ApplyPageSettings (new AboutPage (), "AboutPage",
 				RDLocale.GetDefaultText (RDLDefaultTexts.Control_AppAbout),
 				aboutMasterBackColor);
 
-			/*RDInterface.SetMasterPage (MainPage, solutionPage, stubColor);*/
 			RDInterface.SetMasterPage (mainPage, solutionPage, stubColor);
 
 			#region Основная страница
@@ -307,11 +310,7 @@ namespace RD_AAOW
 				await RDInterface.XPUNLoop ();
 
 			// Требование принятия Политики
-			/*if (!((TipTypes)RDGenerics.TipsState).HasFlag (TipTypes.PolicyTip))
-				{*/
 			await RDInterface.PolicyLoop ();
-			/*RDGenerics.TipsState |= (uint)TipTypes.PolicyTip;
-			}*/
 
 			// Приветствие
 			if (!((TipTypes)RDGenerics.TipsState).HasFlag (TipTypes.WelcomeTip))
@@ -339,11 +338,6 @@ namespace RD_AAOW
 		/// </summary>
 		public enum TipTypes
 			{
-			/*/// <summary>
-			/// Принятие Политики
-			/// </summary>
-			PolicyTip = 0x01,*/
-
 			/// <summary>
 			/// Первая подсказка
 			/// </summary>
@@ -528,15 +522,11 @@ namespace RD_AAOW
 		private static void ApplyPenalty ()
 			{
 			uint score = SudokuSolverMath.GetScore (ScoreTypes.Penalty);
-			/*if (score > SudokuSolverMath.TotalScore)
-				score = SudokuSolverMath.TotalScore;
-
-			SudokuSolverMath.TotalScore -= score;*/
 			SudokuSolverMath.UpdateGameScore (true, score);
 
 			string text = "❌ " + RDLocale.GetText ("SolutionIsIncorrect");
 			if (SudokuSolverMath.GameMode != MatrixDifficulty.None)
-				text += (RDLocale.RNRN + "–" + score.ToString () + " 💎");
+				text += (RDLocale.RNRN + "–" + score.ToString () + " " + gemSuffix);
 
 			RDInterface.ShowBalloon (text, true);
 			}
@@ -766,12 +756,11 @@ namespace RD_AAOW
 					if (emptyCellsCount < 2)
 						score += SudokuSolverMath.GetScore (ScoreTypes.GameCompletion);
 
-					/*SudokuSolverMath.TotalScore += score;*/
 					SudokuSolverMath.UpdateGameScore (false, score);
 
 					// Отображение результата и отключение игрового режима до следующей генерации
 					RDInterface.ShowBalloon ("✅ " + RDLocale.GetText ("SolutionIsCorrect") + RDLocale.RNRN +
-						"+" + score.ToString () + " 💎", true);
+						"+" + score.ToString () + " " + gemSuffix, true);
 
 					// Отобразить решение в случае выигрыша (без return; режим игры отключается далее)
 					if (emptyCellsCount < 2)
@@ -823,17 +812,18 @@ namespace RD_AAOW
 			if (AsWin)
 				text += (RDLocale.GetText ("SolvedText") + RDLocale.RNRN);
 
-			string[] stats = SudokuSolverMath.StatsValues;
-			/*text += ("💎\t" + SudokuSolverMath.TotalScore.ToString ("#,#0") + "\t\t");
-			text += ("🟢\t" + SudokuSolverMath.EasyScore.ToString () + "\t\t");
-			text += ("🟡\t" + SudokuSolverMath.MediumScore.ToString () + "\t\t");
-			text += ("🔴\t" + SudokuSolverMath.HardScore.ToString ());*/
+			/*string[] stats = SudokuSolverMath.StatsValues;
 			string s0 = ("💎\t" + stats[0] + "\t\t");
 			s0 += ("🟢\t" + stats[1] + "\t\t");
 			s0 += ("🟡\t" + stats[2] + "\t\t");
 			s0 += ("🔴\t" + stats[3]);
 
-			text += (string.Format (RDLocale.GetText ("StatsText"), s0, stats[4], stats[5]) + RDLocale.RNRN);
+			text += (string.Format (RDLocale.GetText ("StatsText"), s0, stats[4], stats[5]) + RDLocale.RNRN);*/
+			string[] stats = SudokuSolverMath.StatsValuesV3;
+			text += (string.Format (RDLocale.GetText ("StatsText"), gemSuffix + "\t " + stats[0],
+				easyPrefix + stats[1] + "\t\t" + mediumPrefix + stats[2] + "\t\t" + hardPrefix + stats[3],
+				easyPrefix + stats[4] + "\t\t" + mediumPrefix + stats[5] + "\t\t" + hardPrefix + stats[6],
+				easyPrefix + stats[7] + "\t\t" + mediumPrefix + stats[8] + "\t\t" + hardPrefix + stats[9]));
 
 			// Отображение
 			if (AsWin)
@@ -855,7 +845,6 @@ namespace RD_AAOW
 		// Метод выполняет блокировку / разблокировку интерфейса
 		private void SetInterfaceState (bool Enabled)
 			{
-			/*master Field.IsEnabled = menuButton.IsVisible = Enabled;*/
 			numbersField.IsEnabled = menuButton.IsVisible = Enabled;
 			solutionTipLabel.IsVisible = !Enabled;
 			for (int i = 0; i < inputButtons.Count; i++)
@@ -931,9 +920,12 @@ namespace RD_AAOW
 			// Выбор сложности
 			if (difficultyVariants.Count < 1)
 				{
-				difficultyVariants.Add ("🟢\t " + RDLocale.GetText ("Difficulty0"));
+				/*difficultyVariants.Add ("🟢\t " + RDLocale.GetText ("Difficulty0"));
 				difficultyVariants.Add ("🟡\t " + RDLocale.GetText ("Difficulty1"));
-				difficultyVariants.Add ("🔴\t " + RDLocale.GetText ("Difficulty2"));
+				difficultyVariants.Add ("🔴\t " + RDLocale.GetText ("Difficulty2"));*/
+				difficultyVariants.Add (easyPrefix + RDLocale.GetText ("Difficulty0"));
+				difficultyVariants.Add (mediumPrefix + RDLocale.GetText ("Difficulty1"));
+				difficultyVariants.Add (hardPrefix + RDLocale.GetText ("Difficulty2"));
 				}
 
 			int res = await RDInterface.ShowList (RDLocale.GetText ("DifficultyLevel"),
@@ -981,14 +973,15 @@ namespace RD_AAOW
 				appModeVariants.Add ("🕹\t " + RDLocale.GetText ("Mode1"));
 				}
 
-			int res;
+			/*int res;
 			if (Initial)
 				{
 				res = (int)SudokuSolverMath.AppMode;
 				}
-			else
+			else*/
+			if (!Initial)
 				{
-				res = await RDInterface.ShowList (RDLocale.GetText ("ModeButton") + ":",
+				int res = await RDInterface.ShowList (RDLocale.GetText ("ModeButton") + ":",
 					RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel), appModeVariants);
 				if (res < 0)
 					return false;
@@ -1027,14 +1020,15 @@ namespace RD_AAOW
 				colorSchemeVariants.Add ("⚫️\t " + RDLocale.GetText ("Color1"));
 				}
 
-			int res;
+			/*int res;
 			if (Initial)
 				{
 				res = (int)SudokuSolverMath.ColorScheme;
 				}
-			else
+			else*/
+			if (!Initial)
 				{
-				res = await RDInterface.ShowList (RDLocale.GetText ("ColorScheme") + ":",
+				int res = await RDInterface.ShowList (RDLocale.GetText ("ColorScheme") + ":",
 					RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel), colorSchemeVariants);
 				if (res < 0)
 					return false;
@@ -1084,14 +1078,15 @@ namespace RD_AAOW
 					appearanceVariants.Add (SudokuSolverMath.GetCellsAppearanceName (i));
 				}
 
-			int res;
+			/*int res;
 			if (Initial)
 				{
 				res = (int)SudokuSolverMath.CellsAppearance;
 				}
-			else
+			else*/
+			if (!Initial)
 				{
-				res = await RDInterface.ShowList (RDLocale.GetText ("CellsAppearance") + ":",
+				int res = await RDInterface.ShowList (RDLocale.GetText ("CellsAppearance") + ":",
 					RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel), appearanceVariants);
 				if (res < 0)
 					return false;

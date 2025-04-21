@@ -627,14 +627,12 @@ namespace RD_AAOW
 			if (sender == null)
 				text += (RDLocale.GetText ("SolvedText") + RDLocale.RNRN);
 
-			/*text += (RDLocale.GetText ("StatsText") + RDLocale.RNRN);
-			text += ("💎\t" + SudokuSolverMath.TotalScore.ToString ("#,#0") + "\t\t");
-			text += ("🟢\t" + SudokuSolverMath.EasyScore.ToString () + "\t\t");
-			text += ("🟡\t" + SudokuSolverMath.MediumScore.ToString () + "\t\t");
-			text += ("🔴\t" + SudokuSolverMath.HardScore.ToString ());*/
-			string[] stats = SudokuSolverMath.StatsValues;
-			text += string.Format (RDLocale.GetText ("StatsText"), stats[0], stats[1], stats[2],
-				stats[3], stats[4], stats[5]);
+			string[] stats = SudokuSolverMath.StatsValuesV3;
+			string spl = "   -   ";
+			text += string.Format (RDLocale.GetText ("StatsText"), stats[0],
+				stats[1] + spl + stats[2] + spl + stats[3],
+				stats[4] + spl + stats[5] + spl + stats[6],
+				stats[7] + spl + stats[8] + spl + stats[9]);
 
 			RDInterface.MessageBox (RDMessageTypes.Success_Center, text);
 			}

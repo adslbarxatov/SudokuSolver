@@ -4,9 +4,9 @@ using System.Collections.Generic;
 #if ANDROID
 	using Microsoft.Maui.Controls;
 #else
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
+	using System.ComponentModel;
+	using System.Drawing;
+	using System.Windows.Forms;
 #endif
 
 namespace RD_AAOW
@@ -376,8 +376,15 @@ namespace RD_AAOW
 		private static Byte[,] resultMatrix;
 
 		// Поля, обеспечивающие разбор сохранённой статистики игры
-		private static uint[] gameScore = [0, 0, 0, 0, 0, uint.MaxValue, 0];
-		private const int gameScoreSize = 6;
+		private static uint[] gameScoreV3;
+
+		private const byte gameScore_TotalScore = 0;
+		private const byte gameScore_WinsBase = 1;
+		private const byte gameScore_ChainBase = 6;
+		private const byte gameScore_TimeBase = 9;
+		private const int gameScoreSize = 12;
+		private const uint gameScore_TimeLimit = 60 * 60 * 24 * 7;
+
 		private static char[] gameScoreSplitter = ['\t'];
 
 #if !ANDROID
@@ -675,54 +682,6 @@ namespace RD_AAOW
 				}
 			}
 
-		/*/// <summary>
-		/// Возвращает или задаёт суммарный счёт игрового режима
-		/// </summary>
-		public static uint TotalScore
-			{
-			get
-				{
-				return GetGameScore (0);
-				}
-			set
-				{
-				SetGameScore (0, value);
-				}
-			}
-
-		/// <summary>
-		/// Возвращает количество собранных таблиц на простом уровне
-		/// </summary>
-		public static uint EasyScore
-			{
-			get
-				{
-				return GetGameScore (1);
-				}
-			}
-
-		/// <summary>
-		/// Возвращает количество собранных таблиц на среднем уровне
-		/// </summary>
-		public static uint MediumScore
-			{
-			get
-				{
-				return GetGameScore (2);
-				}
-			}
-
-		/// <summary>
-		/// Возвращает количество собранных таблиц на сложном уровне
-		/// </summary>
-		public static uint HardScore
-			{
-			get
-				{
-				return GetGameScore (3);
-				}
-			}*/
-
 		/// <summary>
 		/// Возвращает цвет фона страницы или окна для текущей цветовой схемы
 		/// </summary>
@@ -804,62 +763,59 @@ namespace RD_AAOW
 				}
 			}
 
-		/*// Возвращает или задаёт лучшее время прохождения игры
-		private static uint BestTime
-			{
-			get
-				{
-				return RDGenerics.GetSettings (bestTimePar, 0);
-				}
-			set
-				{
-				RDGenerics.SetSettings (bestTimePar, value);
-				}
-			}
-
-		// Возвращает или задаёт лучшую длину цепочки
-		private static uint BestChain
-			{
-			get
-				{
-				return RDGenerics.GetSettings (bestChainPar, 0);
-				}
-			set
-				{
-				RDGenerics.SetSettings (bestChainPar, value);
-				}
-			}*/
-
 		/// <summary>
-		/// Возвращает список полей статистики в следующем порядке:
+		/// Возвращает список из 10 полей статистики в следующем порядке:
 		/// - общий выигрыш игрока
 		/// - число завершённых простых игр
 		/// - число завершённых средних игр
 		/// - число завершённых сложных игр
-		/// - лучшее время прохождения
-		/// - самая длинная цепочка без проверок
+		/// - лучшее время прохождения среди простых игр
+		/// - лучшее время прохождения среди средних игр
+		/// - лучшее время прохождения среди сложных игр
+		/// - самая длинная цепочка без проверок среди простых игр
+		/// - самая длинная цепочка без проверок среди средних игр
+		/// - самая длинная цепочка без проверок среди сложных игр
 		/// </summary>
-		public static string[] StatsValues
+		public static string[] StatsValuesV3
 			{
 			get
 				{
-				uint bestTime = GetGameScore (5);
-				bool showTime = (bestTime <= 60 * 60 * 24 * 7);
+				List<string> values = [];
+				values.Add (GetGameScoreV3 (gameScore_TotalScore).ToString ("#,#0"));
+				for (byte i = gameScore_WinsBase; i < gameScore_WinsBase + 3; i++)
+					values.Add (GetGameScoreV3 (i).ToString ());
 
-				string s = (bestTime % 60).ToString ("D2");
-				bestTime /= 60;
-				string m = (bestTime % 60).ToString ("D2");
-				bestTime /= 60;
-				string h = bestTime.ToString ();
+				for (byte i = gameScore_TimeBase; i < gameScore_TimeBase + 3; i++)
+					{
+					uint bestTime = GetGameScoreV3 (i);
+					bool showTime = (bestTime <= gameScore_TimeLimit);
 
-				return [
-					gameScore[0].ToString ("#,#0"),
-					gameScore[1].ToString (),
-					gameScore[2].ToString(),
+					if (!showTime)
+						{
+						values.Add ("—");
+						continue;
+						}
+
+					string s = (bestTime % 60).ToString ("D2");
+					bestTime /= 60;
+					string m = (bestTime % 60).ToString ("D2");
+					bestTime /= 60;
+					string h = bestTime.ToString ();
+					values.Add (h + ":" + m + ":" + s);
+					}
+
+				for (byte i = gameScore_ChainBase; i < gameScore_ChainBase + 3; i++)
+					values.Add (GetGameScoreV3 (i).ToString ());
+
+				/*return [
+					gameScoreV3[0].ToString ("#,#0"),
+					gameScoreV3[1].ToString (),
+					gameScoreV3[2].ToString(),
 					gameScore[3].ToString(),
 					showTime ? (h + ":" + m + ":" + s) : "—",
 					GetGameScore(4).ToString (),
-					];
+					];*/
+				return values.ToArray ();
 				}
 			}
 
@@ -1273,12 +1229,19 @@ namespace RD_AAOW
 			}
 
 		// Методы сохранения и загрузки статистики игрового режима
-		private static uint GetGameScore (byte Item)
+		private static uint GetGameScoreV3 (byte Item)
 			{
-			if (gameScore[gameScoreSize] != 1)
+			if (gameScoreV3 == null)
 				{
-				// Флаг инициализации
-				gameScore[gameScoreSize] = 1;
+				// Инициализация
+				gameScoreV3 = new uint[gameScoreSize];
+				for (int i = 0; i < gameScoreSize; i++)
+					{
+					if (i < gameScore_TimeBase)
+						gameScoreV3[i] = 0;	// Чем больше, тем лучше
+					else
+						gameScoreV3[i] = uint.MaxValue;	// Наоборот
+					}
 
 				// Извлечение
 				string line = RDGenerics.GetSettings (gameScorePar, "");
@@ -1295,36 +1258,38 @@ namespace RD_AAOW
 #endif
 				string[] values = line.Split (gameScoreSplitter, StringSplitOptions.RemoveEmptyEntries);
 				if (values.Length < 4)
-					return gameScore[Item];
+					return gameScoreV3[Item];
 
+				// Поля 4 и 5 забракованы ошибочной версией 5.0.0.0, не используются
 				for (int i = 0; i < gameScoreSize; i++)
 					try
 						{
-						gameScore[i] = uint.Parse (values[i]);
-						if ((i == 5) && (gameScore[i] < 1))
-							gameScore[i] = uint.MaxValue;
+						gameScoreV3[i] = uint.Parse (values[i]);
 						}
 					catch
 						{
-						gameScore[i] = 0;
+						if (i < gameScore_TimeBase)
+							gameScoreV3[i] = 0; // Чем больше, тем лучше
+						else
+							gameScoreV3[i] = uint.MaxValue; // Наоборот
 						}
 
 				// Успешно
 				}
 
-			return gameScore[Item];
+			return gameScoreV3[Item];
 			}
 
-		private static void SetGameScore (byte Item, uint Value)
+		private static void SetGameScoreV3 (byte Item, uint Value)
 			{
-			gameScore[Item] = Value;
+			gameScoreV3[Item] = Value;
 
 			string line = "";
 			string sp = gameScoreSplitter[0].ToString ();
 
 			for (int i = 0; i < gameScoreSize - 1; i++)
-				line += (gameScore[i].ToString () + sp);
-			line += gameScore[gameScoreSize - 1].ToString ();
+				line += (gameScoreV3[i].ToString () + sp);
+			line += gameScoreV3[gameScoreSize - 1].ToString ();
 
 #if !ANDROID
 			byte[] conv = RDGenerics.GetEncoding (RDEncodings.Unicode32).GetBytes (line);
@@ -1339,16 +1304,20 @@ namespace RD_AAOW
 			// Контроль
 			if (GameMode == MatrixDifficulty.None)
 				return 0;
-			uint multiplier = (uint)GameMode + 1;
+			byte baseOffset = (byte)GameMode;
+			uint multiplier = (uint)(baseOffset + 1);
+			byte item;
+			uint v;
 
 			switch (ScoreType)
 				{
 				// Обычный выигрыш
 				case ScoreTypes.RegularWinning:
 				default:
-					uint v = GetGameScore (4);
+					item = (byte)(gameScore_ChainBase + baseOffset);
+					v = GetGameScoreV3 (item);
 					if (Value > v)
-						SetGameScore (4, Value);
+						SetGameScoreV3 (item, Value);
 
 					return multiplier * Value * Value;
 
@@ -1359,12 +1328,18 @@ namespace RD_AAOW
 				// Победа
 				case ScoreTypes.GameCompletion:
 					// Количество выигранных игр
-					gameScore[multiplier]++;
+					/*gameScore[multiplier]++;*/
+					item = (byte)(gameScore_WinsBase + baseOffset);
+					v = GetGameScoreV3 (item);
+					SetGameScoreV3 (item, v + 1);
 
 					// Лучшее время
-					TimeSpan ts = DateTime.Now - GameStartDate;
-					if (ts.TotalSeconds <= 60 * 60 * 24 * 7)
-						SetGameScore (5, (uint)ts.TotalSeconds);
+					item = (byte)(gameScore_TimeBase + baseOffset);
+					v = GetGameScoreV3 (item);
+
+					double seconds = (DateTime.Now - GameStartDate).TotalSeconds;
+					if ((seconds <= gameScore_TimeLimit) && (seconds < v))
+						SetGameScoreV3 (item, (uint)seconds);
 
 					return 1000 * multiplier;
 				}
@@ -1378,7 +1353,7 @@ namespace RD_AAOW
 		public static void UpdateGameScore (bool Penalty, uint Value)
 			{
 			// Загрузка значения
-			uint v = GetGameScore (0);
+			uint v = GetGameScoreV3 (gameScore_TotalScore);
 
 			// Обновление
 			if (Penalty)
@@ -1394,7 +1369,7 @@ namespace RD_AAOW
 				}
 
 			// Запись значения
-			SetGameScore (0, v);
+			SetGameScoreV3 (gameScore_TotalScore, v);
 			}
 
 		#endregion

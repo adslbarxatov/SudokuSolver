@@ -201,12 +201,17 @@
   <data name="StatsText" xml:space="preserve">
     <value>Game mode results:
 
-{0:S} points (total)
-{1:S} easy games
-{2:S} medium games
-{3:S} hard games
-Best solution time: {4:S}
-Longest unchecked chain: {5:S}</value>
+Points (total):
+{0:S}
+
+Wins (easy-medium-hard):
+{1:S}
+
+Best solution time (e-m-h):
+{2:S}
+
+Longest unchecked chain (e-m-h):
+{3:S}</value>
   </data>
   <data name="Color0" xml:space="preserve">
     <value>Light</value>
