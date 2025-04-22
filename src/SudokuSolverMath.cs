@@ -349,6 +349,18 @@ namespace RD_AAOW
 		// если активен режим сброса слишком затянувшихся вычислений
 		private const uint dropSolutionLimit = 5;
 
+		// Смещения полей хранения выигрышей
+		private const byte gameScore_TotalScore = 0;
+		private const byte gameScore_WinsBase = 1;
+		private const byte gameScore_ChainBase = 6;
+		private const byte gameScore_TimeBase = 9;
+
+		// Длина массива храрения выигрышей
+		private const int gameScoreSize = 12;
+
+		// Ограничение поля Лучшее время (не более недели)
+		private const uint gameScore_TimeLimit = 60 * 60 * 24 * 7;
+
 		// Имена ключей, используемые для хранения настроек
 #if ANDROID
 		private const string keyboardPlacementsPar = "KeyboardPlacements";
@@ -360,10 +372,7 @@ namespace RD_AAOW
 		private const string gameScorePar = "GameScore";
 		private const string colorSchemePar = "ColorScheme";
 		private const string cellsAppearancePar = "CellsAppearance";
-
 		private const string gameStartDatePar = "GameStartDate";
-		/*private const string bestTimePar = "BestTime";
-		private const string bestChainPar = "BestChain";*/
 
 		#endregion
 
@@ -376,15 +385,9 @@ namespace RD_AAOW
 		private static Byte[,] resultMatrix;
 
 		// Поля, обеспечивающие разбор сохранённой статистики игры
-		private static uint[] gameScoreV3;
+		private static uint[] gameScore;
 
-		private const byte gameScore_TotalScore = 0;
-		private const byte gameScore_WinsBase = 1;
-		private const byte gameScore_ChainBase = 6;
-		private const byte gameScore_TimeBase = 9;
-		private const int gameScoreSize = 12;
-		private const uint gameScore_TimeLimit = 60 * 60 * 24 * 7;
-
+		// Разделитель полей в строке хранения выигрышей
 		private static char[] gameScoreSplitter = ['\t'];
 
 #if !ANDROID
@@ -438,7 +441,7 @@ namespace RD_AAOW
 			];
 
 		// Индекс текущей цветовой схемы
-		private static int colorIndex = 0;
+		private static int colorIndexV3 = 0;
 
 		// Файловые разделители
 		private static string[] fileSplitters = ["\r", "\n", "\t", " ", ";"];
@@ -498,7 +501,7 @@ namespace RD_AAOW
 #endif
 
 		// Индекс текущего представления значений в ячейках
-		private static int cellsAppIndex = 0;
+		private static int cellsAppIndexV3 = 0;
 
 		#endregion
 
@@ -597,13 +600,15 @@ namespace RD_AAOW
 			{
 			get
 				{
-				colorIndex = (int)RDGenerics.GetSettings (colorSchemePar, (uint)ColorSchemes.Light);
-				return (ColorSchemes)colorIndex;
+				colorIndexV3 = (int)RDGenerics.GetSettings (colorSchemePar, (uint)ColorSchemes.Light);
+				if (colorIndexV3 > colors[0].Length)
+					colorIndexV3 = 0;
+				return (ColorSchemes)colorIndexV3;
 				}
 			set
 				{
-				colorIndex = (int)value;
-				RDGenerics.SetSettings (colorSchemePar, (uint)colorIndex);
+				colorIndexV3 = (int)value;
+				RDGenerics.SetSettings (colorSchemePar, (uint)colorIndexV3);
 				}
 			}
 
@@ -614,15 +619,15 @@ namespace RD_AAOW
 			{
 			get
 				{
-				cellsAppIndex = (int)RDGenerics.GetSettings (cellsAppearancePar, (uint)CellsAppearances.Digits);
-				if (cellsAppIndex >= cellsApps.Count)
-					cellsAppIndex = 0;
-				return (CellsAppearances)cellsAppIndex;
+				cellsAppIndexV3 = (int)RDGenerics.GetSettings (cellsAppearancePar, (uint)CellsAppearances.Digits);
+				if (cellsAppIndexV3 >= cellsApps.Count)
+					cellsAppIndexV3 = 0;
+				return (CellsAppearances)cellsAppIndexV3;
 				}
 			set
 				{
-				cellsAppIndex = (int)value;
-				RDGenerics.SetSettings (cellsAppearancePar, (uint)cellsAppIndex);
+				cellsAppIndexV3 = (int)value;
+				RDGenerics.SetSettings (cellsAppearancePar, (uint)cellsAppIndexV3);
 				}
 			}
 
@@ -689,7 +694,8 @@ namespace RD_AAOW
 			{
 			get
 				{
-				return colors[4][colorIndex];
+				_ = ColorScheme;	// Загрузка значения
+				return colors[4][colorIndexV3];
 				}
 			}
 
@@ -724,7 +730,8 @@ namespace RD_AAOW
 			{
 			get
 				{
-				return cellsAppsFontSizes[cellsAppIndex] * RDInterface.MasterFontSize;
+				_ = CellsAppearance;	// Загрузка значения
+				return cellsAppsFontSizes[cellsAppIndexV3] * RDInterface.MasterFontSize;
 				}
 			}
 
@@ -735,7 +742,8 @@ namespace RD_AAOW
 			{
 			get
 				{
-				return (cellsAppsFontSizes[cellsAppIndex] < 1.5);
+				_ = CellsAppearance;
+				return (cellsAppsFontSizes[cellsAppIndexV3] < 1.5);
 				}
 			}
 
@@ -1231,16 +1239,16 @@ namespace RD_AAOW
 		// Методы сохранения и загрузки статистики игрового режима
 		private static uint GetGameScoreV3 (byte Item)
 			{
-			if (gameScoreV3 == null)
+			if (gameScore == null)
 				{
 				// Инициализация
-				gameScoreV3 = new uint[gameScoreSize];
+				gameScore = new uint[gameScoreSize];
 				for (int i = 0; i < gameScoreSize; i++)
 					{
 					if (i < gameScore_TimeBase)
-						gameScoreV3[i] = 0;	// Чем больше, тем лучше
+						gameScore[i] = 0;	// Чем больше, тем лучше
 					else
-						gameScoreV3[i] = uint.MaxValue;	// Наоборот
+						gameScore[i] = uint.MaxValue;	// Наоборот
 					}
 
 				// Извлечение
@@ -1258,38 +1266,38 @@ namespace RD_AAOW
 #endif
 				string[] values = line.Split (gameScoreSplitter, StringSplitOptions.RemoveEmptyEntries);
 				if (values.Length < 4)
-					return gameScoreV3[Item];
+					return gameScore[Item];
 
 				// Поля 4 и 5 забракованы ошибочной версией 5.0.0.0, не используются
 				for (int i = 0; i < gameScoreSize; i++)
 					try
 						{
-						gameScoreV3[i] = uint.Parse (values[i]);
+						gameScore[i] = uint.Parse (values[i]);
 						}
 					catch
 						{
 						if (i < gameScore_TimeBase)
-							gameScoreV3[i] = 0; // Чем больше, тем лучше
+							gameScore[i] = 0; // Чем больше, тем лучше
 						else
-							gameScoreV3[i] = uint.MaxValue; // Наоборот
+							gameScore[i] = uint.MaxValue; // Наоборот
 						}
 
 				// Успешно
 				}
 
-			return gameScoreV3[Item];
+			return gameScore[Item];
 			}
 
 		private static void SetGameScoreV3 (byte Item, uint Value)
 			{
-			gameScoreV3[Item] = Value;
+			gameScore[Item] = Value;
 
 			string line = "";
 			string sp = gameScoreSplitter[0].ToString ();
 
 			for (int i = 0; i < gameScoreSize - 1; i++)
-				line += (gameScoreV3[i].ToString () + sp);
-			line += gameScoreV3[gameScoreSize - 1].ToString ();
+				line += (gameScore[i].ToString () + sp);
+			line += gameScore[gameScoreSize - 1].ToString ();
 
 #if !ANDROID
 			byte[] conv = RDGenerics.GetEncoding (RDEncodings.Unicode32).GetBytes (line);
@@ -1721,8 +1729,9 @@ namespace RD_AAOW
 		public static void SetProperty (Button InterfaceElement, PropertyTypes Property)
 			{
 			// Проверка условия
+			_ = ColorScheme;    // Загрузка значения
 			bool setForeColor = false, setBackColor = false;
-			Color color = colors[3][colorIndex];
+			Color color = colors[3][colorIndexV3];
 
 			switch (Property)
 				{
@@ -1731,17 +1740,17 @@ namespace RD_AAOW
 					break;
 
 				case PropertyTypes.SuccessColor:
-					color = colors[2][colorIndex];
+					color = colors[2][colorIndexV3];
 					setForeColor = true;
 					break;
 
 				case PropertyTypes.ErrorColor:
-					color = colors[1][colorIndex];
+					color = colors[1][colorIndexV3];
 					setForeColor = true;
 					break;
 
 				case PropertyTypes.NewColor:
-					color = colors[0][colorIndex];
+					color = colors[0][colorIndexV3];
 					setForeColor = true;
 					break;
 
@@ -1750,17 +1759,17 @@ namespace RD_AAOW
 					break;
 
 				case PropertyTypes.DeselectedCell:
-					color = colors[6][colorIndex];
+					color = colors[6][colorIndexV3];
 					setBackColor = true;
 					break;
 
 				case PropertyTypes.SelectedCell:
-					color = colors[7][colorIndex];
+					color = colors[7][colorIndexV3];
 					setBackColor = true;
 					break;
 
 				case PropertyTypes.OtherButton:
-					color = colors[5][colorIndex];
+					color = colors[5][colorIndexV3];
 					setBackColor = true;
 					break;
 				}
@@ -1815,7 +1824,8 @@ namespace RD_AAOW
 				return EmptySign;
 
 			// Результат
-			return cellsApps[cellsAppIndex][Value - 1];
+			_ = CellsAppearance;
+			return cellsApps[cellsAppIndexV3][Value - 1];
 			}
 
 		/// <summary>
@@ -1832,7 +1842,8 @@ namespace RD_AAOW
 				return EmptySign;
 
 			// Результат
-			return cellsApps[cellsAppIndex][idx];
+			_ = CellsAppearance;
+			return cellsApps[cellsAppIndexV3][idx];
 			}
 
 		/// <summary>
@@ -1842,7 +1853,8 @@ namespace RD_AAOW
 		/// <returns>Возвращает цифру или 0, если указанное представление не определено</returns>
 		public static Byte GetDigit (string Appearance)
 			{
-			int idx = cellsApps[cellsAppIndex].IndexOf (Appearance);
+			_ = CellsAppearance;
+			int idx = cellsApps[cellsAppIndexV3].IndexOf (Appearance);
 			if (idx < 0)
 				return 0;
 

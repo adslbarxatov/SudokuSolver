@@ -1,5 +1,8 @@
 Sudoku solver: changes log
 
+Version 5.0.2:
+• Fixed some bugs in settings storage
+
 Version 5.0:
 • App now can show the best solution time and the longest chain without checking;
 • The current unchecked solution will be discarded when exiting the app to avoid

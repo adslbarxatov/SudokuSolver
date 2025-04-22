@@ -207,10 +207,10 @@ Points (total):
 Wins (easy-medium-hard):
 {1:S}
 
-Best solution time (e-m-h):
+Best solution time:
 {2:S}
 
-Longest unchecked chain (e-m-h):
+Longest unchecked chain:
 {3:S}</value>
   </data>
   <data name="Color0" xml:space="preserve">

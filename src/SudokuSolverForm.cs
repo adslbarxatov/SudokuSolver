@@ -262,7 +262,6 @@ namespace RD_AAOW
 		private void OFDialog_FileOk (object sender, CancelEventArgs e)
 			{
 			// Попытка считывания файла
-			/*string file = "";*/
 			string file;
 			try
 				{
@@ -287,7 +286,6 @@ namespace RD_AAOW
 			// Загрузка
 			for (int i = 0; i < buttons.Count; i++)
 				{
-				/*buttons[i].Text = line[i].ToString ();*/
 				buttons[i].Text = SudokuSolverMath.GetAppearance (line[i].ToString ());
 				if (SudokuSolverMath.CheckCondition (buttons[i], ConditionTypes.IsEmpty))
 					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.NewColor);
@@ -308,7 +306,6 @@ namespace RD_AAOW
 		private void SFDialog_FileOk (object sender, CancelEventArgs e)
 			{
 			// Выгрузка данных
-			/*SudokuSolverForm_ FormClosing (null, null);*/
 			FlushMatrix ();
 			string file = SudokuSolverMath.BuildMatrixToSave (SudokuSolverMath.SudokuField);
 
@@ -349,7 +346,6 @@ namespace RD_AAOW
 				case Keys.D8:
 				case Keys.D9:
 					SudokuSolverMath.SetProperty (lb, PropertyTypes.NewColor);
-					/*lb.Text = ((uint)e.KeyCode - 48).ToString ();*/
 					lb.Text = SudokuSolverMath.GetAppearance ((Byte)(e.KeyCode - 48));
 					break;
 
@@ -384,7 +380,6 @@ namespace RD_AAOW
 
 			try
 				{
-				/*v = int.Parse (b.Text) + (plus ? 1 : -1);*/
 				v = SudokuSolverMath.GetDigit (b.Text);
 				v += (plus ? 1 : -1);
 				}
@@ -393,23 +388,19 @@ namespace RD_AAOW
 			if (plus)
 				{
 				if (v < 0)
-					/*b.Text = "1";*/
 					b.Text = SudokuSolverMath.GetAppearance (1);
 				else if (v > 9)
 					SudokuSolverMath.SetProperty (b, PropertyTypes.EmptyValue);
 				else
-					/*b.Text = v.ToString ();*/
 					b.Text = SudokuSolverMath.GetAppearance ((Byte)v);
 				}
 			else
 				{
 				if (v < 0)
-					/*b.Text = "9";*/
 					b.Text = SudokuSolverMath.GetAppearance (9);
 				else if (v < 1)
 					SudokuSolverMath.SetProperty (b, PropertyTypes.EmptyValue);
 				else
-					/*b.Text = v.ToString ();*/
 					b.Text = SudokuSolverMath.GetAppearance ((Byte)v);
 				}
 
@@ -585,7 +576,6 @@ namespace RD_AAOW
 					if (SudokuSolverMath.ResultMatrix[r, c] == 0)
 						SudokuSolverMath.SetProperty (ct, PropertyTypes.EmptyValue);
 					else
-						/*ct.Text = SudokuSolverMath.ResultMatrix[r, c].ToString ();*/
 						ct.Text = SudokuSolverMath.GetAppearance (SudokuSolverMath.ResultMatrix[r, c]);
 					SudokuSolverMath.SetProperty (ct, PropertyTypes.OldColor);
 					}
@@ -601,10 +591,6 @@ namespace RD_AAOW
 		private static void ApplyPenalty ()
 			{
 			uint score = SudokuSolverMath.GetScore (ScoreTypes.Penalty);
-			/*if (score > SudokuSolverMath.TotalScore)
-				score = SudokuSolverMath.TotalScore;
-
-			SudokuSolverMath.TotalScore -= score;*/
 			SudokuSolverMath.UpdateGameScore (true, score);
 
 			string text = RDLocale.GetText ("SolutionIsIncorrect");
