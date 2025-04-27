@@ -191,30 +191,15 @@ namespace RD_AAOW
 		/// </summary>
 		Digits,
 
-		/*/// <summary>
-		/// Латинские прописные буквы
-		/// </summary>
-		LatinUppercase,*/
-
 		/// <summary>
 		/// Латинские строчные буквы
 		/// </summary>
 		LatinLowercase,
 
-		/*/// <summary>
-		/// Кириллические прописные буквы
-		/// </summary>
-		CyrillicUppercase,*/
-
 		/// <summary>
 		/// Кириллические строчные буквы
 		/// </summary>
 		CyrillicLowercase,
-
-		/*/// <summary>
-		/// Греческие прописные буквы
-		/// </summary>
-		GreekUppercase,*/
 
 		/// <summary>
 		/// Греческие строчные буквы
@@ -815,14 +800,6 @@ namespace RD_AAOW
 				for (byte i = gameScore_ChainBase; i < gameScore_ChainBase + 3; i++)
 					values.Add (GetGameScoreV3 (i).ToString ());
 
-				/*return [
-					gameScoreV3[0].ToString ("#,#0"),
-					gameScoreV3[1].ToString (),
-					gameScoreV3[2].ToString(),
-					gameScore[3].ToString(),
-					showTime ? (h + ":" + m + ":" + s) : "—",
-					GetGameScore(4).ToString (),
-					];*/
 				return values.ToArray ();
 				}
 			}
@@ -1336,7 +1313,6 @@ namespace RD_AAOW
 				// Победа
 				case ScoreTypes.GameCompletion:
 					// Количество выигранных игр
-					/*gameScore[multiplier]++;*/
 					item = (byte)(gameScore_WinsBase + baseOffset);
 					v = GetGameScoreV3 (item);
 					SetGameScoreV3 (item, v + 1);

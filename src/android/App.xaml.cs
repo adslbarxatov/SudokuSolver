@@ -79,9 +79,9 @@ namespace RD_AAOW
 			flags = RDGenerics.GetAppStartupFlags (RDAppStartupFlags.DisableXPUN);
 
 			// Общая конструкция страниц приложения
-			solutionPage = RDInterface.ApplyPageSettings (new SolutionPage (), "SolutionPage",
+			solutionPage = RDInterface.ApplyPageSettings (new SolutionPage (), /*"SolutionPage",*/
 				RDLocale.GetText ("SolutionPage"), stubColor);
-			aboutPage = RDInterface.ApplyPageSettings (new AboutPage (), "AboutPage",
+			aboutPage = RDInterface.ApplyPageSettings (new AboutPage (), /*"AboutPage",*/
 				RDLocale.GetDefaultText (RDLDefaultTexts.Control_AppAbout),
 				aboutMasterBackColor);
 
@@ -812,13 +812,6 @@ namespace RD_AAOW
 			if (AsWin)
 				text += (RDLocale.GetText ("SolvedText") + RDLocale.RNRN);
 
-			/*string[] stats = SudokuSolverMath.StatsValues;
-			string s0 = ("💎\t" + stats[0] + "\t\t");
-			s0 += ("🟢\t" + stats[1] + "\t\t");
-			s0 += ("🟡\t" + stats[2] + "\t\t");
-			s0 += ("🔴\t" + stats[3]);
-
-			text += (string.Format (RDLocale.GetText ("StatsText"), s0, stats[4], stats[5]) + RDLocale.RNRN);*/
 			string[] stats = SudokuSolverMath.StatsValuesV3;
 			text += (string.Format (RDLocale.GetText ("StatsText"), gemSuffix + "\t " + stats[0],
 				easyPrefix + stats[1] + "\t\t" + mediumPrefix + stats[2] + "\t\t" + hardPrefix + stats[3],
@@ -920,9 +913,6 @@ namespace RD_AAOW
 			// Выбор сложности
 			if (difficultyVariants.Count < 1)
 				{
-				/*difficultyVariants.Add ("🟢\t " + RDLocale.GetText ("Difficulty0"));
-				difficultyVariants.Add ("🟡\t " + RDLocale.GetText ("Difficulty1"));
-				difficultyVariants.Add ("🔴\t " + RDLocale.GetText ("Difficulty2"));*/
 				difficultyVariants.Add (easyPrefix + RDLocale.GetText ("Difficulty0"));
 				difficultyVariants.Add (mediumPrefix + RDLocale.GetText ("Difficulty1"));
 				difficultyVariants.Add (hardPrefix + RDLocale.GetText ("Difficulty2"));
@@ -973,12 +963,6 @@ namespace RD_AAOW
 				appModeVariants.Add ("🕹\t " + RDLocale.GetText ("Mode1"));
 				}
 
-			/*int res;
-			if (Initial)
-				{
-				res = (int)SudokuSolverMath.AppMode;
-				}
-			else*/
 			if (!Initial)
 				{
 				int res = await RDInterface.ShowList (RDLocale.GetText ("ModeButton") + ":",
@@ -1020,12 +1004,6 @@ namespace RD_AAOW
 				colorSchemeVariants.Add ("⚫️\t " + RDLocale.GetText ("Color1"));
 				}
 
-			/*int res;
-			if (Initial)
-				{
-				res = (int)SudokuSolverMath.ColorScheme;
-				}
-			else*/
 			if (!Initial)
 				{
 				int res = await RDInterface.ShowList (RDLocale.GetText ("ColorScheme") + ":",
@@ -1078,12 +1056,6 @@ namespace RD_AAOW
 					appearanceVariants.Add (SudokuSolverMath.GetCellsAppearanceName (i));
 				}
 
-			/*int res;
-			if (Initial)
-				{
-				res = (int)SudokuSolverMath.CellsAppearance;
-				}
-			else*/
 			if (!Initial)
 				{
 				int res = await RDInterface.ShowList (RDLocale.GetText ("CellsAppearance") + ":",

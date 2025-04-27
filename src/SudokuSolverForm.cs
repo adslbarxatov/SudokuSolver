@@ -631,12 +631,6 @@ namespace RD_AAOW
 
 		private void ChangeAppearance (object sender, EventArgs e)
 			{
-			/*int res;
-			if (sender == null)
-				{
-				res = (int)SudokuSolverMath.CellsAppearance;
-				}
-			else*/
 			if (sender != null)
 				{
 				int res = appearanceMenu.Items.IndexOf ((ToolStripItem)sender);
@@ -665,12 +659,6 @@ namespace RD_AAOW
 
 		private void ChangeColorScheme (object sender, EventArgs e)
 			{
-			/*int res;
-			if (sender == null)
-				{
-				res = (int)SudokuSolverMath.ColorScheme;
-				}
-			else*/
 			if (sender != null)
 				{
 				int res = colorSchemeMenu.Items.IndexOf ((ToolStripItem)sender);
