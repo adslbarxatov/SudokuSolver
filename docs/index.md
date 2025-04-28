@@ -23,7 +23,7 @@ Solution based on recursive function that builds series of “assumptions”
 and finds first one that doesn’t conflict with sudoku game rules.
 
 > Warning! This method ***always*** finishes with some result (it is finite).
-> But in some cases it can take some time. This behavior is correct
+> But in some cases it can take time. This behavior is correct
 > for the application.
 
 In addition, the app now has a game mode: it can check for the presence
@@ -49,8 +49,9 @@ the values in the cells filled in when generating the table.
 Exit from the active game state occurs if:
 - reset all values in all cells
 - switch the interface to the table-solving mode or exit the app in this mode
+- load the table from file
 - make the complete sudoku solution (with the result displayed) from the menu (green checkmark or `F5` key)
-- finish solving the table manually
+- finish solving (win) the table manually
 
 In the active game state, the main function is to check for a solution (blue checkmark or `F3` key).
 When you click this button, the current state of the table is checked for the possibility
