@@ -1,6 +1,7 @@
 Sudoku solver: changes log
 
 ToDo:
+- add automated screen orientation
 - stand-alone settings page
 - switch for winning balloons
 
