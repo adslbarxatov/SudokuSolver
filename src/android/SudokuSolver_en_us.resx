@@ -117,19 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CellsAppearance" xml:space="preserve">
+  <data name="CellsAppearanceLabel" xml:space="preserve">
     <value>Cells appearance</value>
   </data>
   <data name="CheckSolutionButton" xml:space="preserve">
     <value>Check solution</value>
   </data>
-  <data name="Color0" xml:space="preserve">
-    <value>Light</value>
-  </data>
-  <data name="Color1" xml:space="preserve">
-    <value>Dark</value>
-  </data>
-  <data name="ColorScheme" xml:space="preserve">
+  <data name="ColorSchemeLabel" xml:space="preserve">
     <value>Color scheme</value>
   </data>
   <data name="Difficulty0" xml:space="preserve">
@@ -156,18 +150,6 @@
   <data name="KeyboardButton" xml:space="preserve">
     <value>Keyboard</value>
   </data>
-  <data name="KeyboardPlacement" xml:space="preserve">
-    <value>Keyboard placement:</value>
-  </data>
-  <data name="KeyboardVariant0" xml:space="preserve">
-    <value>Hidden</value>
-  </data>
-  <data name="KeyboardVariant1" xml:space="preserve">
-    <value>Right</value>
-  </data>
-  <data name="KeyboardVariant2" xml:space="preserve">
-    <value>Bottom</value>
-  </data>
   <data name="LoadFromFile" xml:space="preserve">
     <value>Load from file</value>
   </data>
@@ -185,15 +167,6 @@
   </data>
   <data name="MessageNotEnough" xml:space="preserve">
     <value>There is not enough numbers in the specified file to build the sudoku table</value>
-  </data>
-  <data name="Mode0" xml:space="preserve">
-    <value>Solution only</value>
-  </data>
-  <data name="Mode1" xml:space="preserve">
-    <value>Game mode</value>
-  </data>
-  <data name="ModeButton" xml:space="preserve">
-    <value>Interface mode</value>
   </data>
   <data name="ResetField" xml:space="preserve">
     <value>Reset the table</value>
@@ -259,5 +232,44 @@ In this app you can solve classic (9 x 9) sudokus both manually and automaticall
 • To switch to the game mode, use section Menu &gt; Interface mode &gt; Game mode. All the necessary buttons will then appear on the screen.
 
 • You can find the controls and detailed information in the Menu &gt; About the app section</value>
+  </data>
+  <data name="GameModeLabel" xml:space="preserve">
+    <value>Game mode</value>
+  </data>
+  <data name="GameModeTip" xml:space="preserve">
+    <value>In game mode, the app keeps track of winnings and places special buttons to the main screen. In addition, changing the cells filled by the app at the beginning of a new game is blocked. In regular mode app works only as a solutions calculator</value>
+  </data>
+  <data name="KeepScreenOnLabel" xml:space="preserve">
+    <value>Disable sleep mode</value>
+  </data>
+  <data name="KeepScreenOnTip" xml:space="preserve">
+    <value>The app will not allow the device to go into sleep mode when it is active</value>
+  </data>
+  <data name="SettingsPage" xml:space="preserve">
+    <value>App settings</value>
+  </data>
+  <data name="ReplaceBalloonsLabel" xml:space="preserve">
+    <value>Replace “balloons” with messages</value>
+  </data>
+  <data name="ReplaceBalloonsTip" xml:space="preserve">
+    <value>On some devices, multiline “balloons” (rectangular short text messages) are not supported properly. Enable this option to replace them with regular messages about checking results if needed</value>
+  </data>
+  <data name="LanguageTip" xml:space="preserve">
+    <value>This option sets the language of the interface and text messages</value>
+  </data>
+  <data name="FontSizeTip" xml:space="preserve">
+    <value>This option sets the size of elements and the font size for text tips</value>
+  </data>
+  <data name="ColorSchemeTip" xml:space="preserve">
+    <value>This option allows you to select the color scheme for sudoku field</value>
+  </data>
+  <data name="CellsAppearanceTip" xml:space="preserve">
+    <value>This option allows you to select the appearance for values in sudoku field</value>
+  </data>
+  <data name="HighlightAffectedLabel" xml:space="preserve">
+    <value>Highlight affected cells</value>
+  </data>
+  <data name="HighlightAffectedTip" xml:space="preserve">
+    <value>This option allows you to highlight cells affected by the selected one (in row, column and square)</value>
   </data>
 </root>

@@ -19,6 +19,9 @@ namespace RD_AAOW
 
 		private ContextMenuStrip appearanceMenu;
 		private ContextMenuStrip colorSchemeMenu;
+		private ContextMenuStrip gameModeMenu;
+		private ContextMenuStrip highlightingMenu;
+		private Point menuPoint;
 
 		/// <summary>
 		/// Конструктор. Настраивает главную форму приложения
@@ -35,6 +38,10 @@ namespace RD_AAOW
 			appearanceMenu.ShowImageMargin = false;
 			colorSchemeMenu = new ContextMenuStrip ();
 			colorSchemeMenu.ShowImageMargin = false;
+			gameModeMenu = new ContextMenuStrip ();
+			gameModeMenu.ShowImageMargin = false;
+			highlightingMenu = new ContextMenuStrip ();
+			highlightingMenu.ShowImageMargin = false;
 
 			// Формирование поля
 			for (int r = 0; r < SudokuSolverMath.SideSize; r++)
@@ -53,14 +60,17 @@ namespace RD_AAOW
 						SudokuSolverMath.SquareSize / 2) + buttonSize;
 					lb.Cursor = Cursors.UpArrow;
 					lb.KeyDown += Lb_KeyDown;
-					lb.FlatStyle = FlatStyle.Flat;
+					lb.FlatStyle = FlatStyle.Popup;
 					lb.MouseWheel += Lb_MouseWheel;
 					lb.MouseDown += Lb_MouseClick;
+					lb.MouseHover += Lb_MouseHover;
 
 					this.Controls.Add (lb);
 					buttons.Add (lb);
 					}
 				}
+
+			menuPoint = new Point (buttons[3].Left, buttons[3].Top - buttons[3].Height);
 
 			// Формирование вспомогательных кнопок
 			newGameButton = new Button ();
@@ -97,6 +107,24 @@ namespace RD_AAOW
 			ChangeAppMode (null, null);
 			}
 
+		// Подсветка простреливаемых ячеек
+		private void Lb_MouseHover (object sender, EventArgs e)
+			{
+			if (!SudokuSolverMath.ShowAffectedCells)
+				return;
+
+			uint idx = (uint)buttons.IndexOf ((Button)sender);
+			for (int i = 0; i < buttons.Count; i++)
+				{
+				if (i == idx)
+					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.SelectedCell);
+				else if (SudokuSolverMath.IsCellAffected (idx, (uint)i))
+					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.AffectedCell);
+				else
+					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.DeselectedCell);
+				}
+			}
+
 		// Метод локализует форму
 		private void LocalizeForm ()
 			{
@@ -127,14 +155,28 @@ namespace RD_AAOW
 
 			// Контекстные меню
 			appearanceMenu.Items.Clear ();
-			for (uint i = 0; i < SudokuSolverMath.CellsAppearancesCount; i++)
+			/*for (uint i = 0; i < SudokuSolverMath.CellsAppearancesCount; i++)
 				appearanceMenu.Items.Add (SudokuSolverMath.GetCellsAppearanceName (i), null,
-					ChangeAppearance);
+					ChangeAppearance);*/
+			string[] appearances = SudokuSolverMath.CellsAppearancesNames;
+			for (int i = 0; i < appearances.Length; i++)
+				appearanceMenu.Items.Add (appearances[i], null, ChangeAppearance);
 
 			colorSchemeMenu.Items.Clear ();
-			for (uint i = 0; i < SudokuSolverMath.ColorSchemesCount; i++)
+			/*for (uint i = 0; i < SudokuSolverMath.ColorSchemesCount; i++)
 				colorSchemeMenu.Items.Add (RDLocale.GetText ("Color" + i.ToString ()), null,
-					ChangeColorScheme);
+					ChangeColorScheme);*/
+			string[] colorSchemes = SudokuSolverMath.ColorSchemesNames;
+			for (int i = 0; i < colorSchemes.Length; i++)
+				colorSchemeMenu.Items.Add (colorSchemes[i], null, ChangeColorScheme);
+
+			gameModeMenu.Items.Clear ();
+			gameModeMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_Yes), null, ChangeAppMode);
+			gameModeMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_No), null, ChangeAppMode);
+
+			highlightingMenu.Items.Clear ();
+			highlightingMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_Yes), null, ChangeHighlighting);
+			highlightingMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_No), null, ChangeHighlighting);
 
 			// Вспомогательные кнопки
 			newGameButton.Text = RDLocale.GetText ("NewGameButton");
@@ -613,7 +655,7 @@ namespace RD_AAOW
 			if (sender == null)
 				text += (RDLocale.GetText ("SolvedText") + RDLocale.RNRN);
 
-			string[] stats = SudokuSolverMath.StatsValuesV3;
+			string[] stats = SudokuSolverMath.StatsValues;
 			string spl = "   -   ";
 			text += string.Format (RDLocale.GetText ("StatsText"), stats[0],
 				stats[1] + spl + stats[2] + spl + stats[3],
@@ -626,7 +668,7 @@ namespace RD_AAOW
 		// Выбор представления ячеек
 		private void MAppearance_Click (object sender, EventArgs e)
 			{
-			appearanceMenu.Show (this, Point.Empty);
+			appearanceMenu.Show (this, menuPoint);
 			}
 
 		private void ChangeAppearance (object sender, EventArgs e)
@@ -654,7 +696,7 @@ namespace RD_AAOW
 		// Выбор цветовой схемы приложения
 		private void MColorScheme_Click (object sender, EventArgs e)
 			{
-			colorSchemeMenu.Show (this, Point.Empty);
+			colorSchemeMenu.Show (this, menuPoint);
 			}
 
 		private void ChangeColorScheme (object sender, EventArgs e)
@@ -686,11 +728,19 @@ namespace RD_AAOW
 			}
 
 		// Выбор режима работы приложения
+		private void MAppMode_Clicked (object sender, EventArgs e)
+			{
+			gameModeMenu.Show (this, menuPoint);
+			}
+
 		private void ChangeAppMode (object sender, EventArgs e)
 			{
 			// Запрос
-			bool game;
 			if (sender != null)
+				SudokuSolverMath.AppMode = (AppModes)(1 - gameModeMenu.Items.IndexOf ((ToolStripItem)sender));
+			bool game = (SudokuSolverMath.AppMode == AppModes.Game);
+
+			/*if (sender != null)
 				{
 				switch (RDInterface.LocalizedMessageBox (RDMessageTypes.Question_Left,
 					"AppModeMessage", RDLDefaultTexts.Button_Yes, RDLDefaultTexts.Button_No,
@@ -713,7 +763,7 @@ namespace RD_AAOW
 			else
 				{
 				game = (SudokuSolverMath.AppMode == AppModes.Game);
-				}
+				}*/
 
 			// Оформление
 			this.ClientSize = new Size ((int)(SudokuSolverMath.SideSize + 2) * buttonSize,
@@ -732,6 +782,18 @@ namespace RD_AAOW
 				RDLocale.GetText ("MGenerate_MDifficulty1"), RDLocale.GetText ("MGenerate_MDifficulty2"));
 
 			MGenerate_Click (MGenerate.DropDownItems[(int)res - 1], e);
+			}
+
+		// Включение / выключение подсветки
+		private void MHighlighting_Clicked (object sender, EventArgs e)
+			{
+			highlightingMenu.Show (this, menuPoint);
+			}
+
+		private void ChangeHighlighting (object sender, EventArgs e)
+			{
+			SudokuSolverMath.ShowAffectedCells = (highlightingMenu.Items.IndexOf ((ToolStripItem)sender) == 0);
+			ChangeColorScheme (null, null);
 			}
 		}
 	}

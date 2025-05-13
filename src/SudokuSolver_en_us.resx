@@ -213,12 +213,6 @@ Best solution time:
 Longest unchecked chain:
 {3:S}</value>
   </data>
-  <data name="Color0" xml:space="preserve">
-    <value>Light</value>
-  </data>
-  <data name="Color1" xml:space="preserve">
-    <value>Dark</value>
-  </data>
   <data name="NewGameButton" xml:space="preserve">
     <value>New game</value>
   </data>
@@ -234,9 +228,12 @@ Longest unchecked chain:
 In game mode, the app keeps track of winnings and adds additional buttons to the main screen. In addition, changing the cells filled by the app at the beginning of a new game is blocked</value>
   </data>
   <data name="MSettings_MAppMode" xml:space="preserve">
-    <value>Interface &amp;mode</value>
+    <value>Enable &amp;game mode</value>
   </data>
   <data name="DifficultyMessage" xml:space="preserve">
     <value>Select the difficulty level</value>
+  </data>
+  <data name="MSettings_MHighlight" xml:space="preserve">
+    <value>&amp;Highlight affected cells</value>
   </data>
 </root>

@@ -1,9 +1,11 @@
 Sudoku solver: changes log
 
-ToDo:
-- add automated screen orientation
-- stand-alone settings page
-- switch for winning balloons
+Version 5.1:
+• Added highlighting for cells affected by the selected one;
+• Added new color schemes, updated existing schemes;
+• Android: added the stand-alone settings page;
+• Android: added settings for KeepScreenOn state and for balloon / popup messages;
+• Android: app now properly supports the screen orientation
 
 Version 5.0.3:
 • Android: fix for MAUI interface defect that allows application to crash by pressing

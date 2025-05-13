@@ -7,7 +7,7 @@
 
 - [Общие сведения](#section-1)
 - [Игровой режим](#section-2)
-- [Управление (Android)](#android-1)
+- [Управление (Android)](#android)
 - [Управление (Windows)](#windows)
 - [Ссылки для загрузки](https://adslbarxatov.github.io/DPArray/ru#sudoku-solver)
 - [English version](https://adslbarxatov.github.io/SudokuSolver)

@@ -213,12 +213,6 @@
 Длиннейшая цепочка без проверок:
 {3:S}</value>
   </data>
-  <data name="Color0" xml:space="preserve">
-    <value>Светлая</value>
-  </data>
-  <data name="Color1" xml:space="preserve">
-    <value>Тёмная</value>
-  </data>
   <data name="NewGameButton" xml:space="preserve">
     <value>Новая игра</value>
   </data>
@@ -234,9 +228,12 @@
 В игровом режиме приложение ведёт учёт выигрышей и добавляет дополнительные кнопки на главный экран. Кроме того, блокируется изменение ячеек, заполненных приложением в начале новой игры</value>
   </data>
   <data name="MSettings_MAppMode" xml:space="preserve">
-    <value>Ре&amp;жим интерфейса</value>
+    <value>Включить &amp;игровой режим</value>
   </data>
   <data name="DifficultyMessage" xml:space="preserve">
     <value>Выберите уровень сложности</value>
+  </data>
+  <data name="MSettings_MHighlight" xml:space="preserve">
+    <value>&amp;Выделять связанные ячейки</value>
   </data>
 </root>

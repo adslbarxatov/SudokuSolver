@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 
 #if ANDROID
-	using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls;
 #else
-	using System.ComponentModel;
-	using System.Drawing;
-	using System.Windows.Forms;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 #endif
 
 namespace RD_AAOW
@@ -122,42 +122,57 @@ namespace RD_AAOW
 		/// <summary>
 		/// Задать пустое значение
 		/// </summary>
-		EmptyValue,
+		EmptyValue = 0x0001,
 
 		/// <summary>
 		/// Задать цвет успешного решения задачи
 		/// </summary>
-		SuccessColor,
+		SuccessColor = 0x0010,
 
 		/// <summary>
 		/// Задать цвет ошибки
 		/// </summary>
-		ErrorColor,
+		ErrorColor = 0x0020,
 
 		/// <summary>
 		/// Задать цвет ранее известного значения
 		/// </summary>
-		OldColor,
+		OldColor = 0x0040,
 
 		/// <summary>
 		/// Задать цвет нового указанного значения
 		/// </summary>
-		NewColor,
+		NewColor = 0x0080,
+
+		/// <summary>
+		/// Маска изменения цвета текста
+		/// </summary>
+		TextColorMask = 0x00F0,
 
 		/// <summary>
 		/// Невыбранная ячейка
 		/// </summary>
-		DeselectedCell,
+		DeselectedCell = 0x0100,
 
 		/// <summary>
 		/// Выбранная ячейка
 		/// </summary>
-		SelectedCell,
+		SelectedCell = 0x0200,
 
 		/// <summary>
 		/// Другая кнопка интерфейса
 		/// </summary>
-		OtherButton,
+		OtherButton = 0x0800,
+
+		/// <summary>
+		/// Простреливаемые ячейки
+		/// </summary>
+		AffectedCell = 0x0400,
+
+		/// <summary>
+		/// Маска изменения цвета фона
+		/// </summary>
+		BackColorMask = 0x0F00,
 		}
 
 	/// <summary>
@@ -231,7 +246,7 @@ namespace RD_AAOW
 #endif
 		};
 
-#if ANDROID
+	/*if ANDROID
 
 	/// <summary>
 	/// Возможные расположения числовой клавиатуры
@@ -254,8 +269,7 @@ namespace RD_AAOW
 		Bottom,
 		}
 
-#endif
-
+	endif*/
 
 	/// <summary>
 	/// Возможные режимы работы программы
@@ -279,14 +293,24 @@ namespace RD_AAOW
 	public enum ColorSchemes
 		{
 		/// <summary>
-		/// Светлая
+		/// Светлая серая
 		/// </summary>
-		Light,
+		LightGrey,
 
 		/// <summary>
-		/// Тёмная
+		/// Светлая жёлтая
 		/// </summary>
-		Dark,
+		LightYellow,
+
+		/// <summary>
+		/// Тёмная серая
+		/// </summary>
+		DarkGrey,
+
+		/// <summary>
+		/// Тёмная фиолетовая
+		/// </summary>
+		DarkPurple,
 		}
 
 	/// <summary>
@@ -348,7 +372,7 @@ namespace RD_AAOW
 
 		// Имена ключей, используемые для хранения настроек
 #if ANDROID
-		private const string keyboardPlacementsPar = "KeyboardPlacements";
+		private const string replaceBalloonsPar = "ReplaceBalloons";
 #endif
 
 		private const string appModePar = "AppMode";
@@ -358,6 +382,7 @@ namespace RD_AAOW
 		private const string colorSchemePar = "ColorScheme";
 		private const string cellsAppearancePar = "CellsAppearance";
 		private const string gameStartDatePar = "GameStartDate";
+		private const string showAffectedCellsPar = "ShowAffectedCells";
 
 		#endregion
 
@@ -395,38 +420,54 @@ namespace RD_AAOW
 		private static SolutionResults currentStatus = SolutionResults.NotInited;
 
 		// Цветовая схема
-		private static Color[][] colors = [
-			// Цвета новых, ошибочных и решённых ячеек
-#if ANDROID
-			[ Color.FromArgb ("#0000FF"), Color.FromArgb ("#FFFF40") ],
-			[ Color.FromArgb ("#C80000"), Color.FromArgb ("#FF4040") ],
-			[ Color.FromArgb ("#00C800"), Color.FromArgb ("#40FF40") ],
-#else
+		private static string[][] colorsNames = [
+			["Светлая серая", "Light grey"],
+			["Светлая жёлтая", "Light yellow"],
+			["Тёмная серая", "Dark grey"],
+			["Тёмная фиолетовая", "Dark violet"],
+			];
+		private static byte[][][] colorsV4 = [
+			// Цвет новых ячеек
+			[ [0, 0, 255], [0, 0, 255], [255, 255, 64], [255, 255, 64], ],
+
+			// Цвет ошибочных ячеек
+			[ [200, 0, 0], [200, 0, 0], [255, 64, 64], [255, 64, 64], ],
+
+			// Цвет решённых ячеек
+			[ [0, 180, 0], [0, 180, 0], [64, 255, 64], [64, 255, 64], ],
+			/*else
 			[ Color.FromArgb (0, 0, 255), Color.FromArgb (255, 255, 64) ],
 			[ Color.FromArgb (200, 0, 0), Color.FromArgb (255, 64, 64) ],
 			[ Color.FromArgb (0, 200, 0), Color.FromArgb (64, 255, 64) ],
-#endif
+			endif*/
 
 			// Цвет имеющегося значения
-			[ RDInterface.GetInterfaceColor (RDInterfaceColors.AndroidTextColor),
-				RDInterface.GetInterfaceColor (RDInterfaceColors.MediumGrey) ],
+			[ [32, 32, 32], [32, 48, 32], [196, 196, 196], [172, 160, 172], ],
 
-			// Цвет фона страницы или окна; цвет кнопок; цвет невыбранных и выбранных ячеек
-#if ANDROID
+			// Цвет фона страницы или окна
+			/*if ANDROID
 			[ Color.FromArgb ("#FFFFE7"), Color.FromArgb ("#1C201C"), ],
 			[ Color.FromArgb ("#FFFFDE"), Color.FromArgb ("#222822"), ],
 			[ Color.FromArgb ("#C0FFFF"), Color.FromArgb ("#381C38"), ],
 			[ Color.FromArgb ("#00FFFF"), Color.FromArgb ("#603060"), ],
-#else
-			[ Color.FromArgb (255, 255, 231), Color.FromArgb (28, 32, 28), ],
-			[ Color.FromArgb (255, 255, 222), Color.FromArgb (34, 40, 34), ],
-			[ Color.FromArgb (192, 255, 255), Color.FromArgb (56, 28, 56), ],
-			[ Color.FromArgb (0, 255, 255), Color.FromArgb (96, 48, 96), ],
-#endif
+			else*/
+			[ [231, 231, 231], [255, 255, 231], [28, 28, 28], [30, 28, 40], ],
+			
+			// Цвет обычных кнопок
+			[ [240, 240, 240], [255, 255, 222], [34, 34, 34], [37, 34, 40], ],
+
+			// Цвет невыбранных ячеек
+			[ [208, 208, 208], [208, 255, 255], [56, 56, 56], [56, 28, 56], ],
+
+			// Цвет выбранных ячеек
+			[ [156, 156, 156], [0, 240, 255], [120, 120, 120], [112, 60, 112], ],
+
+			// Цвет простреливаемых ячеек
+			[ [184, 184, 184], [116, 255, 255], [84, 84, 84], [80, 42, 80], ],
 			];
 
 		// Индекс текущей цветовой схемы
-		private static int colorIndexV3 = 0;
+		private static int colorIndex = 0;
 
 		// Файловые разделители
 		private static string[] fileSplitters = ["\r", "\n", "\t", " ", ";"];
@@ -486,7 +527,7 @@ namespace RD_AAOW
 #endif
 
 		// Индекс текущего представления значений в ячейках
-		private static int cellsAppIndexV3 = 0;
+		private static int cellsAppIndex = 0;
 
 		#endregion
 
@@ -543,7 +584,7 @@ namespace RD_AAOW
 
 #if ANDROID
 
-		/// <summary>
+		/*/// <summary>
 		/// Возвращает или задаёт ориентацию элементов экрана
 		/// </summary>
 		public static KeyboardPlacements KeyboardPlacement
@@ -557,10 +598,39 @@ namespace RD_AAOW
 				{
 				RDGenerics.SetSettings (keyboardPlacementsPar, (uint)value);
 				}
+			}*/
+
+		/// <summary>
+		/// Возвращает или задаёт флаг замены всплывающих оповещений на полноценные сообщения
+		/// </summary>
+		public static bool ReplaceBalloons
+			{
+			get
+				{
+				return RDGenerics.GetSettings (replaceBalloonsPar, false);
+				}
+			set
+				{
+				RDGenerics.SetSettings (replaceBalloonsPar, value);
+				}
 			}
 
 #endif
 
+		/// <summary>
+		/// Возвращает или задаёт флаг подсветки простреливаемых ячеек
+		/// </summary>
+		public static bool ShowAffectedCells
+			{
+			get
+				{
+				return RDGenerics.GetSettings (showAffectedCellsPar, true);
+				}
+			set
+				{
+				RDGenerics.SetSettings (showAffectedCellsPar, value);
+				}
+			}
 
 		/// <summary>
 		/// Возвращает или задаёт режим работы приложения
@@ -585,15 +655,15 @@ namespace RD_AAOW
 			{
 			get
 				{
-				colorIndexV3 = (int)RDGenerics.GetSettings (colorSchemePar, (uint)ColorSchemes.Light);
-				if (colorIndexV3 > colors[0].Length)
-					colorIndexV3 = 0;
-				return (ColorSchemes)colorIndexV3;
+				colorIndex = (int)RDGenerics.GetSettings (colorSchemePar, (uint)ColorSchemes.LightYellow);
+				if (colorIndex > colorsNames.Length)
+					colorIndex = 0;
+				return (ColorSchemes)colorIndex;
 				}
 			set
 				{
-				colorIndexV3 = (int)value;
-				RDGenerics.SetSettings (colorSchemePar, (uint)colorIndexV3);
+				colorIndex = (int)value;
+				RDGenerics.SetSettings (colorSchemePar, (uint)colorIndex);
 				}
 			}
 
@@ -604,15 +674,15 @@ namespace RD_AAOW
 			{
 			get
 				{
-				cellsAppIndexV3 = (int)RDGenerics.GetSettings (cellsAppearancePar, (uint)CellsAppearances.Digits);
-				if (cellsAppIndexV3 >= cellsApps.Count)
-					cellsAppIndexV3 = 0;
-				return (CellsAppearances)cellsAppIndexV3;
+				cellsAppIndex = (int)RDGenerics.GetSettings (cellsAppearancePar, (uint)CellsAppearances.Digits);
+				if (cellsAppIndex >= cellsApps.Count)
+					cellsAppIndex = 0;
+				return (CellsAppearances)cellsAppIndex;
 				}
 			set
 				{
-				cellsAppIndexV3 = (int)value;
-				RDGenerics.SetSettings (cellsAppearancePar, (uint)cellsAppIndexV3);
+				cellsAppIndex = (int)value;
+				RDGenerics.SetSettings (cellsAppearancePar, (uint)cellsAppIndex);
 				}
 			}
 
@@ -679,23 +749,50 @@ namespace RD_AAOW
 			{
 			get
 				{
-				_ = ColorScheme;	// Загрузка значения
-				return colors[4][colorIndexV3];
+				_ = ColorScheme;    // Загрузка значения
+				/*return colors[4][colorIndex];*/
+				return BytesToColor (colorsV4[4][colorIndex]);
 				}
 			}
 
-		/// <summary>
+		private static Color BytesToColor (byte[] Bytes)
+			{
+#if ANDROID
+			uint v = ((uint)Bytes[0] << 16) | ((uint)Bytes[1] << 8) | (uint)Bytes[2];
+			return Color.FromArgb ("#" + v.ToString ("X6"));
+#else
+			return Color.FromArgb (Bytes[0], Bytes[1], Bytes[2]);
+#endif
+			}
+
+		/*/// <summary>
 		/// Возвращает количество доступных цветовых схем
 		/// </summary>
 		public static uint ColorSchemesCount
 			{
 			get
 				{
-				return (uint)colors[0].Length;
+				return (uint)colorsNames.Length;
+				}
+			}*/
+
+		/// <summary>
+		/// Возвращает названия цветовых схем для текущего языка интерфейса
+		/// </summary>
+		public static string[] ColorSchemesNames
+			{
+			get
+				{
+				int idx = (int)RDLocale.CurrentLanguage;
+				List<string> res = [];
+
+				for (int i = 0; i < colorsNames.Length; i++)
+					res.Add (colorsNames[i][idx]);
+				return res.ToArray ();
 				}
 			}
 
-		/// <summary>
+		/*/// <summary>
 		/// Возвращает количество доступных представлений значений в ячейках
 		/// </summary>
 		public static uint CellsAppearancesCount
@@ -704,7 +801,24 @@ namespace RD_AAOW
 				{
 				return (uint)cellsApps.Count;
 				}
+			}*/
+
+		/// <summary>
+		/// Возвращает названия представлений ячеек для текущего языка интерфейса
+		/// </summary>
+		public static string[] CellsAppearancesNames
+			{
+			get
+				{
+				int idx = (int)RDLocale.CurrentLanguage;
+				List<string> res = [];
+
+				for (int i = 0; i < cellsAppsNames.Length; i++)
+					res.Add (cellsAppsNames[i][idx]);
+				return res.ToArray ();
+				}
 			}
+
 
 #if ANDROID
 
@@ -715,8 +829,8 @@ namespace RD_AAOW
 			{
 			get
 				{
-				_ = CellsAppearance;	// Загрузка значения
-				return cellsAppsFontSizes[cellsAppIndexV3] * RDInterface.MasterFontSize;
+				_ = CellsAppearance;    // Загрузка значения
+				return cellsAppsFontSizes[cellsAppIndex] * RDInterface.MasterFontSize;
 				}
 			}
 
@@ -728,7 +842,7 @@ namespace RD_AAOW
 			get
 				{
 				_ = CellsAppearance;
-				return (cellsAppsFontSizes[cellsAppIndexV3] < 1.5);
+				return (cellsAppsFontSizes[cellsAppIndex] < 1.5);
 				}
 			}
 
@@ -769,18 +883,18 @@ namespace RD_AAOW
 		/// - самая длинная цепочка без проверок среди средних игр
 		/// - самая длинная цепочка без проверок среди сложных игр
 		/// </summary>
-		public static string[] StatsValuesV3
+		public static string[] StatsValues
 			{
 			get
 				{
 				List<string> values = [];
-				values.Add (GetGameScoreV3 (gameScore_TotalScore).ToString ("#,#0"));
+				values.Add (GetGameScore (gameScore_TotalScore).ToString ("#,#0"));
 				for (byte i = gameScore_WinsBase; i < gameScore_WinsBase + 3; i++)
-					values.Add (GetGameScoreV3 (i).ToString ());
+					values.Add (GetGameScore (i).ToString ());
 
 				for (byte i = gameScore_TimeBase; i < gameScore_TimeBase + 3; i++)
 					{
-					uint bestTime = GetGameScoreV3 (i);
+					uint bestTime = GetGameScore (i);
 					bool showTime = (bestTime <= gameScore_TimeLimit);
 
 					if (!showTime)
@@ -798,7 +912,7 @@ namespace RD_AAOW
 					}
 
 				for (byte i = gameScore_ChainBase; i < gameScore_ChainBase + 3; i++)
-					values.Add (GetGameScoreV3 (i).ToString ());
+					values.Add (GetGameScore (i).ToString ());
 
 				return values.ToArray ();
 				}
@@ -1214,7 +1328,7 @@ namespace RD_AAOW
 			}
 
 		// Методы сохранения и загрузки статистики игрового режима
-		private static uint GetGameScoreV3 (byte Item)
+		private static uint GetGameScore (byte Item)
 			{
 			if (gameScore == null)
 				{
@@ -1223,9 +1337,9 @@ namespace RD_AAOW
 				for (int i = 0; i < gameScoreSize; i++)
 					{
 					if (i < gameScore_TimeBase)
-						gameScore[i] = 0;	// Чем больше, тем лучше
+						gameScore[i] = 0;   // Чем больше, тем лучше
 					else
-						gameScore[i] = uint.MaxValue;	// Наоборот
+						gameScore[i] = uint.MaxValue;   // Наоборот
 					}
 
 				// Извлечение
@@ -1265,7 +1379,7 @@ namespace RD_AAOW
 			return gameScore[Item];
 			}
 
-		private static void SetGameScoreV3 (byte Item, uint Value)
+		private static void SetGameScore (byte Item, uint Value)
 			{
 			gameScore[Item] = Value;
 
@@ -1300,9 +1414,9 @@ namespace RD_AAOW
 				case ScoreTypes.RegularWinning:
 				default:
 					item = (byte)(gameScore_ChainBase + baseOffset);
-					v = GetGameScoreV3 (item);
+					v = GetGameScore (item);
 					if (Value > v)
-						SetGameScoreV3 (item, Value);
+						SetGameScore (item, Value);
 
 					return multiplier * Value * Value;
 
@@ -1314,16 +1428,16 @@ namespace RD_AAOW
 				case ScoreTypes.GameCompletion:
 					// Количество выигранных игр
 					item = (byte)(gameScore_WinsBase + baseOffset);
-					v = GetGameScoreV3 (item);
-					SetGameScoreV3 (item, v + 1);
+					v = GetGameScore (item);
+					SetGameScore (item, v + 1);
 
 					// Лучшее время
 					item = (byte)(gameScore_TimeBase + baseOffset);
-					v = GetGameScoreV3 (item);
+					v = GetGameScore (item);
 
 					double seconds = (DateTime.Now - GameStartDate).TotalSeconds;
 					if ((seconds <= gameScore_TimeLimit) && (seconds < v))
-						SetGameScoreV3 (item, (uint)seconds);
+						SetGameScore (item, (uint)seconds);
 
 					return 1000 * multiplier;
 				}
@@ -1337,7 +1451,7 @@ namespace RD_AAOW
 		public static void UpdateGameScore (bool Penalty, uint Value)
 			{
 			// Загрузка значения
-			uint v = GetGameScoreV3 (gameScore_TotalScore);
+			uint v = GetGameScore (gameScore_TotalScore);
 
 			// Обновление
 			if (Penalty)
@@ -1353,7 +1467,7 @@ namespace RD_AAOW
 				}
 
 			// Запись значения
-			SetGameScoreV3 (gameScore_TotalScore, v);
+			SetGameScore (gameScore_TotalScore, v);
 			}
 
 		#endregion
@@ -1649,48 +1763,98 @@ namespace RD_AAOW
 		/// <param name="Condition">Проверяемое условие</param>
 		public static bool CheckCondition (Button InterfaceElement, ConditionTypes Condition)
 			{
-			string text = InterfaceElement.Text;
-#if ANDROID
+			/*string text = InterfaceElement.Text;
+if ANDROID
 			Color textColor = InterfaceElement.TextColor;
 			Color backColor = InterfaceElement.BackgroundColor;
-#else
+else
 			Color textColor = InterfaceElement.ForeColor;
 			Color backColor = InterfaceElement.BackColor;
-#endif
+endif*/
+			/*int textIdx = -1, backIdx = -1;
 
 			// Проверка условия
-			for (int i = 0; i < colors[0].Length; i++)
+			for (int i = 0; i < colorsNames.Length; i++)
 				{
 				switch (Condition)
 					{
 					case ConditionTypes.ContainsFoundValue:
-						if (textColor == colors[2][i])
-							return true;
+						textIdx = 2;
 						break;
 
 					case ConditionTypes.ContainsNewValue:
-						if (textColor == colors[0][i])
-							return true;
+						textIdx = 0;
 						break;
 
 					case ConditionTypes.IsEmpty:
 						return (text == EmptySign);
 
 					case ConditionTypes.SelectedCell:
-						if (backColor == colors[7][i])
-							return true;
+						backIdx = 7;
 						break;
 
 					case ConditionTypes.ContainsOldValue:
-						if (textColor == colors[3][i])
-							return true;
+						textIdx = 3;
 						break;
 
 					case ConditionTypes.ContainsErrorValue:
-						if (textColor == colors[1][i])
-							return true;
+						textIdx = 4;
 						break;
 					}
+
+				if (textIdx >= 0)
+					{
+if ANDROID
+					byte r, b, g;
+					textColor.ToRgb (out r, out g, out b);
+					if ((r == colorsV4[textIdx][i][0]) &&
+						(g == colorsV4[textIdx][i][1]) &&
+						(b == colorsV4[textIdx][i][2]))
+else
+					if ((textColor.R == colorsV4[textIdx][i][0]) &&
+						(textColor.G == colorsV4[textIdx][i][1]) &&
+						(textColor.B == colorsV4[textIdx][i][2]))
+endif
+						return true;
+					}
+
+				if (backIdx >= 0)
+					{
+if ANDROID
+					byte r, b, g;
+					backColor.ToRgb (out r, out g, out b);
+					if ((r == colorsV4[backIdx][i][0]) &&
+						(g == colorsV4[backIdx][i][1]) &&
+						(b == colorsV4[backIdx][i][2]))
+else
+					if ((backColor.R == colorsV4[backIdx][i][0]) &&
+						(backColor.G == colorsV4[backIdx][i][1]) &&
+						(backColor.B == colorsV4[backIdx][i][2]))
+endif
+						return true;
+					}
+				}*/
+
+			PropertyTypes prop = GetPropertyType (InterfaceElement);
+			switch (Condition)
+				{
+				case ConditionTypes.ContainsFoundValue:
+					return prop.HasFlag (PropertyTypes.SuccessColor);
+
+				case ConditionTypes.ContainsNewValue:
+					return prop.HasFlag (PropertyTypes.NewColor);
+
+				case ConditionTypes.IsEmpty:
+					return (InterfaceElement.Text == EmptySign);
+
+				case ConditionTypes.SelectedCell:
+					return prop.HasFlag (PropertyTypes.SelectedCell);
+
+				case ConditionTypes.ContainsOldValue:
+					return prop.HasFlag (PropertyTypes.OldColor);
+
+				case ConditionTypes.ContainsErrorValue:
+					return prop.HasFlag (PropertyTypes.ErrorColor);
 				}
 
 			// Неприменимое условие
@@ -1706,9 +1870,10 @@ namespace RD_AAOW
 			{
 			// Проверка условия
 			_ = ColorScheme;    // Загрузка значения
-			bool setForeColor = false, setBackColor = false;
-			Color color = colors[3][colorIndexV3];
+			/*bool setForeColor = false, setBackColor = false;*/
+			byte[] color = colorsV4[3][colorIndex];
 
+			PropertyTypes prop = GetPropertyType (InterfaceElement);
 			switch (Property)
 				{
 				case PropertyTypes.EmptyValue:
@@ -1716,52 +1881,90 @@ namespace RD_AAOW
 					break;
 
 				case PropertyTypes.SuccessColor:
-					color = colors[2][colorIndexV3];
-					setForeColor = true;
+					color = colorsV4[2][colorIndex];
+					/*setForeColor = true;*/
 					break;
 
 				case PropertyTypes.ErrorColor:
-					color = colors[1][colorIndexV3];
-					setForeColor = true;
+					color = colorsV4[1][colorIndex];
+					/*setForeColor = true;*/
 					break;
 
 				case PropertyTypes.NewColor:
-					color = colors[0][colorIndexV3];
-					setForeColor = true;
+					color = colorsV4[0][colorIndex];
+					/*setForeColor = true;*/
 					break;
 
 				case PropertyTypes.OldColor:
-					setForeColor = true;
+					/*setForeColor = true;*/
 					break;
 
 				case PropertyTypes.DeselectedCell:
-					color = colors[6][colorIndexV3];
-					setBackColor = true;
+					color = colorsV4[6][colorIndex];
+					/*setBackColor = true;*/
 					break;
 
 				case PropertyTypes.SelectedCell:
-					color = colors[7][colorIndexV3];
-					setBackColor = true;
+					color = colorsV4[7][colorIndex];
+					/*setBackColor = true;*/
 					break;
 
 				case PropertyTypes.OtherButton:
-					color = colors[5][colorIndexV3];
-					setBackColor = true;
+					color = colorsV4[5][colorIndex];
+					/*setBackColor = true;*/
+					break;
+
+				case PropertyTypes.AffectedCell:
+					color = colorsV4[8][colorIndex];
+					/*setBackColor = true;*/
 					break;
 				}
 
-			if (setForeColor)
+			if ((Property & PropertyTypes.TextColorMask) != 0)
+				{
 #if ANDROID
-				InterfaceElement.TextColor = color;
+				InterfaceElement.TextColor = BytesToColor (color);
 #else
-				InterfaceElement.ForeColor = color;
+				InterfaceElement.ForeColor = BytesToColor (color);
+#endif
+				prop &= ~PropertyTypes.TextColorMask;
+				prop |= Property;
+				}
+
+			else if ((Property & PropertyTypes.BackColorMask) != 0)
+				{
+#if ANDROID
+				InterfaceElement.BackgroundColor = BytesToColor (color);
+#else
+				InterfaceElement.BackColor = BytesToColor (color);
+#endif
+				prop &= ~PropertyTypes.BackColorMask;
+				prop |= Property;
+				}
+
+			SetPropertyType (InterfaceElement, prop);
+			}
+
+		private static PropertyTypes GetPropertyType (Button InterfaceElement)
+			{
+#if ANDROID
+			if (!string.IsNullOrWhiteSpace (InterfaceElement.ClassId))
+				return (PropertyTypes)int.Parse (InterfaceElement.ClassId);
+
+#else
+			if (InterfaceElement.Tag != null)
+				return (PropertyTypes)InterfaceElement.Tag;
 #endif
 
-			else if (setBackColor)
+			return 0;
+			}
+
+		private static void SetPropertyType (Button InterfaceElement, PropertyTypes Value)
+			{
 #if ANDROID
-				InterfaceElement.BackgroundColor = color;
+			InterfaceElement.ClassId = ((int)Value).ToString ();
 #else
-				InterfaceElement.BackColor = color;
+			InterfaceElement.Tag = (int)Value;
 #endif
 			}
 
@@ -1801,7 +2004,7 @@ namespace RD_AAOW
 
 			// Результат
 			_ = CellsAppearance;
-			return cellsApps[cellsAppIndexV3][Value - 1];
+			return cellsApps[cellsAppIndex][Value - 1];
 			}
 
 		/// <summary>
@@ -1819,7 +2022,7 @@ namespace RD_AAOW
 
 			// Результат
 			_ = CellsAppearance;
-			return cellsApps[cellsAppIndexV3][idx];
+			return cellsApps[cellsAppIndex][idx];
 			}
 
 		/// <summary>
@@ -1830,14 +2033,14 @@ namespace RD_AAOW
 		public static Byte GetDigit (string Appearance)
 			{
 			_ = CellsAppearance;
-			int idx = cellsApps[cellsAppIndexV3].IndexOf (Appearance);
+			int idx = cellsApps[cellsAppIndex].IndexOf (Appearance);
 			if (idx < 0)
 				return 0;
 
 			return (Byte)(idx + 1);
 			}
 
-		/// <summary>
+		/*/// <summary>
 		/// Метод возвращает название представления содержимого ячеек для текущего языка
 		/// </summary>
 		/// <param name="Number">Номер представления</param>
@@ -1847,6 +2050,30 @@ namespace RD_AAOW
 				return "";
 
 			return cellsAppsNames[(int)Number][(int)RDLocale.CurrentLanguage];
+			}*/
+
+		/// <summary>
+		/// Метод определяет, влияет ли ячейка TestCell на значение SelectedCell
+		/// </summary>
+		/// <param name="SelectedCellIndex">Выбранная ячейка (индекс от 0 до 80 включительно)</param>
+		/// <param name="TestCellIndex">Проверяемая ячейка (индекс от 0 до 80 включительно)</param>
+		/// <returns>Возвращает true, если влияние подтверждается</returns>
+		public static bool IsCellAffected (uint SelectedCellIndex, uint TestCellIndex)
+			{
+			// Если совпадают столбцы
+			if ((SelectedCellIndex % SideSize) == (TestCellIndex % SideSize))
+				return true;
+
+			// Если совпадают строки
+			if ((SelectedCellIndex / SideSize) == (TestCellIndex / SideSize))
+				return true;
+
+			// Если совпадают квадраты
+			if ((SelectedCellIndex / (SquareSize * SideSize)) == (TestCellIndex / (SquareSize * SideSize)) &&
+				(SelectedCellIndex / SquareSize) % SquareSize == (TestCellIndex / SquareSize) % SquareSize)
+				return true;
+
+			return false;
 			}
 		}
 	}

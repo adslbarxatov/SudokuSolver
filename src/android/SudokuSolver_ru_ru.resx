@@ -117,19 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CellsAppearance" xml:space="preserve">
+  <data name="CellsAppearanceLabel" xml:space="preserve">
     <value>Представление ячеек</value>
   </data>
   <data name="CheckSolutionButton" xml:space="preserve">
     <value>Проверить решение</value>
   </data>
-  <data name="Color0" xml:space="preserve">
-    <value>Светлая</value>
-  </data>
-  <data name="Color1" xml:space="preserve">
-    <value>Тёмная</value>
-  </data>
-  <data name="ColorScheme" xml:space="preserve">
+  <data name="ColorSchemeLabel" xml:space="preserve">
     <value>Цветовая схема</value>
   </data>
   <data name="Difficulty0" xml:space="preserve">
@@ -156,18 +150,6 @@
   <data name="KeyboardButton" xml:space="preserve">
     <value>Клавиатура</value>
   </data>
-  <data name="KeyboardPlacement" xml:space="preserve">
-    <value>Расположение клавиатуры:</value>
-  </data>
-  <data name="KeyboardVariant0" xml:space="preserve">
-    <value>Не отображается</value>
-  </data>
-  <data name="KeyboardVariant1" xml:space="preserve">
-    <value>Справа</value>
-  </data>
-  <data name="KeyboardVariant2" xml:space="preserve">
-    <value>Снизу</value>
-  </data>
   <data name="LoadFromFile" xml:space="preserve">
     <value>Загрузить из файла</value>
   </data>
@@ -185,15 +167,6 @@
   </data>
   <data name="MessageNotEnough" xml:space="preserve">
     <value>В указанном файле недостаточно чисел для построения таблицы судоку</value>
-  </data>
-  <data name="Mode0" xml:space="preserve">
-    <value>Только решение</value>
-  </data>
-  <data name="Mode1" xml:space="preserve">
-    <value>Игровой режим</value>
-  </data>
-  <data name="ModeButton" xml:space="preserve">
-    <value>Режим интерфейса</value>
   </data>
   <data name="ResetField" xml:space="preserve">
     <value>Сбросить таблицу</value>
@@ -259,5 +232,44 @@
 • Чтобы переключиться в игровой режим, используйте раздел Меню &gt; Режим интерфейса &gt; Игровой режим. Все необходимые кнопки после этого появятся на экране.
 
 • Ознакомиться с управлением и подробными сведениями можно в разделе Меню &gt; О приложении</value>
+  </data>
+  <data name="GameModeLabel" xml:space="preserve">
+    <value>Игровой режим</value>
+  </data>
+  <data name="GameModeTip" xml:space="preserve">
+    <value>В игровом режиме приложение ведёт учёт выигрышей и добавляет дополнительные кнопки на главный экран. Кроме того, блокируется изменение ячеек, заполненных приложением в начале новой игры. В обычном режиме приложение работает только как калькулятор решений</value>
+  </data>
+  <data name="KeepScreenOnLabel" xml:space="preserve">
+    <value>Запрет спящего режима</value>
+  </data>
+  <data name="KeepScreenOnTip" xml:space="preserve">
+    <value>Приложение не позволит устройству перейти в спящий режим, когда оно активно</value>
+  </data>
+  <data name="SettingsPage" xml:space="preserve">
+    <value>Настройки приложения</value>
+  </data>
+  <data name="ReplaceBalloonsLabel" xml:space="preserve">
+    <value>Заменить «облачки» сообщениями</value>
+  </data>
+  <data name="ReplaceBalloonsTip" xml:space="preserve">
+    <value>На некоторых устройствах многострочные «облачки» (прямоугольные короткие текстовые сообщения) не поддерживаются должным образом. Включите эту опцию, чтобы заменить их обычными сообщениями о результатах проверки, если это необходимо</value>
+  </data>
+  <data name="LanguageTip" xml:space="preserve">
+    <value>Настройка задаёт язык интерфейса и текстовых сообщений</value>
+  </data>
+  <data name="FontSizeTip" xml:space="preserve">
+    <value>Настройка задаёт размер элементов и текстовых подписей в интерфейсе приложения</value>
+  </data>
+  <data name="ColorSchemeTip" xml:space="preserve">
+    <value>Опция позволяет выбрать цветовую схему для поля судоку</value>
+  </data>
+  <data name="CellsAppearanceTip" xml:space="preserve">
+    <value>Опция позволяет выбрать представление для значений в поле судоку</value>
+  </data>
+  <data name="HighlightAffectedLabel" xml:space="preserve">
+    <value>Подсвечивать затронутые ячейки</value>
+  </data>
+  <data name="HighlightAffectedTip" xml:space="preserve">
+    <value>Опция позволяет подсвечивать ячейки, затронутые выделенной (в строке, столбце и квадрате)</value>
   </data>
 </root>
