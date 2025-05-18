@@ -3,6 +3,9 @@ Sudoku solver: changes log
 ToDo:
 - награды без штрафов и без проверок
 
+Version 5.1.1:
+• Android: MAUI support packages have been updated
+
 Version 5.1:
 • Added highlighting for cells affected by the selected one;
 • Added new color schemes, updated existing schemes;
