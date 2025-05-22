@@ -2,6 +2,7 @@ Sudoku solver: changes log
 
 ToDo:
 - награды без штрафов и без проверок
+- заглушить оффлайн-руководства для MSStore
 
 Version 5.1.1:
 • Android: MAUI support packages have been updated
