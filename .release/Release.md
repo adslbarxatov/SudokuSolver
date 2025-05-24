@@ -1,4 +1,4 @@
-_Changes for v 5.1.5_:
+_Changes for v 5.1.6_:
 - Added support for achievements (`Three or less checks`, `No mistakes`);
 - Added highlighting for cells affected by the selected one;
 - Added new color schemes, updated existing schemes;

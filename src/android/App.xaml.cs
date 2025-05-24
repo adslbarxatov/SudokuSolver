@@ -765,38 +765,49 @@ namespace RD_AAOW
 					{
 					// Расчёт очков
 					uint score = SudokuSolverMath.GetScore (newCellsCount);
-					if (emptyCellsCount < 2)
+					bool win = (emptyCellsCount < 2);
+					if (win)
 						score += SudokuSolverMath.GetScore (ScoreTypes.GameCompletion);
 
+					// Отображение сведений о достижениях (обязательно до обновления очков)
+					string achiLine = "";
+					for (uint i = 0; i < SudokuSolverMath.AchievementsCount; i++)
+						{
+						if (!win)
+							break;
+
+						if (!SudokuSolverMath.CheckAchievement (i))
+							continue;
+
+						string achiText = RDLocale.GetText ("Achi" + i.ToString ());
+						int left = achiText.IndexOf (RDLocale.RN);
+						achiLine += " " + achiText.Substring (0, left);
+
+						uint tip = 1u << (8 + (int)i);
+						if ((RDGenerics.TipsState & tip) == 0)
+							{
+							await RDInterface.ShowMessage (achiText, RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK));
+							RDGenerics.TipsState |= tip;
+							}
+						}
+
+					// Обновление счёта
 					SudokuSolverMath.UpdateGameScore (false, score);
 
 					// Отображение результата и отключение игрового режима до следующей генерации
-					await ShowRBControlledMessage ("✅ " + RDLocale.GetText ("SolutionIsCorrect") + RDLocale.RNRN +
-						"+" + score.ToString () + " " + gemSuffix);
+					string msgText = "✅ " + RDLocale.GetText ("SolutionIsCorrect") + RDLocale.RNRN +
+						"+" + score.ToString () + " " + gemSuffix;
+					if (!string.IsNullOrWhiteSpace (achiLine))
+						msgText += "\t\t+" + achiLine;
+					await ShowRBControlledMessage (msgText);
 
 					// Отобразить решение в случае выигрыша (без return; режим игры отключается далее)
-					if (emptyCellsCount < 2)
-						{
-						// Отображение сведений о достижениях
-						for (uint i = 0; i < SudokuSolverMath.AchievementsCount; i++)
-							{
-							uint tip = 1u << (4 + (int)i);
-							if (SudokuSolverMath.CheckAchievement (i) && ((RDGenerics.TipsState & tip) == 0))
-								{
-								await RDInterface.ShowMessage ("Achi" + i.ToString (),
-									RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK));
-								RDGenerics.TipsState |= tip;
-								}
-							}
-
+					if (win)
 						await ShowScore (true);
-						}
 
 					// Иначе продолжить игру
 					else
-						{
 						return true;
-						}
 					}
 
 				// Не отображать решение вне игрового режима

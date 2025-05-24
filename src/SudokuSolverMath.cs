@@ -1388,12 +1388,14 @@ namespace RD_AAOW
 
 					// Проверка достижений
 					for (uint i = 0; i < AchievementsCount; i++)
+						{
 						if (CheckAchievement (i))
 							{
 							item = (byte)(gameScore_AchiBase + i);
 							v = GetGameScore (item);
 							SetGameScore (item, v + 1);
 							}
+						}
 
 					return 1000 * multiplier;
 				}

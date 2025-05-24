@@ -289,6 +289,6 @@ Appears every time when all checks are successful</value>
   </data>
   <data name="StatsTextAchi" xml:space="preserve">
     <value>Achievements:
-3️⃣ {0:S}	👍 {1:S}</value>
+3️⃣ {0:S}		👍 {1:S}</value>
   </data>
 </root>

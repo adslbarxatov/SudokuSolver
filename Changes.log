@@ -1,9 +1,6 @@
 Sudoku solver: changes log
 
-ToDo:
-- список достижений в сообщении последней проверки
-
-Version 5.1.5:
+Version 5.1.6:
 • Added support for achievements (Three or less checks, No mistakes)
 
 Version 5.1.1:
