@@ -272,4 +272,23 @@ In this app you can solve classic (9 x 9) sudokus both manually and automaticall
   <data name="HighlightAffectedTip" xml:space="preserve">
     <value>This option allows you to highlight cells affected by the selected one (in row, column and square)</value>
   </data>
+  <data name="Achi0" xml:space="preserve">
+    <value>3️⃣
+“Guess in three tries” achievement
+
+Appears every time when:
+- two or less checks done (including the last one) on easy game
+- three or less checks done on medium game
+- four or less checks done on hard game</value>
+  </data>
+  <data name="Achi1" xml:space="preserve">
+    <value>👍
+“No mistakes” achievement
+
+Appears every time when all checks are successful</value>
+  </data>
+  <data name="StatsTextAchi" xml:space="preserve">
+    <value>Achievements:
+3️⃣ {0:S}	👍 {1:S}</value>
+  </data>
 </root>

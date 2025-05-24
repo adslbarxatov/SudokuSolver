@@ -246,31 +246,6 @@ namespace RD_AAOW
 #endif
 		};
 
-	/*if ANDROID
-
-	/// <summary>
-	/// Возможные расположения числовой клавиатуры
-	/// </summary>
-	public enum KeyboardPlacements
-		{
-		/// <summary>
-		/// Не отображается
-		/// </summary>
-		None,
-
-		/// <summary>
-		/// Справа
-		/// </summary>
-		Right,
-
-		/// <summary>
-		/// Снизу
-		/// </summary>
-		Bottom,
-		}
-
-	endif*/
-
 	/// <summary>
 	/// Возможные режимы работы программы
 	/// </summary>
@@ -363,9 +338,10 @@ namespace RD_AAOW
 		private const byte gameScore_WinsBase = 1;
 		private const byte gameScore_ChainBase = 6;
 		private const byte gameScore_TimeBase = 9;
+		private const byte gameScore_AchiBase = 12;
 
 		// Длина массива храрения выигрышей
-		private const int gameScoreSize = 12;
+		private const int gameScoreSize = 14;
 
 		// Ограничение поля Лучшее время (не более недели)
 		private const uint gameScore_TimeLimit = 60 * 60 * 24 * 7;
@@ -435,22 +411,11 @@ namespace RD_AAOW
 
 			// Цвет решённых ячеек
 			[ [0, 180, 0], [0, 180, 0], [64, 255, 64], [64, 255, 64], ],
-			/*else
-			[ Color.FromArgb (0, 0, 255), Color.FromArgb (255, 255, 64) ],
-			[ Color.FromArgb (200, 0, 0), Color.FromArgb (255, 64, 64) ],
-			[ Color.FromArgb (0, 200, 0), Color.FromArgb (64, 255, 64) ],
-			endif*/
 
 			// Цвет имеющегося значения
 			[ [32, 32, 32], [32, 48, 32], [196, 196, 196], [172, 160, 172], ],
 
 			// Цвет фона страницы или окна
-			/*if ANDROID
-			[ Color.FromArgb ("#FFFFE7"), Color.FromArgb ("#1C201C"), ],
-			[ Color.FromArgb ("#FFFFDE"), Color.FromArgb ("#222822"), ],
-			[ Color.FromArgb ("#C0FFFF"), Color.FromArgb ("#381C38"), ],
-			[ Color.FromArgb ("#00FFFF"), Color.FromArgb ("#603060"), ],
-			else*/
 			[ [231, 231, 231], [255, 255, 231], [28, 28, 28], [30, 28, 40], ],
 			
 			// Цвет обычных кнопок
@@ -529,6 +494,11 @@ namespace RD_AAOW
 		// Индекс текущего представления значений в ячейках
 		private static int cellsAppIndex = 0;
 
+		// Счётчики успешных и ошибочных проверок
+		// (заглушены, чтобы не допускать сброса перезапуском приложения)
+		private static uint successfulChecks = 100;
+		private static uint failedChecks = 100;
+
 		#endregion
 
 		#region Свойства
@@ -583,22 +553,6 @@ namespace RD_AAOW
 			}
 
 #if ANDROID
-
-		/*/// <summary>
-		/// Возвращает или задаёт ориентацию элементов экрана
-		/// </summary>
-		public static KeyboardPlacements KeyboardPlacement
-			{
-			get
-				{
-				return (KeyboardPlacements)RDGenerics.GetSettings (keyboardPlacementsPar,
-					(uint)KeyboardPlacements.Bottom);
-				}
-			set
-				{
-				RDGenerics.SetSettings (keyboardPlacementsPar, (uint)value);
-				}
-			}*/
 
 		/// <summary>
 		/// Возвращает или задаёт флаг замены всплывающих оповещений на полноценные сообщения
@@ -750,7 +704,6 @@ namespace RD_AAOW
 			get
 				{
 				_ = ColorScheme;    // Загрузка значения
-				/*return colors[4][colorIndex];*/
 				return BytesToColor (colorsV4[4][colorIndex]);
 				}
 			}
@@ -764,17 +717,6 @@ namespace RD_AAOW
 			return Color.FromArgb (Bytes[0], Bytes[1], Bytes[2]);
 #endif
 			}
-
-		/*/// <summary>
-		/// Возвращает количество доступных цветовых схем
-		/// </summary>
-		public static uint ColorSchemesCount
-			{
-			get
-				{
-				return (uint)colorsNames.Length;
-				}
-			}*/
 
 		/// <summary>
 		/// Возвращает названия цветовых схем для текущего языка интерфейса
@@ -791,17 +733,6 @@ namespace RD_AAOW
 				return res.ToArray ();
 				}
 			}
-
-		/*/// <summary>
-		/// Возвращает количество доступных представлений значений в ячейках
-		/// </summary>
-		public static uint CellsAppearancesCount
-			{
-			get
-				{
-				return (uint)cellsApps.Count;
-				}
-			}*/
 
 		/// <summary>
 		/// Возвращает названия представлений ячеек для текущего языка интерфейса
@@ -882,6 +813,8 @@ namespace RD_AAOW
 		/// - самая длинная цепочка без проверок среди простых игр
 		/// - самая длинная цепочка без проверок среди средних игр
 		/// - самая длинная цепочка без проверок среди сложных игр
+		/// - число достижений «угадай с трёх раз»
+		/// - число достижений «ни одной ошибки»
 		/// </summary>
 		public static string[] StatsValues
 			{
@@ -914,7 +847,21 @@ namespace RD_AAOW
 				for (byte i = gameScore_ChainBase; i < gameScore_ChainBase + 3; i++)
 					values.Add (GetGameScore (i).ToString ());
 
+				for (byte i = gameScore_AchiBase; i < gameScore_AchiBase + AchievementsCount; i++)
+					values.Add (GetGameScore (i).ToString ());
+
 				return values.ToArray ();
+				}
+			}
+
+		/// <summary>
+		/// Возвращает число доступных достижений
+		/// </summary>
+		public static uint AchievementsCount
+			{
+			get
+				{
+				return gameScoreSize - gameScore_AchiBase;
 				}
 			}
 
@@ -1336,7 +1283,7 @@ namespace RD_AAOW
 				gameScore = new uint[gameScoreSize];
 				for (int i = 0; i < gameScoreSize; i++)
 					{
-					if (i < gameScore_TimeBase)
+					if ((i < gameScore_TimeBase) || (i >= gameScore_AchiBase))
 						gameScore[i] = 0;   // Чем больше, тем лучше
 					else
 						gameScore[i] = uint.MaxValue;   // Наоборот
@@ -1367,10 +1314,10 @@ namespace RD_AAOW
 						}
 					catch
 						{
-						if (i < gameScore_TimeBase)
-							gameScore[i] = 0; // Чем больше, тем лучше
+						if ((i < gameScore_TimeBase) || (i >= gameScore_AchiBase))
+							gameScore[i] = 0;   // Чем больше, тем лучше
 						else
-							gameScore[i] = uint.MaxValue; // Наоборот
+							gameScore[i] = uint.MaxValue;   // Наоборот
 						}
 
 				// Успешно
@@ -1439,6 +1386,15 @@ namespace RD_AAOW
 					if ((seconds <= gameScore_TimeLimit) && (seconds < v))
 						SetGameScore (item, (uint)seconds);
 
+					// Проверка достижений
+					for (uint i = 0; i < AchievementsCount; i++)
+						if (CheckAchievement (i))
+							{
+							item = (byte)(gameScore_AchiBase + i);
+							v = GetGameScore (item);
+							SetGameScore (item, v + 1);
+							}
+
 					return 1000 * multiplier;
 				}
 			}
@@ -1460,14 +1416,39 @@ namespace RD_AAOW
 					v -= Value;
 				else
 					v = 0;
+
+				failedChecks++;
 				}
 			else
 				{
 				v += Value;
+
+				successfulChecks++;
 				}
 
 			// Запись значения
 			SetGameScore (gameScore_TotalScore, v);
+			}
+
+		/// <summary>
+		/// Метод проверяет наличие факта достижения по его номеру
+		/// </summary>
+		/// <param name="AchiNumber">Номер достижения</param>
+		/// <returns>Возвращает false, если достижение не выполнено, или номер указан некорректно</returns>
+		public static bool CheckAchievement (uint AchiNumber)
+			{
+			switch (AchiNumber)
+				{
+				// Угадай с трёх раз
+				case 0:
+					return (successfulChecks + failedChecks <= (uint)difficulty + 1);
+
+				// Без ошибок
+				case 1:
+					return (failedChecks == 0);
+				}
+
+			return false;
 			}
 
 		#endregion
@@ -1663,6 +1644,9 @@ namespace RD_AAOW
 			{
 			difficulty = Difficulty;
 			GameStartDate = DateTime.Now;
+
+			successfulChecks = 0;
+			failedChecks = 0;
 			}
 
 #if ANDROID
@@ -1763,78 +1747,6 @@ namespace RD_AAOW
 		/// <param name="Condition">Проверяемое условие</param>
 		public static bool CheckCondition (Button InterfaceElement, ConditionTypes Condition)
 			{
-			/*string text = InterfaceElement.Text;
-if ANDROID
-			Color textColor = InterfaceElement.TextColor;
-			Color backColor = InterfaceElement.BackgroundColor;
-else
-			Color textColor = InterfaceElement.ForeColor;
-			Color backColor = InterfaceElement.BackColor;
-endif*/
-			/*int textIdx = -1, backIdx = -1;
-
-			// Проверка условия
-			for (int i = 0; i < colorsNames.Length; i++)
-				{
-				switch (Condition)
-					{
-					case ConditionTypes.ContainsFoundValue:
-						textIdx = 2;
-						break;
-
-					case ConditionTypes.ContainsNewValue:
-						textIdx = 0;
-						break;
-
-					case ConditionTypes.IsEmpty:
-						return (text == EmptySign);
-
-					case ConditionTypes.SelectedCell:
-						backIdx = 7;
-						break;
-
-					case ConditionTypes.ContainsOldValue:
-						textIdx = 3;
-						break;
-
-					case ConditionTypes.ContainsErrorValue:
-						textIdx = 4;
-						break;
-					}
-
-				if (textIdx >= 0)
-					{
-if ANDROID
-					byte r, b, g;
-					textColor.ToRgb (out r, out g, out b);
-					if ((r == colorsV4[textIdx][i][0]) &&
-						(g == colorsV4[textIdx][i][1]) &&
-						(b == colorsV4[textIdx][i][2]))
-else
-					if ((textColor.R == colorsV4[textIdx][i][0]) &&
-						(textColor.G == colorsV4[textIdx][i][1]) &&
-						(textColor.B == colorsV4[textIdx][i][2]))
-endif
-						return true;
-					}
-
-				if (backIdx >= 0)
-					{
-if ANDROID
-					byte r, b, g;
-					backColor.ToRgb (out r, out g, out b);
-					if ((r == colorsV4[backIdx][i][0]) &&
-						(g == colorsV4[backIdx][i][1]) &&
-						(b == colorsV4[backIdx][i][2]))
-else
-					if ((backColor.R == colorsV4[backIdx][i][0]) &&
-						(backColor.G == colorsV4[backIdx][i][1]) &&
-						(backColor.B == colorsV4[backIdx][i][2]))
-endif
-						return true;
-					}
-				}*/
-
 			PropertyTypes prop = GetPropertyType (InterfaceElement);
 			switch (Condition)
 				{
@@ -1870,7 +1782,6 @@ endif
 			{
 			// Проверка условия
 			_ = ColorScheme;    // Загрузка значения
-			/*bool setForeColor = false, setBackColor = false;*/
 			byte[] color = colorsV4[3][colorIndex];
 
 			PropertyTypes prop = GetPropertyType (InterfaceElement);
@@ -1882,41 +1793,33 @@ endif
 
 				case PropertyTypes.SuccessColor:
 					color = colorsV4[2][colorIndex];
-					/*setForeColor = true;*/
 					break;
 
 				case PropertyTypes.ErrorColor:
 					color = colorsV4[1][colorIndex];
-					/*setForeColor = true;*/
 					break;
 
 				case PropertyTypes.NewColor:
 					color = colorsV4[0][colorIndex];
-					/*setForeColor = true;*/
 					break;
 
 				case PropertyTypes.OldColor:
-					/*setForeColor = true;*/
 					break;
 
 				case PropertyTypes.DeselectedCell:
 					color = colorsV4[6][colorIndex];
-					/*setBackColor = true;*/
 					break;
 
 				case PropertyTypes.SelectedCell:
 					color = colorsV4[7][colorIndex];
-					/*setBackColor = true;*/
 					break;
 
 				case PropertyTypes.OtherButton:
 					color = colorsV4[5][colorIndex];
-					/*setBackColor = true;*/
 					break;
 
 				case PropertyTypes.AffectedCell:
 					color = colorsV4[8][colorIndex];
-					/*setBackColor = true;*/
 					break;
 				}
 
@@ -2039,18 +1942,6 @@ endif
 
 			return (Byte)(idx + 1);
 			}
-
-		/*/// <summary>
-		/// Метод возвращает название представления содержимого ячеек для текущего языка
-		/// </summary>
-		/// <param name="Number">Номер представления</param>
-		public static string GetCellsAppearanceName (uint Number)
-			{
-			if (Number >= cellsAppsNames.Length)
-				return "";
-
-			return cellsAppsNames[(int)Number][(int)RDLocale.CurrentLanguage];
-			}*/
 
 		/// <summary>
 		/// Метод определяет, влияет ли ячейка TestCell на значение SelectedCell

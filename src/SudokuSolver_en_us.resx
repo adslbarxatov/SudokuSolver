@@ -236,4 +236,23 @@ In game mode, the app keeps track of winnings and adds additional buttons to the
   <data name="MSettings_MHighlight" xml:space="preserve">
     <value>&amp;Highlight affected cells</value>
   </data>
+  <data name="StatsTextAchi" xml:space="preserve">
+    <value>Achievements:
+[3] {0:S}	[👍] {1:S}</value>
+  </data>
+  <data name="Achi0" xml:space="preserve">
+    <value>[3]
+“Guess in three tries” achievement
+
+Appears every time when:
+- two or less checks done (including the last one) on easy game
+- three or less checks done on medium game
+- four or less checks done on hard game</value>
+  </data>
+  <data name="Achi1" xml:space="preserve">
+    <value>[👍]
+“No mistakes” achievement
+
+Appears every time when all checks are successful</value>
+  </data>
 </root>

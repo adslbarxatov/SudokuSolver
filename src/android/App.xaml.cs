@@ -22,9 +22,7 @@ namespace RD_AAOW
 		private Color stubColor = RDInterface.GetInterfaceColor (RDInterfaceColors.MediumGrey);
 
 		// Контекстные меню
-		/*private List<string> keyboardVariants = [];*/
 		private List<string> difficultyVariants = [];
-		/*private List<string> appModeVariants = [];*/
 		private List<string> colorSchemeVariants = [];
 		private List<List<string>> menuVariants = [];
 		private List<string> appearanceVariants = [];
@@ -183,17 +181,9 @@ namespace RD_AAOW
 				b.TextTransform = TextTransform.None;
 				b.Clicked += SetValueForCurrentButton;
 
-				/*if (i != 0)
-					{*/
 				b.WidthRequest = b.HeightRequest = RDInterface.MasterFontSize * 2.75;
 				if (i == 0)
 					b.Text = " ";
-				/*}
-			else
-				{
-				b.FontSize = 5 * RDInterface.MasterFontSize / 4;
-				b.Text = RDLocale.GetText ("EmptyButton");
-				}*/
 
 				if (inputButtons.Count > 0)
 					inputButtons.Insert (0, b);
@@ -253,10 +243,6 @@ namespace RD_AAOW
 
 			// Загрузка расположения клавиатуры
 			SetInterfaceState (true);
-
-			/*// Загрузка цветовой схемы и представления
-			SelectColorScheme (true);
-			SelectAppearance (true);    // Загружает сохранённое состояние*/
 
 			#endregion
 
@@ -345,9 +331,6 @@ namespace RD_AAOW
 			RDInterface.ApplyButtonSettings (aboutPage, "HelpButton",
 				RDLocale.GetDefaultText (RDLDefaultTexts.Control_HelpSupport),
 				aboutFieldBackColor, HelpButton_Click, false);
-			/*RDInterface.ApplyLabelSettings (aboutPage, "GenericSettingsLabel",
-				RDLocale.GetDefaultText (RDLDefaultTexts.Control_GenericSettings),
-				RDLabelTypes.HeaderLeft);*/
 
 			RDInterface.ApplyLabelSettings (aboutPage, "HelpHeaderLabel",
 				RDLocale.GetDefaultText (RDLDefaultTexts.Control_AppAbout),
@@ -477,7 +460,6 @@ namespace RD_AAOW
 				menuVariants.Add ([]);
 				menuVariants[0].Add ("🔢\t " + RDLocale.GetText ("Menu0"));
 				menuVariants[0].Add ("🕹\t " + RDLocale.GetText ("Menu1"));
-				/*menuVariants[0].Add ("📱\t " + RDLocale.GetText ("ModeButton"));   // [8]*/
 				menuVariants[0].Add ("⚙️\t " + RDLocale.GetText ("Menu2"));
 				menuVariants[0].Add ("ℹ️\t " + RDLocale.GetDefaultText (RDLDefaultTexts.Control_AppAbout));
 
@@ -492,15 +474,10 @@ namespace RD_AAOW
 				menuVariants[2].Add ("🆕\t " + RDLocale.GetText ("GenerateMatrix"));
 				menuVariants[2].Add ("☑️\t " + RDLocale.GetText ("CheckSolutionButton"));
 				menuVariants[2].Add ("📊\t " + RDLocale.GetText ("StatsButton"));
-
-				/*menuVariants.Add ([]);
-				menuVariants[3].Add ("🔢\t " + RDLocale.GetText ("KeyboardButton"));   // [7]
-				menuVariants[3].Add ("🔳\t " + RDLocale.GetText ("ColorScheme"));  // [10]
-				menuVariants[3].Add ("*️⃣\t " + RDLocale.GetText ("CellsAppearance"));  // [10]*/
 				}
 			List<List<int>> indirectMenu = [
-				[ 0, 1/*, 3*/ ],
-				[ 1, 2/*, 3*/ ],
+				[0, 1],
+				[1, 2],
 				];
 
 			// Верхнее меню
@@ -525,11 +502,6 @@ namespace RD_AAOW
 			// Выполнение
 			switch (firstMenu)
 				{
-				/*// [8] Сменить режим работы
-				case 2:
-					await SelectAppMode (false);
-					break;*/
-
 				// Настройки
 				case 2:
 					RDInterface.SetCurrentPage (settingsPage, settingsMasterBackColor);
@@ -543,7 +515,6 @@ namespace RD_AAOW
 				// Выполнить решение
 				case 10:
 					if (!await FindSolution (true))
-						/*RDInterface.ShowBal loon ("❌ " + RDLocale.GetText ("SolutionIsIncorrect"), true);*/
 						await ShowRBControlledMessage ("❌ " + RDLocale.GetText ("SolutionIsIncorrect"));
 					break;
 
@@ -589,21 +560,6 @@ namespace RD_AAOW
 				case 22:
 					await ShowScore (false);
 					break;
-
-					/*// Сменить расположение клавиатуры
-					case 30:
-						await SelectKeyboardPlacement (false);
-						break;
-
-					// Выбор цветовой схемы
-					case 31:
-						await SelectColorScheme (false);
-						break;
-
-					// Выбор представления ячеек
-					case 32:
-						await SelectAppearance (false);
-						break;*/
 				}
 			}
 
@@ -617,7 +573,6 @@ namespace RD_AAOW
 			if (SudokuSolverMath.GameMode != MatrixDifficulty.None)
 				text += (RDLocale.RNRN + "–" + score.ToString () + " " + gemSuffix);
 
-			/*RDInterface.ShowBal loon (text, true);*/
 			return await ShowRBControlledMessage (text);
 			}
 
@@ -711,47 +666,10 @@ namespace RD_AAOW
 			SudokuSolverMath.SetProperty (b, PropertyTypes.NewColor);
 			}
 
-		/*// Выбор расположения клавиатуры
-		private async Task<bool> SelectKeyboardPlacement (bool Initial)
-			{
-			// Выбор варианта
-			if (keyboardVariants.Count < 1)
-				{
-				keyboardVariants.Add ("❌\t " + RDLocale.GetText ("KeyboardVariant0"));
-				keyboardVariants.Add ("➡️\t " + RDLocale.GetText ("KeyboardVariant1"));
-				keyboardVariants.Add ("⬇️\t " + RDLocale.GetText ("KeyboardVariant2"));
-				}
-
-			int res;
-			if (Initial)
-				{
-				res = (int)SudokuSolverMath.KeyboardPlacement;
-				}
-			else
-				{
-				res = await RDInterface.ShowList (RDLocale.GetText ("KeyboardPlacement"),
-					RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel), keyboardVariants);
-				if (res < 0)
-					return false;
-				SudokuSolverMath.KeyboardPlacement = (KeyboardPlacements)res;
-				}
-
-			// Настройка
-			for (int i = 0; i < inputButtons.Count; i++)
-				inputButtons[i].IsVisible = (res > 0);
-
-			if (SudokuSolverMath.KeyboardPlacement == KeyboardPlacements.Right)
-				masterField.Orientation = StackOrientation.Horizontal;
-			else
-				masterField.Orientation = StackOrientation.Vertical;
-			return true;
-			}*/
-
 		// Метод выполняет решение судоку или его проверку
 		private async void SolveSudoku_Clicked (object sender, EventArgs e)
 			{
 			if (!await FindSolution (true))
-				/*RDInterface.ShowBal loon ("❌ " + RDLocale.GetText ("SolutionIsIncorrect"), true);*/
 				await ShowRBControlledMessage ("❌ " + RDLocale.GetText ("SolutionIsIncorrect"));
 			}
 
@@ -853,24 +771,37 @@ namespace RD_AAOW
 					SudokuSolverMath.UpdateGameScore (false, score);
 
 					// Отображение результата и отключение игрового режима до следующей генерации
-					/*RDInterface.ShowBal loon ("✅ " + RDLocale.GetText ("SolutionIsCorrect") + RDLocale.RNRN +
-						"+" + score.ToString () + " " + gemSuffix, true);*/
 					await ShowRBControlledMessage ("✅ " + RDLocale.GetText ("SolutionIsCorrect") + RDLocale.RNRN +
 						"+" + score.ToString () + " " + gemSuffix);
 
 					// Отобразить решение в случае выигрыша (без return; режим игры отключается далее)
 					if (emptyCellsCount < 2)
+						{
+						// Отображение сведений о достижениях
+						for (uint i = 0; i < SudokuSolverMath.AchievementsCount; i++)
+							{
+							uint tip = 1u << (4 + (int)i);
+							if (SudokuSolverMath.CheckAchievement (i) && ((RDGenerics.TipsState & tip) == 0))
+								{
+								await RDInterface.ShowMessage ("Achi" + i.ToString (),
+									RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK));
+								RDGenerics.TipsState |= tip;
+								}
+							}
+
 						await ShowScore (true);
+						}
 
 					// Иначе продолжить игру
 					else
+						{
 						return true;
+						}
 					}
 
 				// Не отображать решение вне игрового режима
 				else
 					{
-					/*RDInterface.ShowBal loon ("✅ " + RDLocale.GetText ("SolutionIsCorrect"), true);*/
 					await ShowRBControlledMessage ("✅ " + RDLocale.GetText ("SolutionIsCorrect"));
 					return true;
 					}
@@ -913,15 +844,13 @@ namespace RD_AAOW
 			text += (string.Format (RDLocale.GetText ("StatsText"), gemSuffix + "\t " + stats[0],
 				easyPrefix + stats[1] + "\t\t" + mediumPrefix + stats[2] + "\t\t" + hardPrefix + stats[3],
 				easyPrefix + stats[4] + "\t\t" + mediumPrefix + stats[5] + "\t\t" + hardPrefix + stats[6],
-				easyPrefix + stats[7] + "\t\t" + mediumPrefix + stats[8] + "\t\t" + hardPrefix + stats[9]));
+				easyPrefix + stats[7] + "\t\t" + mediumPrefix + stats[8] + "\t\t" + hardPrefix + stats[9])) +
+				RDLocale.RNRN;
+
+			text += string.Format (RDLocale.GetText ("StatsTextAchi"),
+				stats[10], stats[11]);
 
 			// Отображение
-			/*if (AsWin)
-				{
-				await RDInterface.ShowMessage (text, RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK));
-				return true;
-				}*/
-
 			if (await RDInterface.ShowMessage (text, RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK),
 				RDLocale.GetText ("ShareButton")))
 				return true;
@@ -949,8 +878,6 @@ namespace RD_AAOW
 			else
 				{
 				solutionButton.Text = "✅";
-				/*SelectKeyboardPlacement (true);
-				SelectAppMode (true);*/
 				GameModeSwitch_Toggled (null, null);
 				}
 			}
@@ -1054,21 +981,6 @@ namespace RD_AAOW
 		// Выбор режима приложения
 		private void GameModeSwitch_Toggled (object sender, ToggledEventArgs e)
 			{
-			/*// Выбор варианта
-			if (appModeVariants.Count < 1)
-				{
-				appModeVariants.Add ("✅\t " + RDLocale.GetText ("Mode0"));
-				appModeVariants.Add ("🕹\t " + RDLocale.GetText ("Mode1"));
-				}
-
-			if (!Initial)
-				{
-				int res = await RDInterface.ShowList (RDLocale.GetText ("ModeButton") + ":",
-					RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel), appModeVariants);
-				if (res < 0)
-					return false;
-				SudokuSolverMath.AppMode = (AppModes)res;
-				}*/
 			if (sender != null)
 				SudokuSolverMath.AppMode = (gameModeSwitch.IsToggled ? AppModes.Game : AppModes.SolutionOnly);
 
@@ -1080,8 +992,6 @@ namespace RD_AAOW
 			clearButton.IsVisible = true;
 			if (!game)
 				SudokuSolverMath.GameMode = MatrixDifficulty.None;
-
-			/*return true;*/
 			}
 
 		// Метод формирует из текущего состояния таблицы сплошную строку и отправляет её на сохранение
@@ -1100,8 +1010,6 @@ namespace RD_AAOW
 			// Выбор варианта
 			if (colorSchemeVariants.Count < 1)
 				{
-				/*colorSchemeVariants.Add ("⚪️\t " + RDLocale.GetText ("Color0"));
-				colorSchemeVariants.Add ("⚫️\t " + RDLocale.GetText ("Color1"));*/
 				string[] names = SudokuSolverMath.ColorSchemesNames;
 				for (int i = 0; i < names.Length; i++)
 					colorSchemeVariants.Add (names[i]);
@@ -1152,8 +1060,6 @@ namespace RD_AAOW
 			SudokuSolverMath.SetProperty (solutionButton, PropertyTypes.OtherButton);
 			SudokuSolverMath.SetProperty (menuButton, PropertyTypes.OtherButton);
 			SudokuSolverMath.SetProperty (menuButton, PropertyTypes.OldColor);
-
-			/*return true;*/
 			}
 
 		// Выбор цветовой схемы приложения
@@ -1162,8 +1068,6 @@ namespace RD_AAOW
 			// Выбор варианта
 			if (appearanceVariants.Count < 1)
 				{
-				/*for (uint i = 0; i < SudokuSolverMath.CellsAppearancesCount; i++)
-					appearanceVariants.Add (SudokuSolverMath.GetCellsAppearanceName (i));*/
 				string[] names = SudokuSolverMath.CellsAppearancesNames;
 				for (int i = 0; i < names.Length; i++)
 					appearanceVariants.Add (names[i]);
@@ -1205,8 +1109,6 @@ namespace RD_AAOW
 				inputButtons[i].Text = SudokuSolverMath.GetAppearance ((Byte)i);
 				inputButtons[i].FontSize = SudokuSolverMath.CellsAppearancesFontSize;
 				}
-
-			/*return true;*/
 			}
 
 		// Включение / выключение фиксации экрана

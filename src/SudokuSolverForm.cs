@@ -535,11 +535,26 @@ namespace RD_AAOW
 
 					// Отобразить решение в случае выигрыша (без return; режим игры отключается далее)
 					if (emptyCellsCount < 2)
+						{
+						// Отображение сведений о достижениях
+						for (uint i = 0; i < SudokuSolverMath.AchievementsCount; i++)
+							{
+							uint tip = 1u << (4 + (int)i);
+							if (SudokuSolverMath.CheckAchievement (i) && ((RDGenerics.TipsState & tip) == 0))
+								{
+								RDInterface.LocalizedMessageBox (RDMessageTypes.Success_Center, "Achi" + i.ToString ());
+								RDGenerics.TipsState |= tip;
+								}
+							}
+
 						MStats_Click (null, null);
+						}
 
 					// Иначе продолжить игру
 					else
+						{
 						return true;
+						}
 					}
 
 				// Не отображать решение вне игрового режима
@@ -660,7 +675,10 @@ namespace RD_AAOW
 			text += string.Format (RDLocale.GetText ("StatsText"), stats[0],
 				stats[1] + spl + stats[2] + spl + stats[3],
 				stats[4] + spl + stats[5] + spl + stats[6],
-				stats[7] + spl + stats[8] + spl + stats[9]);
+				stats[7] + spl + stats[8] + spl + stats[9]) + RDLocale.RNRN;
+
+			text += string.Format (RDLocale.GetText ("StatsTextAchi"),
+				stats[10], stats[11]);
 
 			RDInterface.MessageBox (RDMessageTypes.Success_Center, text);
 			}

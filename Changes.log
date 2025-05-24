@@ -1,8 +1,10 @@
 Sudoku solver: changes log
 
 ToDo:
-- награды без штрафов и без проверок
-- заглушить оффлайн-руководства для MSStore
+- список достижений в сообщении последней проверки
+
+Version 5.1.5:
+• Added support for achievements (Three or less checks, No mistakes)
 
 Version 5.1.1:
 • Android: MAUI support packages have been updated

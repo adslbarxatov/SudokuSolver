@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RD_AAOW.SettingsPage">
+
+	<!-- Раздел ввода значений -->
+	<ScrollView>
+		<StackLayout>
+
+			<Label />
+
+			<StackLayout Orientation="Horizontal">
+				<Switch x:Name="GameModeSwitch" VerticalOptions="Center" />
+				<Label x:Name="GameModeLabel" VerticalOptions="Center" />
+			</StackLayout>
+			<Label x:Name="GameModeTip" />
+
+			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
+					WidthRequest="100" Color="#505050" Margin="12" />
+
+			<StackLayout Orientation="Horizontal">
+				<Switch x:Name="ReplaceBalloonsSwitch" VerticalOptions="Center" />
+				<Label x:Name="ReplaceBalloonsLabel" VerticalOptions="Center" />
+			</StackLayout>
+			<Label x:Name="ReplaceBalloonsTip" />
+
+			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
+					WidthRequest="100" Color="#505050" Margin="12" />
+
+			<StackLayout Orientation="Horizontal">
+				<Label x:Name="ColorSchemeLabel" VerticalOptions="Center" />
+				<Button x:Name="ColorSchemeButton" VerticalOptions="Center" />
+			</StackLayout>
+			<Label x:Name="ColorSchemeTip" />
+
+			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
+					WidthRequest="100" Color="#505050" Margin="12" />
+
+			<StackLayout Orientation="Horizontal">
+				<Label x:Name="CellsAppearanceLabel" VerticalOptions="Center" />
+				<Button x:Name="CellsAppearanceButton" VerticalOptions="Center" />
+			</StackLayout>
+			<Label x:Name="CellsAppearanceTip" />
+
+			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
+					WidthRequest="100" Color="#505050" Margin="12" />
+
+			<StackLayout Orientation="Horizontal">
+				<Switch x:Name="HighlightAffectedSwitch" VerticalOptions="Center" />
+				<Label x:Name="HighlightAffectedLabel" VerticalOptions="Center" />
+			</StackLayout>
+			<Label x:Name="HighlightAffectedTip" />
+
+			<Label />
+			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
+					WidthRequest="200" Color="#505050" Margin="12" />
+			<Label />
+
+			<Label x:Name="RestartTipLabel" />
+
+			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
+					WidthRequest="100" Color="#505050" Margin="12" />
+
+			<StackLayout Orientation="Horizontal">
+				<Switch x:Name="KeepScreenOnSwitch" VerticalOptions="Center" />
+				<Label x:Name="KeepScreenOnLabel" VerticalOptions="Center" />
+			</StackLayout>
+			<Label x:Name="KeepScreenOnTip" />
+
+			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
+					WidthRequest="100" Color="#505050" Margin="12" />
+
+			<StackLayout Orientation="Horizontal">
+				<Label x:Name="LanguageLabel" VerticalOptions="Center" />
+				<Button x:Name="LanguageSelector" VerticalOptions="Center" />
+			</StackLayout>
+			<Label x:Name="LanguageTip" />
+
+			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
+					WidthRequest="100" Color="#505050" Margin="12" />
+
+			<StackLayout Orientation="Horizontal">
+				<Label x:Name="FontSizeLabel" VerticalOptions="Center" />
+
+				<Button x:Name="FontSizeInc" VerticalOptions="Center" />
+				<Label x:Name="FontSizeField" VerticalOptions="Center" />
+				<Button x:Name="FontSizeDec" VerticalOptions="Center" />
+			</StackLayout>
+			<Label x:Name="FontSizeTip" />
+
+			<Label />
+
+		</StackLayout>
+	</ScrollView>
+</ContentPage>
