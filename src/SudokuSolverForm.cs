@@ -155,17 +155,11 @@ namespace RD_AAOW
 
 			// Контекстные меню
 			appearanceMenu.Items.Clear ();
-			/*for (uint i = 0; i < SudokuSolverMath.CellsAppearancesCount; i++)
-				appearanceMenu.Items.Add (SudokuSolverMath.GetCellsAppearanceName (i), null,
-					ChangeAppearance);*/
 			string[] appearances = SudokuSolverMath.CellsAppearancesNames;
 			for (int i = 0; i < appearances.Length; i++)
 				appearanceMenu.Items.Add (appearances[i], null, ChangeAppearance);
 
 			colorSchemeMenu.Items.Clear ();
-			/*for (uint i = 0; i < SudokuSolverMath.ColorSchemesCount; i++)
-				colorSchemeMenu.Items.Add (RDLocale.GetText ("Color" + i.ToString ()), null,
-					ChangeColorScheme);*/
 			string[] colorSchemes = SudokuSolverMath.ColorSchemesNames;
 			for (int i = 0; i < colorSchemes.Length; i++)
 				colorSchemeMenu.Items.Add (colorSchemes[i], null, ChangeColorScheme);
@@ -768,31 +762,6 @@ namespace RD_AAOW
 			if (sender != null)
 				SudokuSolverMath.AppMode = (AppModes)(1 - gameModeMenu.Items.IndexOf ((ToolStripItem)sender));
 			bool game = (SudokuSolverMath.AppMode == AppModes.Game);
-
-			/*if (sender != null)
-				{
-				switch (RDInterface.LocalizedMessageBox (RDMessageTypes.Question_Left,
-					"AppModeMessage", RDLDefaultTexts.Button_Yes, RDLDefaultTexts.Button_No,
-					RDLDefaultTexts.Button_Cancel))
-					{
-					case RDMessageButtons.ButtonOne:
-						SudokuSolverMath.AppMode = AppModes.Game;
-						game = true;
-						break;
-
-					case RDMessageButtons.ButtonTwo:
-						SudokuSolverMath.AppMode = AppModes.SolutionOnly;
-						game = false;
-						break;
-
-					default:
-						return;
-					}
-				}
-			else
-				{
-				game = (SudokuSolverMath.AppMode == AppModes.Game);
-				}*/
 
 			// Оформление
 			this.ClientSize = new Size ((int)(SudokuSolverMath.SideSize + 2) * buttonSize,
