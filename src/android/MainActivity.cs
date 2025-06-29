@@ -10,6 +10,7 @@ namespace RD_AAOW
 		Icon = "@drawable/icon",
 		Theme = "@style/SplashTheme",
 		MainLauncher = true,
+		Name = "com.RD_AAOW.MainActivity",
 		ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity: MauiAppCompatActivity
 		{

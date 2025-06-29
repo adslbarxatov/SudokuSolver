@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.RD_AAOW.SudokuSolver"
-	android:installLocation="internalOnly" android:versionCode="600508" android:versionName="5.1.7">
+	android:installLocation="internalOnly" android:versionCode="600509" android:versionName="5.2">
 
 	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="35" />
 
@@ -9,9 +9,30 @@
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 
-	<application android:label="Sudoku solver" android:icon="@drawable/icon"
-		android:windowOptOutEdgeToEdgeEnforcement="true" />
+	<!--<application android:label="Sudoku solver" android:icon="@drawable/icon"
+		android:windowOptOutEdgeToEdgeEnforcement="true" />-->
 
+	<!-- Поддержка Android TV -->
+	<uses-feature android:name="android.software.leanback" android:required="false" />
+	<uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
+	<application android:label="Sudoku solver" android:icon="@drawable/icon"
+		android:banner="@drawable/banner">
+
+		<activity android:name="com.RD_AAOW.MainActivity" android:label="Sudoku solver"
+			android:theme="@style/SplashTheme" android:icon="@drawable/icon"
+			android:exported="true" android:configChanges="screenSize|orientation">
+
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+				<category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+			</intent-filter>
+
+		</activity>
+	</application>
+
+	<!-- Нормальная работа ссылок mailto на Android 11 и новее -->
 	<queries>
 		<intent>
 			<action android:name="android.intent.action.SENDTO" />

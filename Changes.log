@@ -1,5 +1,9 @@
 Sudoku solver: changes log
 
+Version 5.2:
+• Android: added support for Android TV;
+• Windows: applied new subsystem for user messages
+
 Version 5.1.7:
 • Android: MAUI support packages have been updated;
 • Windows: internal assemblies have been updated

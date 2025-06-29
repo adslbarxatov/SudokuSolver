@@ -232,7 +232,8 @@ namespace RD_AAOW
 		private void MSolve_Click (object sender, EventArgs e)
 			{
 			if (!Solve (true))
-				RDInterface.LocalizedMessageBox (RDMessageTypes.Error_Center, "SolutionIsIncorrect", 1000);
+				RDInterface.LocalizedMessageBox (RDMessageFlags.Error | RDMessageFlags.CenterText | RDMessageFlags.NoSound,
+					"SolutionIsIncorrect", 1000);
 			}
 
 		// Проверка решения в текущем состоянии
@@ -260,7 +261,8 @@ namespace RD_AAOW
 		// Полный сброс
 		private void MReset_Click (object sender, EventArgs e)
 			{
-			if (RDInterface.LocalizedMessageBox (RDMessageTypes.Warning_Center, "ResetWarning",
+			if (RDInterface.LocalizedMessageBox (RDMessageFlags.Warning | RDMessageFlags.CenterText,
+				"ResetWarning",
 				RDLDefaultTexts.Button_YesNoFocus, RDLDefaultTexts.Button_No) !=
 				RDMessageButtons.ButtonOne)
 				return;
@@ -305,7 +307,7 @@ namespace RD_AAOW
 				}
 			catch
 				{
-				RDInterface.LocalizedMessageBox (RDMessageTypes.Warning_Center,
+				RDInterface.LocalizedMessageBox (RDMessageFlags.Warning | RDMessageFlags.CenterText,
 					string.Format (RDLocale.GetDefaultText (RDLDefaultTexts.Message_LoadFailure_Fmt),
 					OFDialog.FileName));
 				return;
@@ -315,7 +317,8 @@ namespace RD_AAOW
 			string line = SudokuSolverMath.ParseMatrixFromFile (file);
 			if (string.IsNullOrWhiteSpace (line))
 				{
-				RDInterface.LocalizedMessageBox (RDMessageTypes.Warning_Center, "MessageNotEnough");
+				RDInterface.LocalizedMessageBox (RDMessageFlags.Warning | RDMessageFlags.CenterText,
+					"MessageNotEnough");
 				return;
 				}
 
@@ -352,7 +355,7 @@ namespace RD_AAOW
 				}
 			catch
 				{
-				RDInterface.MessageBox (RDMessageTypes.Warning_Center,
+				RDInterface.MessageBox (RDMessageFlags.Warning | RDMessageFlags.CenterText,
 					string.Format (RDLocale.GetDefaultText (RDLDefaultTexts.Message_SaveFailure_Fmt),
 					SFDialog.FileName));
 				return;
@@ -538,7 +541,7 @@ namespace RD_AAOW
 						uint tip = 1u << (8 + (int)i);
 						if ((RDGenerics.TipsState & tip) == 0)
 							{
-							RDInterface.MessageBox (RDMessageTypes.Success_Center, achiText);
+							RDInterface.MessageBox (RDMessageFlags.Success | RDMessageFlags.CenterText, achiText);
 							RDGenerics.TipsState |= tip;
 							}
 						}
@@ -551,7 +554,8 @@ namespace RD_AAOW
 						"+" + score.ToString () + " 💎";
 					if (!string.IsNullOrWhiteSpace (achiLine))
 						msgText += "\t+" + achiLine;
-					RDInterface.MessageBox (RDMessageTypes.Success_Center, msgText, 1500);
+					RDInterface.MessageBox (RDMessageFlags.Success | RDMessageFlags.CenterText | RDMessageFlags.NoSound,
+						msgText, 1500);
 
 					// Отобразить решение в случае выигрыша (без return; режим игры отключается далее)
 					if (win)
@@ -565,7 +569,7 @@ namespace RD_AAOW
 				// Не отображать решение вне игрового режима
 				else
 					{
-					RDInterface.MessageBox (RDMessageTypes.Success_Center,
+					RDInterface.MessageBox (RDMessageFlags.Success | RDMessageFlags.CenterText | RDMessageFlags.NoSound,
 						RDLocale.GetText ("SolutionIsCorrect"), 1000);
 					return true;
 					}
@@ -659,11 +663,13 @@ namespace RD_AAOW
 			if (SudokuSolverMath.GameMode != MatrixDifficulty.None)
 				{
 				text += (RDLocale.RNRN + "–" + score.ToString () + " 💎");
-				RDInterface.MessageBox (RDMessageTypes.Error_Center, text, 1500);
+				RDInterface.MessageBox (RDMessageFlags.Error | RDMessageFlags.CenterText | RDMessageFlags.NoSound,
+					text, 1500);
 				}
 			else
 				{
-				RDInterface.MessageBox (RDMessageTypes.Error_Center, text, 1000);
+				RDInterface.MessageBox (RDMessageFlags.Error | RDMessageFlags.CenterText | RDMessageFlags.NoSound,
+					text, 1000);
 				}
 			}
 
@@ -685,7 +691,7 @@ namespace RD_AAOW
 			text += string.Format (RDLocale.GetText ("StatsTextAchi"),
 				stats[10], stats[11]);
 
-			RDInterface.MessageBox (RDMessageTypes.Success_Center, text);
+			RDInterface.MessageBox (RDMessageFlags.Success | RDMessageFlags.CenterText | RDMessageFlags.NoSound, text);
 			}
 
 		// Выбор представления ячеек
@@ -775,7 +781,8 @@ namespace RD_AAOW
 		// Запуск новой игры из интерфейсной кнопки
 		private void NewGame_Click (object sender, EventArgs e)
 			{
-			RDMessageButtons res = RDInterface.MessageBox (RDMessageTypes.Question_Center,
+			RDMessageButtons res = RDInterface.MessageBox (RDMessageFlags.Question |
+				RDMessageFlags.CenterText | RDMessageFlags.NoSound,
 				RDLocale.GetText ("DifficultyMessage"), RDLocale.GetText ("MGenerate_MDifficulty0"),
 				RDLocale.GetText ("MGenerate_MDifficulty1"), RDLocale.GetText ("MGenerate_MDifficulty2"));
 

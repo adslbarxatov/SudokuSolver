@@ -594,7 +594,7 @@ namespace RD_AAOW
 			get
 				{
 				return (AppModes)RDGenerics.GetSettings (appModePar,
-					(uint)AppModes.SolutionOnly);
+					(uint)AppModes.Game);
 				}
 			set
 				{
