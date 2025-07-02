@@ -1,5 +1,11 @@
 Sudoku solver: changes log
 
+ToDo:
+- TV: fix extraneous click;
+- Update user guide for Android
+- TV: remove keyboard
+- TV: adapt help materials
+
 Version 5.2:
 • Android: added support for Android TV;
 • Windows: applied new subsystem for user messages
