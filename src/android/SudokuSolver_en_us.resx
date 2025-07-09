@@ -291,4 +291,9 @@ Appears every time when all checks are successful</value>
     <value>Achievements:
 3️⃣ {0:S}		👍 {1:S}</value>
   </data>
+  <data name="HelpQRTip" xml:space="preserve">
+    <value>To access help, support and reference materials, use the QR code below.
+
+A short description of the app is available further down this page</value>
+  </data>
 </root>

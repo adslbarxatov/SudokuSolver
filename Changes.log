@@ -1,10 +1,10 @@
 Sudoku solver: changes log
 
-ToDo:
-- TV: fix extraneous click;
-- Update user guide for Android
-- TV: remove keyboard
-- TV: adapt help materials
+Version 5.2.1:
+• Android TV: removed extraneous button clicks;
+• Android TV: removed extraneous nuttons;
+• Android: updates the user guide;
+• Android TV: help materials have been adapted for TV
 
 Version 5.2:
 • Android: added support for Android TV;

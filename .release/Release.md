@@ -1,8 +1,10 @@
-_Changes for v 5.2_:
+_Changes for v 5.2.1_:
+- `Android TV`: removed extraneous button clicks;
+- `Android TV`: removed extraneous nuttons;
+- `Android`: updates the user guide;
+- `Android TV`: help materials have been adapted for TV;
 - `Android`: added support for Android TV;
 - `Windows`: applied new subsystem for user messages;
 - `Android`: MAUI support packages have been updated;
 - `Windows`: internal assemblies have been updated;
-- Added support for achievements (`Three or less checks`, `No mistakes`);
-- Added highlighting for cells affected by the selected one;
-- Added new color schemes, updated existing schemes
+- Added support for achievements (`Three or less checks`, `No mistakes`)

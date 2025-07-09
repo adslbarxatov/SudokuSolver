@@ -169,6 +169,7 @@ namespace RD_AAOW
 					sl.HorizontalOptions = LayoutOptions.Center;
 					inputSL.Add (sl);
 					inputField.Add (sl);
+					sl.IsVisible = !RDGenerics.IsTV;
 					}
 
 				Button b = new Button ();
@@ -197,12 +198,15 @@ namespace RD_AAOW
 				}
 
 			// Разделитель
-			Label msp = new Label ();
-			msp.WidthRequest = msp.HeightRequest = 10;
-			inputField.Add (msp);
+			if (!RDGenerics.IsTV)
+				{
+				Label msp = new Label ();
+				msp.WidthRequest = msp.HeightRequest = 10;
+				inputField.Add (msp);
+				}
 
 			StackLayout msl = [];
-			msl.Orientation = StackOrientation.Horizontal;
+			msl.Orientation = RDGenerics.IsTV ? StackOrientation.Vertical : StackOrientation.Horizontal;
 			msl.HorizontalOptions = LayoutOptions.Center;
 			inputSL.Add (msl);
 			inputField.Add (msl);
@@ -216,7 +220,12 @@ namespace RD_AAOW
 			checkButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
 				stubColor, CheckSolution_Clicked);
 			checkButton.Text = "☑️";
-			checkButton.WidthRequest *= 2;
+
+			if (RDGenerics.IsTV)
+				checkButton.HeightRequest *= 3;
+			else
+				checkButton.WidthRequest *= 2;
+			
 			inputSL[inputSL.Count - 1].Add (checkButton);
 
 			clearButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
@@ -227,7 +236,12 @@ namespace RD_AAOW
 			solutionButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
 				stubColor, SolveSudoku_Clicked);
 			solutionButton.Text = "✅";
-			solutionButton.WidthRequest *= 2;
+
+			if (RDGenerics.IsTV)
+				solutionButton.HeightRequest *= 3;
+			else
+				solutionButton.WidthRequest *= 2;
+			
 			inputSL[inputSL.Count - 1].Add (solutionButton);
 
 			menuButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
@@ -328,9 +342,14 @@ namespace RD_AAOW
 			RDInterface.ApplyButtonSettings (aboutPage, "ManualsButton",
 				RDLocale.GetDefaultText (RDLDefaultTexts.Control_ReferenceMaterials),
 				aboutFieldBackColor, ReferenceButton_Click, false);
-			RDInterface.ApplyButtonSettings (aboutPage, "HelpButton",
+
+			Button hlp = RDInterface.ApplyButtonSettings (aboutPage, "HelpButton",
 				RDLocale.GetDefaultText (RDLDefaultTexts.Control_HelpSupport),
 				aboutFieldBackColor, HelpButton_Click, false);
+			hlp.IsVisible = !RDGenerics.IsTV;
+
+			Image qrImage = (Image)aboutPage.FindByName ("QRImage");
+			qrImage.IsVisible = RDGenerics.IsTV;
 
 			RDInterface.ApplyLabelSettings (aboutPage, "HelpHeaderLabel",
 				RDLocale.GetDefaultText (RDLDefaultTexts.Control_AppAbout),
@@ -371,8 +390,16 @@ namespace RD_AAOW
 		private async void Current_MainDisplayInfoChanged (object sender, DisplayInfoChangedEventArgs e)
 			{
 			await Task.Delay (500);
-			bool portrait = Windows[0].Width < Windows[0].Height;
-			masterField.Orientation = (portrait ? StackOrientation.Vertical : StackOrientation.Horizontal);
+
+			if (RDGenerics.IsTV)
+				{
+				masterField.Orientation = StackOrientation.Horizontal;
+				}
+			else
+				{
+				bool portrait = Windows[0].Width < Windows[0].Height;
+				masterField.Orientation = (portrait ? StackOrientation.Vertical : StackOrientation.Horizontal);
+				}
 			}
 
 		protected override void OnStart ()
@@ -423,6 +450,13 @@ namespace RD_AAOW
 		// Вызов справочных материалов
 		private async void ReferenceButton_Click (object sender, EventArgs e)
 			{
+			if (RDGenerics.IsTV)
+				{
+				await RDInterface.ShowMessage (RDLocale.GetText ("HelpQRTip"),
+					RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK));
+				return;
+				}
+
 			await RDInterface.CallHelpMaterials (RDHelpMaterials.ReferenceMaterials);
 			}
 
@@ -597,7 +631,8 @@ namespace RD_AAOW
 			currentButtonIndex = numberButtons.IndexOf ((Button)sender);
 
 			// Кнопка уже была выбрана – выполнить приращение
-			if (SudokuSolverMath.CheckCondition (numberButtons[currentButtonIndex], ConditionTypes.SelectedCell))
+			bool condition = SudokuSolverMath.CheckCondition (numberButtons[currentButtonIndex], ConditionTypes.SelectedCell);
+			if (condition || RDGenerics.IsTV)
 				{
 				Byte v = 0;
 				Button b = numberButtons[currentButtonIndex];
@@ -627,7 +662,8 @@ namespace RD_AAOW
 				}
 
 			// Кнопка выбрана впервые – выполнить изменение цветов
-			else
+			/*else*/
+			if (!condition || RDGenerics.IsTV)
 				{
 				bool showAffected = SudokuSolverMath.ShowAffectedCells;
 				for (int i = 0; i < numberButtons.Count; i++)

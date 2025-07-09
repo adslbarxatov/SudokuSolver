@@ -1,5 +1,5 @@
 # Sudoku solver: user guide
-> **ƒ** &nbsp;RD AAOW FDL; 13.04.2025; 3:02
+> **ƒ** &nbsp;RD AAOW FDL; 10.07.2025; 2:26
 
 
 
@@ -81,7 +81,15 @@ is saved until the next launch, so the game can be continued at any time.
 - Click on cells to select them
 - Click them again to select their values (1 to 9 + empty)
 - Use the numeric keypad to set the value of the selected cell
-- Use the menu to set the location of the numeric keypad, the current interface mode, and control the behavior of the app
+- Use the buttons to execute the solution, check for its presence, and start a new game
+
+&nbsp;
+
+
+
+### Controls (Android TV)
+
+- Click on cells to select their values (1 to 9 + empty)
 - Use the buttons to execute the solution, check for its presence, and start a new game
 
 &nbsp;
