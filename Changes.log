@@ -1,5 +1,10 @@
 Sudoku solver: changes log
 
+ToDo:
+- Убрать опцию Поделиться из таблицы результатов для TV
+- Перенести выделение затронутых ячеек на событие передвижения между ячейками с пульта для TV
+- Не подсвечивать затронутый квадрат (или делать это по выбору)
+
 Version 5.2.1:
 • Android TV: removed extraneous cells clicks;
 • Android TV: removed extraneous buttons;
