@@ -289,6 +289,27 @@ namespace RD_AAOW
 		}
 
 	/// <summary>
+	/// Варианты подсветки затронутых ячеек
+	/// </summary>
+	public enum HighlightTypes
+		{
+		/// <summary>
+		/// Без подсветки
+		/// </summary>
+		None = 0,
+
+		/// <summary>
+		/// Только линии
+		/// </summary>
+		LinesOnly = 1,
+
+		/// <summary>
+		/// Линии и квадраты
+		/// </summary>
+		LinesAndSquares = 2,
+		}
+
+	/// <summary>
 	/// Класс описывает основной функционал поиска решения
 	/// </summary>
 	public static class SudokuSolverMath
@@ -572,17 +593,18 @@ namespace RD_AAOW
 #endif
 
 		/// <summary>
-		/// Возвращает или задаёт флаг подсветки простреливаемых ячеек
+		/// Возвращает или задаёт вариант подсветки затронутых ячеек
 		/// </summary>
-		public static bool ShowAffectedCells
+		public static HighlightTypes HighlightType
 			{
 			get
 				{
-				return RDGenerics.GetSettings (showAffectedCellsPar, true);
+				return (HighlightTypes)RDGenerics.GetSettings (showAffectedCellsPar,
+					(uint)HighlightTypes.LinesOnly);
 				}
 			set
 				{
-				RDGenerics.SetSettings (showAffectedCellsPar, value);
+				RDGenerics.SetSettings (showAffectedCellsPar, (uint)value);
 				}
 			}
 
@@ -1950,8 +1972,10 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="SelectedCellIndex">Выбранная ячейка (индекс от 0 до 80 включительно)</param>
 		/// <param name="TestCellIndex">Проверяемая ячейка (индекс от 0 до 80 включительно)</param>
+		/// <param name="SquaresToo">Флаг определяет, подсвечиваются ли вдобавок к линиям
+		/// квадраты, которые затронуты выбранной ячейкой</param>
 		/// <returns>Возвращает true, если влияние подтверждается</returns>
-		public static bool IsCellAffected (uint SelectedCellIndex, uint TestCellIndex)
+		public static bool IsCellAffected (uint SelectedCellIndex, uint TestCellIndex, bool SquaresToo)
 			{
 			// Если совпадают столбцы
 			if ((SelectedCellIndex % SideSize) == (TestCellIndex % SideSize))
@@ -1962,6 +1986,9 @@ namespace RD_AAOW
 				return true;
 
 			// Если совпадают квадраты
+			if (!SquaresToo)
+				return false;
+
 			if ((SelectedCellIndex / (SquareSize * SideSize)) == (TestCellIndex / (SquareSize * SideSize)) &&
 				(SelectedCellIndex / SquareSize) % SquareSize == (TestCellIndex / SquareSize) % SquareSize)
 				return true;

@@ -110,15 +110,17 @@ namespace RD_AAOW
 		// Подсветка простреливаемых ячеек
 		private void Lb_MouseHover (object sender, EventArgs e)
 			{
-			if (!SudokuSolverMath.ShowAffectedCells)
+			/*if (!SudokuSolverMath.ShowAffectedCells)*/
+			if (SudokuSolverMath.HighlightType == HighlightTypes.None)
 				return;
 
+			bool squaresToo = (SudokuSolverMath.HighlightType == HighlightTypes.LinesAndSquares);
 			uint idx = (uint)buttons.IndexOf ((Button)sender);
 			for (int i = 0; i < buttons.Count; i++)
 				{
 				if (i == idx)
 					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.SelectedCell);
-				else if (SudokuSolverMath.IsCellAffected (idx, (uint)i))
+				else if (SudokuSolverMath.IsCellAffected (idx, (uint)i, squaresToo))
 					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.AffectedCell);
 				else
 					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.DeselectedCell);
@@ -169,8 +171,10 @@ namespace RD_AAOW
 			gameModeMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_No), null, ChangeAppMode);
 
 			highlightingMenu.Items.Clear ();
-			highlightingMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_Yes), null, ChangeHighlighting);
-			highlightingMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_No), null, ChangeHighlighting);
+			/*highlightingMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_Yes), null, ChangeHighlighting);
+			highlightingMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_No), null, ChangeHighlighting);*/
+			for (int i = 0; i < 3; i++)
+				highlightingMenu.Items.Add (RDLocale.GetText ("MHighlight" + i.ToString ()), null, ChangeHighlighting);
 
 			// Вспомогательные кнопки
 			newGameButton.Text = RDLocale.GetText ("NewGameButton");
@@ -797,7 +801,8 @@ namespace RD_AAOW
 
 		private void ChangeHighlighting (object sender, EventArgs e)
 			{
-			SudokuSolverMath.ShowAffectedCells = (highlightingMenu.Items.IndexOf ((ToolStripItem)sender) == 0);
+			/*SudokuSolverMath.ShowAffectedCells = (highlightingMenu.Items.IndexOf ((ToolStripItem)sender) == 0);*/
+			SudokuSolverMath.HighlightType = (HighlightTypes)highlightingMenu.Items.IndexOf ((ToolStripItem)sender);
 			ChangeColorScheme (null, null);
 			}
 		}

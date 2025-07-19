@@ -1,14 +1,15 @@
 Sudoku solver: changes log
 
-ToDo:
-- Убрать опцию Поделиться из таблицы результатов для TV
-- Перенести выделение затронутых ячеек на событие передвижения между ячейками с пульта для TV
-- Не подсвечивать затронутый квадрат (или делать это по выбору)
+Version 5.2.3:
+• You can now select the type of highlighting for affected cells: lines only or lines and squares;
+• NET support packages have been updated;
+• Android TV: removed some useless interface elements;
+• Android TV: hovering over the numbers field will now trigger the update of cells highlighting
 
 Version 5.2.1:
 • Android TV: removed extraneous cells clicks;
 • Android TV: removed extraneous buttons;
-• Android: updates the user guide;
+• Android: user guide has been updated;
 • Android TV: help materials have been adapted for TV
 
 Version 5.2:

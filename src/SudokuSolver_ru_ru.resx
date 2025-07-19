@@ -255,4 +255,13 @@
     <value>Достижения:
 ③ {0:S}   -   👍 {1:S}</value>
   </data>
+  <data name="MHighlight0" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="MHighlight1" xml:space="preserve">
+    <value>Только линии</value>
+  </data>
+  <data name="MHighlight2" xml:space="preserve">
+    <value>Линии и квадраты</value>
+  </data>
 </root>

@@ -255,4 +255,13 @@ Appears every time when:
 
 Appears every time when all checks are successful</value>
   </data>
+  <data name="MHighlight0" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="MHighlight1" xml:space="preserve">
+    <value>Lines only</value>
+  </data>
+  <data name="MHighlight2" xml:space="preserve">
+    <value>Lines and squares</value>
+  </data>
 </root>

@@ -26,6 +26,7 @@ namespace RD_AAOW
 		private List<string> colorSchemeVariants = [];
 		private List<List<string>> menuVariants = [];
 		private List<string> appearanceVariants = [];
+		private List<string> highlightVariants = [];
 
 		// Номер текущей выбранной кнопки
 		private int currentButtonIndex = -1;
@@ -45,7 +46,7 @@ namespace RD_AAOW
 		private Label aboutFontSizeField, solutionTipLabel;
 
 		private Button languageButton, solutionButton, checkButton, generateButton,
-			clearButton, menuButton, colorSchemeButton, cellsAppearanceButton;
+			clearButton, menuButton, colorSchemeButton, cellsAppearanceButton, highlightButton;
 		private List<Button> numberButtons = [];
 		private List<Button> inputButtons = [];
 
@@ -53,7 +54,7 @@ namespace RD_AAOW
 		private StackLayout numbersField = [];
 		private StackLayout inputField = [];
 
-		private Switch gameModeSwitch, keepScreenOnSwitch, replaceBalloonsSwitch, highlightSwitch;
+		private Switch gameModeSwitch, keepScreenOnSwitch, replaceBalloonsSwitch/*, highlightSwitch*/;
 
 		#endregion
 
@@ -141,6 +142,8 @@ namespace RD_AAOW
 				SudokuSolverMath.SetProperty (b, PropertyTypes.EmptyValue);
 				b.TextTransform = TextTransform.None;
 				b.Clicked += SelectCurrentButton;
+				if (RDGenerics.IsTV)
+					b.Focused += FocusButton;
 
 				numberButtons.Add (b);
 				numbersSL[numbersSL.Count - 1].Add (b);
@@ -309,12 +312,15 @@ namespace RD_AAOW
 			RDInterface.ApplyLabelSettings (settingsPage, "FontSizeTip", RDLocale.GetText ("FontSizeTip"),
 				RDLabelTypes.TipJustify);
 
-			highlightSwitch = RDInterface.ApplySwitchSettings (settingsPage, "HighlightAffectedSwitch", false,
-				settingsFieldBackColor, HighlightAffectedSwitch_Toggled, SudokuSolverMath.ShowAffectedCells);
+			/*highlightSwitch = RDInterface.ApplySwitchSettings (settingsPage, "HighlightAffectedSwitch", false,
+				settingsFieldBackColor, HighlightAffectedSwitch_Toggled, SudokuSolverMath.ShowAffectedCells);*/
+			highlightButton = RDInterface.ApplyButtonSettings (settingsPage, "HighlightAffectedButton", " ",
+				settingsFieldBackColor, HighlightAffectedButton_Clicked, false);
 			RDInterface.ApplyLabelSettings (settingsPage, "HighlightAffectedLabel",
 				RDLocale.GetText ("HighlightAffectedLabel"), RDLabelTypes.DefaultLeft);
 			RDInterface.ApplyLabelSettings (settingsPage, "HighlightAffectedTip",
 				RDLocale.GetText ("HighlightAffectedTip"), RDLabelTypes.TipJustify);
+			HighlightAffectedButton_Clicked (null, null);
 
 			colorSchemeButton = RDInterface.ApplyButtonSettings (settingsPage, "ColorSchemeButton", " ",
 				settingsFieldBackColor, ColorSchemeButton_Clicked, false);
@@ -662,19 +668,48 @@ namespace RD_AAOW
 				}
 
 			// Кнопка выбрана впервые – выполнить изменение цветов
-			/*else*/
 			if (!condition || RDGenerics.IsTV)
+			/*else*/
 				{
-				bool showAffected = SudokuSolverMath.ShowAffectedCells;
+				/*bool showAffected = (SudokuSolverMath.HighlightType != HighlightTypes.None);
+				bool squaresToo = (SudokuSolverMath.HighlightType == HighlightTypes.LinesAndSquares);
+
 				for (int i = 0; i < numberButtons.Count; i++)
 					{
 					if (i == currentButtonIndex)
 						SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.SelectedCell);
-					else if (showAffected && SudokuSolverMath.IsCellAffected ((uint)currentButtonIndex, (uint)i))
+					else if (showAffected && SudokuSolverMath.IsCellAffected ((uint)currentButtonIndex,
+						(uint)i, squaresToo))
 						SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.AffectedCell);
 					else
 						SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.DeselectedCell);
-					}
+					}*/
+				PaintButtons ();
+				}
+			}
+
+		// Переход между кнопками на Android TV
+		private void FocusButton (object sender, EventArgs e)
+			{
+			currentButtonIndex = numberButtons.IndexOf ((Button)sender);
+			PaintButtons ();
+			}
+
+		// Метод отвечает за обновление цветов кнопок основного поля
+		private void PaintButtons ()
+			{
+			bool showAffected = (SudokuSolverMath.HighlightType != HighlightTypes.None);
+			bool squaresToo = (SudokuSolverMath.HighlightType == HighlightTypes.LinesAndSquares);
+
+			for (int i = 0; i < numberButtons.Count; i++)
+				{
+				if (i == currentButtonIndex)
+					SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.SelectedCell);
+				else if (showAffected && SudokuSolverMath.IsCellAffected ((uint)currentButtonIndex,
+					(uint)i, squaresToo))
+					SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.AffectedCell);
+				else
+					SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.DeselectedCell);
 				}
 			}
 
@@ -707,12 +742,18 @@ namespace RD_AAOW
 			{
 			if (!await FindSolution (true))
 				await ShowRBControlledMessage ("❌ " + RDLocale.GetText ("SolutionIsIncorrect"));
+
+			if (RDGenerics.IsTV && (currentButtonIndex >= 0) && (numberButtons.Count > currentButtonIndex))
+				numberButtons[currentButtonIndex].Focus ();
 			}
 
 		private async void CheckSolution_Clicked (object sender, EventArgs e)
 			{
 			if (!await FindSolution (false))
 				await ApplyPenalty ();
+
+			if (RDGenerics.IsTV && (currentButtonIndex >= 0) && (numberButtons.Count > currentButtonIndex))
+				numberButtons[currentButtonIndex].Focus ();
 			}
 
 		private async Task<bool> FindSolution (bool LoadResults)
@@ -898,11 +939,22 @@ namespace RD_AAOW
 				stats[10], stats[11]);
 
 			// Отображение
-			if (await RDInterface.ShowMessage (text, RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK),
-				RDLocale.GetText ("ShareButton")))
-				return true;
+			bool ans;
+			if (RDGenerics.IsTV)
+				{
+				await RDInterface.ShowMessage (text, RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK));
+				ans = true;
+				}
+			else
+				{
+				ans = await RDInterface.ShowMessage (text, RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK),
+					RDLocale.GetText ("ShareButton"));
+				}
 
 			// Отправка
+			if (ans)
+				return true;
+
 			await Share.RequestAsync (ProgramDescription.AssemblyVisibleName + RDLocale.RNRN +
 				text, ProgramDescription.AssemblyVisibleName);
 			return true;
@@ -1181,10 +1233,37 @@ namespace RD_AAOW
 			}
 
 		// Включение / выключение подсветки простреливаемых ячеек
-		private void HighlightAffectedSwitch_Toggled (object sender, ToggledEventArgs e)
+		private async void HighlightAffectedButton_Clicked (object sender, EventArgs e)
 			{
-			SudokuSolverMath.ShowAffectedCells = highlightSwitch.IsToggled;
-			ColorSchemeButton_Clicked (null, null);
+			// Выбор варианта
+			if (highlightVariants.Count < 1)
+				{
+				for (int i = 0; i < 3; i++)
+					highlightVariants.Add (RDLocale.GetText ("Highlight" + i.ToString ()));
+				}
+
+			int res;
+			if (sender != null)
+				{
+				res = await RDInterface.ShowList (RDLocale.GetText ("HighlightAffectedLabel") + ":",
+					RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel), highlightVariants);
+				if (res < 0)
+					return;
+				SudokuSolverMath.HighlightType = (HighlightTypes)res;
+				}
+			else
+				{
+				res = (int)SudokuSolverMath.HighlightType;
+				}
+
+			// Настройка и выполнение
+			/*SudokuSolverMath.ShowAffectedCells = highlightSwitch.IsToggled;*/
+			highlightButton.Text = highlightVariants[res];
+
+			// При запуске приложения этот вызов выполняется далее по сценарию загрузки страницы,
+			// поэтому не требует повторения
+			if (sender != null)
+				ColorSchemeButton_Clicked (null, null);
 			}
 
 		#endregion

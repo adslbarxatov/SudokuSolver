@@ -45,10 +45,8 @@
 			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
 					WidthRequest="100" Color="#505050" Margin="12" />
 
-			<StackLayout Orientation="Horizontal">
-				<Switch x:Name="HighlightAffectedSwitch" VerticalOptions="Center" />
-				<Label x:Name="HighlightAffectedLabel" VerticalOptions="Center" />
-			</StackLayout>
+			<Label x:Name="HighlightAffectedLabel" HorizontalOptions="Start" />
+			<Button x:Name="HighlightAffectedButton" HorizontalOptions="Center" />
 			<Label x:Name="HighlightAffectedTip" />
 
 			<Label />

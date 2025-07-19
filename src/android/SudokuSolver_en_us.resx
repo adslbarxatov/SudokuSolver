@@ -252,7 +252,7 @@ In this app you can solve classic (9 x 9) sudokus both manually and automaticall
     <value>Replace “balloons” with messages</value>
   </data>
   <data name="ReplaceBalloonsTip" xml:space="preserve">
-    <value>On some devices, multiline “balloons” (rectangular short text messages) are not supported properly. Enable this option to replace them with regular messages about checking results if needed</value>
+    <value>On some devices, multiline “balloons” (rectangular short text messages) are not supported properly. Enable this option to replace them with regular messages about solution and checking results if needed</value>
   </data>
   <data name="LanguageTip" xml:space="preserve">
     <value>This option sets the language of the interface and text messages</value>
@@ -267,7 +267,7 @@ In this app you can solve classic (9 x 9) sudokus both manually and automaticall
     <value>This option allows you to select the appearance for values in sudoku field</value>
   </data>
   <data name="HighlightAffectedLabel" xml:space="preserve">
-    <value>Highlight affected cells</value>
+    <value>Highlighting of affected cells</value>
   </data>
   <data name="HighlightAffectedTip" xml:space="preserve">
     <value>This option allows you to highlight cells affected by the selected one (in row, column and square)</value>
@@ -295,5 +295,14 @@ Appears every time when all checks are successful</value>
     <value>To access help, support and reference materials, use the QR code below.
 
 A short description of the app is available further down this page</value>
+  </data>
+  <data name="Highlight0" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Highlight1" xml:space="preserve">
+    <value>Lines only</value>
+  </data>
+  <data name="Highlight2" xml:space="preserve">
+    <value>Lines and squares</value>
   </data>
 </root>
