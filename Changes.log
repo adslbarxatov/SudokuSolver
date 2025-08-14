@@ -1,6 +1,6 @@
 Sudoku solver: changes log
 
-Version 5.2.3:
+Version 5.2.4:
 • You can now select the type of highlighting for affected cells: lines only or lines and squares;
 • NET support packages have been updated;
 • Android TV: removed some useless interface elements;

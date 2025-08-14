@@ -54,7 +54,7 @@ namespace RD_AAOW
 		private StackLayout numbersField = [];
 		private StackLayout inputField = [];
 
-		private Switch gameModeSwitch, keepScreenOnSwitch, replaceBalloonsSwitch/*, highlightSwitch*/;
+		private Switch gameModeSwitch, keepScreenOnSwitch, replaceBalloonsSwitch;
 
 		#endregion
 
@@ -312,8 +312,6 @@ namespace RD_AAOW
 			RDInterface.ApplyLabelSettings (settingsPage, "FontSizeTip", RDLocale.GetText ("FontSizeTip"),
 				RDLabelTypes.TipJustify);
 
-			/*highlightSwitch = RDInterface.ApplySwitchSettings (settingsPage, "HighlightAffectedSwitch", false,
-				settingsFieldBackColor, HighlightAffectedSwitch_Toggled, SudokuSolverMath.ShowAffectedCells);*/
 			highlightButton = RDInterface.ApplyButtonSettings (settingsPage, "HighlightAffectedButton", " ",
 				settingsFieldBackColor, HighlightAffectedButton_Clicked, false);
 			RDInterface.ApplyLabelSettings (settingsPage, "HighlightAffectedLabel",
@@ -669,23 +667,7 @@ namespace RD_AAOW
 
 			// Кнопка выбрана впервые – выполнить изменение цветов
 			if (!condition || RDGenerics.IsTV)
-			/*else*/
-				{
-				/*bool showAffected = (SudokuSolverMath.HighlightType != HighlightTypes.None);
-				bool squaresToo = (SudokuSolverMath.HighlightType == HighlightTypes.LinesAndSquares);
-
-				for (int i = 0; i < numberButtons.Count; i++)
-					{
-					if (i == currentButtonIndex)
-						SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.SelectedCell);
-					else if (showAffected && SudokuSolverMath.IsCellAffected ((uint)currentButtonIndex,
-						(uint)i, squaresToo))
-						SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.AffectedCell);
-					else
-						SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.DeselectedCell);
-					}*/
 				PaintButtons ();
-				}
 			}
 
 		// Переход между кнопками на Android TV
@@ -1257,7 +1239,6 @@ namespace RD_AAOW
 				}
 
 			// Настройка и выполнение
-			/*SudokuSolverMath.ShowAffectedCells = highlightSwitch.IsToggled;*/
 			highlightButton.Text = highlightVariants[res];
 
 			// При запуске приложения этот вызов выполняется далее по сценарию загрузки страницы,
