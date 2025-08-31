@@ -1,5 +1,9 @@
 Sudoku solver: changes log
 
+Version 5.2.5:
+• Windows: internal assemblies have been updated;
+• XPUN / IOP update has been applied
+
 Version 5.2.4:
 • You can now select the type of highlighting for affected cells: lines only or lines and squares;
 • NET support packages have been updated;

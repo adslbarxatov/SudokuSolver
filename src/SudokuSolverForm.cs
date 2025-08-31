@@ -110,7 +110,6 @@ namespace RD_AAOW
 		// Подсветка простреливаемых ячеек
 		private void Lb_MouseHover (object sender, EventArgs e)
 			{
-			/*if (!SudokuSolverMath.ShowAffectedCells)*/
 			if (SudokuSolverMath.HighlightType == HighlightTypes.None)
 				return;
 
@@ -171,8 +170,6 @@ namespace RD_AAOW
 			gameModeMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_No), null, ChangeAppMode);
 
 			highlightingMenu.Items.Clear ();
-			/*highlightingMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_Yes), null, ChangeHighlighting);
-			highlightingMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_No), null, ChangeHighlighting);*/
 			for (int i = 0; i < 3; i++)
 				highlightingMenu.Items.Add (RDLocale.GetText ("MHighlight" + i.ToString ()), null, ChangeHighlighting);
 
@@ -801,7 +798,6 @@ namespace RD_AAOW
 
 		private void ChangeHighlighting (object sender, EventArgs e)
 			{
-			/*SudokuSolverMath.ShowAffectedCells = (highlightingMenu.Items.IndexOf ((ToolStripItem)sender) == 0);*/
 			SudokuSolverMath.HighlightType = (HighlightTypes)highlightingMenu.Items.IndexOf ((ToolStripItem)sender);
 			ChangeColorScheme (null, null);
 			}
