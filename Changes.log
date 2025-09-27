@@ -1,5 +1,8 @@
 Sudoku solver: changes log
 
+Version 5.2.6:
+• The project identity has been updated
+
 Version 5.2.5:
 • Windows: internal assemblies have been updated;
 • XPUN / IOP update has been applied
