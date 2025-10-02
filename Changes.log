@@ -1,5 +1,8 @@
 Sudoku solver: changes log
 
+ToDo:
+- Show the current state of the game
+
 Version 5.2.6:
 • The project identity has been updated
 
