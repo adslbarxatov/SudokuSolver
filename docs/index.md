@@ -114,4 +114,7 @@ is saved until the next launch, so the game can be continued at any time.
 - `Ctrl` + `3` – to generate hard table
 - `F3` – to check the availability of solution without showing it (game mode)
 - `F1` – to get the quick help
+- `Ctrl` + `K` – to go to the app settings
+- `Ctrl` + `L` – to change the interface language
+- `Ctrl` + `T` – to get game statistics
 - `Alt` + `F4`, `Ctrl` + `X` – to exit the app

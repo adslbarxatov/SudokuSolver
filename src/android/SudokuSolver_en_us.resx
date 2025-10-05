@@ -234,10 +234,10 @@ In this app you can solve classic (9 x 9) sudokus both manually and automaticall
 • You can find the controls and detailed information in the Menu &gt; About the app section</value>
   </data>
   <data name="GameModeLabel" xml:space="preserve">
-    <value>Game mode</value>
+    <value>Adjust the interface for game mode</value>
   </data>
   <data name="GameModeTip" xml:space="preserve">
-    <value>In game mode, the app keeps track of winnings and places special buttons to the main screen. In addition, changing the cells filled by the app at the beginning of a new game is blocked. In regular mode app works only as a solutions calculator</value>
+    <value>When game mode is active, the app keeps track of winnings and places special buttons to the main screen. In addition, changing the cells filled by the app at the beginning of a new game is blocked. In regular mode app works only as a solutions calculator</value>
   </data>
   <data name="KeepScreenOnLabel" xml:space="preserve">
     <value>Disable sleep mode</value>
@@ -304,5 +304,20 @@ A short description of the app is available further down this page</value>
   </data>
   <data name="Highlight2" xml:space="preserve">
     <value>Lines and squares</value>
+  </data>
+  <data name="AppModeMessage" xml:space="preserve">
+    <value>Game mode is active: {1:S}
+
+Current difficulty: {0:S}
+
+The app is tracking wins: {1:S}
+
+Changing generated cells is not possible: {1:S}</value>
+  </data>
+  <data name="Menu3" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="StateButton" xml:space="preserve">
+    <value>App status</value>
   </data>
 </root>

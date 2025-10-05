@@ -615,8 +615,7 @@ namespace RD_AAOW
 			{
 			get
 				{
-				return (AppModes)RDGenerics.GetSettings (appModePar,
-					(uint)AppModes.Game);
+				return (AppModes)RDGenerics.GetSettings (appModePar, (uint)AppModes.Game);
 				}
 			set
 				{

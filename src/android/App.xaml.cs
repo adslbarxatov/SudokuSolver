@@ -498,12 +498,11 @@ namespace RD_AAOW
 				menuVariants.Add ([]);
 				menuVariants[0].Add ("🔢\t " + RDLocale.GetText ("Menu0"));
 				menuVariants[0].Add ("🕹\t " + RDLocale.GetText ("Menu1"));
+				menuVariants[0].Add ("ℹ️\t " + RDLocale.GetText ("Menu3"));
 				menuVariants[0].Add ("⚙️\t " + RDLocale.GetText ("Menu2"));
-				menuVariants[0].Add ("ℹ️\t " + RDLocale.GetDefaultText (RDLDefaultTexts.Control_AppAbout));
 
 				menuVariants.Add ([]);
 				menuVariants[1].Add ("✅\t " + RDLocale.GetText ("SolveButton"));
-				menuVariants[1].Add ("↩️\t " + RDLocale.GetText ("ClearSolution"));
 				menuVariants[1].Add ("❌\t " + RDLocale.GetText ("ResetField"));
 				menuVariants[1].Add ("📄\t " + RDLocale.GetText ("LoadFromFile"));
 				menuVariants[1].Add ("💾\t " + RDLocale.GetText ("SaveToFile"));
@@ -511,11 +510,16 @@ namespace RD_AAOW
 				menuVariants.Add ([]);
 				menuVariants[2].Add ("🆕\t " + RDLocale.GetText ("GenerateMatrix"));
 				menuVariants[2].Add ("☑️\t " + RDLocale.GetText ("CheckSolutionButton"));
-				menuVariants[2].Add ("📊\t " + RDLocale.GetText ("StatsButton"));
+				menuVariants[2].Add ("↩️\t " + RDLocale.GetText ("ClearSolution"));
+
+				menuVariants.Add ([]);
+				menuVariants[3].Add ("🎛\t " + RDLocale.GetText ("StateButton"));
+				menuVariants[3].Add ("📊\t " + RDLocale.GetText ("StatsButton"));
+				menuVariants[3].Add ("ℹ️\t " + RDLocale.GetDefaultText (RDLDefaultTexts.Control_AppAbout));
 				}
 			List<List<int>> indirectMenu = [
-				[0, 1],
-				[1, 2],
+				[0, 1, 2],
+				[1, 2, 3],
 				];
 
 			// Верхнее меню
@@ -545,24 +549,14 @@ namespace RD_AAOW
 					RDInterface.SetCurrentPage (settingsPage, settingsMasterBackColor);
 					break;
 
-				// О приложении
-				case 3:
-					RDInterface.SetCurrentPage (aboutPage, aboutMasterBackColor);
-					break;
-
 				// Выполнить решение
 				case 10:
 					if (!await FindSolution (true))
 						await ShowRBControlledMessage ("❌ " + RDLocale.GetText ("SolutionIsIncorrect"));
 					break;
 
-				// Сброс решения
-				case 11:
-					ClearSolution_Clicked (null, null);
-					break;
-
 				// Полный сброс
-				case 12:
+				case 11:
 					if (!await RDInterface.ShowMessage (RDLocale.GetText ("ResetWarning"),
 						RDLocale.GetDefaultText (RDLDefaultTexts.Button_Yes),
 						RDLocale.GetDefaultText (RDLDefaultTexts.Button_No)))
@@ -574,12 +568,12 @@ namespace RD_AAOW
 					break;
 
 				// Загрузка из файла
-				case 13:
+				case 12:
 					await LoadFromFile ();
 					break;
 
 				// Сохранение в файл
-				case 14:
+				case 13:
 					await SaveToFile ();
 					break;
 
@@ -594,9 +588,24 @@ namespace RD_AAOW
 						await ApplyPenalty ();
 					break;
 
-				// Статистика игры
+				// Сброс решения
 				case 22:
+					ClearSolution_Clicked (null, null);
+					break;
+
+				// Состояние программы
+				case 30:
+					await ShowState ();
+					break;
+
+				// Статистика игры
+				case 31:
 					await ShowScore (false);
+					break;
+
+				// О приложении
+				case 32:
+					RDInterface.SetCurrentPage (aboutPage, aboutMasterBackColor);
 					break;
 				}
 			}
@@ -939,6 +948,18 @@ namespace RD_AAOW
 
 			await Share.RequestAsync (ProgramDescription.AssemblyVisibleName + RDLocale.RNRN +
 				text, ProgramDescription.AssemblyVisibleName);
+			return true;
+			}
+
+		// Статус программы
+		private async Task<bool> ShowState ()
+			{
+			bool gameMode = (SudokuSolverMath.GameMode != MatrixDifficulty.None);
+			string yesNo = RDLocale.GetDefaultText (gameMode ? RDLDefaultTexts.Button_Yes : RDLDefaultTexts.Button_No).ToLower ();
+			string diff = gameMode ? difficultyVariants[(int)SudokuSolverMath.GameMode].ToLower () : "—";
+
+			string msg = string.Format (RDLocale.GetText ("AppModeMessage"), diff, yesNo);
+			await RDInterface.ShowMessage (msg, RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK));
 			return true;
 			}
 

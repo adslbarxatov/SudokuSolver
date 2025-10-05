@@ -1,5 +1,5 @@
-_Changes for v 5.2.6_:
+_Changes for v 5.3_:
+- `Windows`: implemented the stand-alone settings interface;
+- Added the ability to check the current state of the app (game status, scores tracking status);
 - The project identity has been updated;
-- `Windows`: internal assemblies have been updated;
-- XPUN / IOP update has been applied;
-- You can now select the type of highlighting for affected cells: lines only or lines and squares
+- `Windows`: internal assemblies have been updated
