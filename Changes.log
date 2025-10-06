@@ -1,5 +1,8 @@
 Sudoku solver: changes log
 
+Version 5.3.1:
+• Android: adjusted the behavior of the main menu, some items have been rearranged
+
 Version 5.3:
 • Windows: implemented the stand-alone settings interface;
 • Added the ability to check the current state of the app (game status, scores tracking status)

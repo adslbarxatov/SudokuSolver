@@ -545,7 +545,7 @@ namespace RD_AAOW
 			switch (firstMenu)
 				{
 				// Настройки
-				case 2:
+				case 3:
 					RDInterface.SetCurrentPage (settingsPage, settingsMasterBackColor);
 					break;
 
