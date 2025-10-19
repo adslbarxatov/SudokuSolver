@@ -17,12 +17,6 @@ namespace RD_AAOW
 		private List<Button> buttons = [];
 		private Button newGameButton, checkButton, clearButton;
 
-		/*private ContextMenuStrip appearanceMenu;
-		private ContextMenuStrip colorSchemeMenu;
-		private ContextMenuStrip gameModeMenu;
-		private ContextMenuStrip highlightingMenu;
-		private Point menuPoint;*/
-
 		/// <summary>
 		/// Конструктор. Настраивает главную форму приложения
 		/// </summary>
@@ -33,15 +27,6 @@ namespace RD_AAOW
 			RDGenerics.LoadWindowDimensions (this);
 
 			this.Text = ProgramDescription.AssemblyTitle;
-
-			/*appearanceMenu = new ContextMenuStrip ();
-			appearanceMenu.ShowImageMargin = false;
-			colorSchemeMenu = new ContextMenuStrip ();
-			colorSchemeMenu.ShowImageMargin = false;
-			gameModeMenu = new ContextMenuStrip ();
-			gameModeMenu.ShowImageMargin = false;
-			highlightingMenu = new ContextMenuStrip ();
-			highlightingMenu.ShowImageMargin = false;*/
 
 			// Формирование поля
 			for (int r = 0; r < SudokuSolverMath.SideSize; r++)
@@ -69,8 +54,6 @@ namespace RD_AAOW
 					buttons.Add (lb);
 					}
 				}
-
-			/*menuPoint = new Point (buttons[3].Left, buttons[3].Top - buttons[3].Height);*/
 
 			// Формирование вспомогательных кнопок
 			newGameButton = new Button ();
@@ -102,9 +85,6 @@ namespace RD_AAOW
 			this.Controls.Add (clearButton);
 
 			// Загрузка настроек
-			/*ChangeAppearance (null, null);  // Загружает сохранённую матрицу
-			ChangeColorScheme (null, null);
-			ChangeAppMode (null, null);*/
 			MParameters_Clicked (null, null);
 			}
 
@@ -154,25 +134,6 @@ namespace RD_AAOW
 			OFDialog.Title = RDLocale.GetText ("OFName");
 			SFDialog.Title = RDLocale.GetText ("SFName");
 			OFDialog.Filter = SFDialog.Filter = RDLocale.GetText ("OFFilter");
-
-			/*// Контекстные меню
-			appearanceMenu.Items.Clear ();
-			string[] appearances = SudokuSolverMath.CellsAppearancesNames;
-			for (int i = 0; i < appearances.Length; i++)
-				appearanceMenu.Items.Add (appearances[i], null, ChangeAppearance);
-
-			colorSchemeMenu.Items.Clear ();
-			string[] colorSchemes = SudokuSolverMath.ColorSchemesNames;
-			for (int i = 0; i < colorSchemes.Length; i++)
-				colorSchemeMenu.Items.Add (colorSchemes[i], null, ChangeColorScheme);
-
-			gameModeMenu.Items.Clear ();
-			gameModeMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_Yes), null, ChangeAppMode);
-			gameModeMenu.Items.Add (RDLocale.GetDefaultText (RDLDefaultTexts.Button_No), null, ChangeAppMode);
-
-			highlightingMenu.Items.Clear ();
-			for (int i = 0; i < 3; i++)
-				highlightingMenu.Items.Add (RDLocale.GetText ("MHighlight" + i.ToString ()), null, ChangeHighlighting);*/
 
 			// Вспомогательные кнопки
 			newGameButton.Text = RDLocale.GetText ("NewGameButton");
@@ -696,90 +657,6 @@ namespace RD_AAOW
 			RDInterface.MessageBox (RDMessageFlags.Success | RDMessageFlags.CenterText | RDMessageFlags.NoSound, text);
 			}
 
-		/*// Выбор представления ячеек
-		private void MAppearance_Click (object sender, EventArgs e)
-			{
-			appearanceMenu.Show (this, menuPoint);
-			}
-
-		private void ChangeAppearance (object sender, EventArgs e)
-			{
-			if (sender != null)
-				{
-				int res = appearanceMenu.Items.IndexOf ((ToolStripItem)sender);
-
-				// Подготовка к настройке для неначального вызова
-				FlushMatrix ();
-				SudokuSolverMath.CellsAppearance = (CellsAppearances)res;
-				}
-
-			// Настройка
-			string line = SudokuSolverMath.SudokuField;
-			for (int i = 0; i < buttons.Count; i++)
-				{
-				buttons[i].Text = SudokuSolverMath.GetAppearance (line[i].ToString ());
-
-				if ((sender == null) && !SudokuSolverMath.CheckCondition (buttons[i], ConditionTypes.IsEmpty))
-					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.OldColor);
-				}
-			}*/
-
-		/*// Выбор цветовой схемы приложения
-		private void MColorScheme_Click (object sender, EventArgs e)
-			{
-			colorSchemeMenu.Show (this, menuPoint);
-			}
-
-		private void ChangeColorScheme (object sender, EventArgs e)
-			{
-			if (sender != null)
-				{
-				int res = colorSchemeMenu.Items.IndexOf ((ToolStripItem)sender);
-				SudokuSolverMath.ColorScheme = (ColorSchemes)res;
-				}
-
-			// Настройка
-			this.BackColor = SudokuSolverMath.BackgroundColor;
-			for (int i = 0; i < buttons.Count; i++)
-				{
-				SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.DeselectedCell);
-
-				// Переназначение цветов для дальнейшей корректной работы метода CheckCondition
-				if (SudokuSolverMath.CheckCondition (buttons[i], ConditionTypes.ContainsFoundValue))
-					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.SuccessColor);
-				else if (SudokuSolverMath.CheckCondition (buttons[i], ConditionTypes.ContainsNewValue))
-					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.NewColor);
-				else if (SudokuSolverMath.CheckCondition (buttons[i], ConditionTypes.ContainsErrorValue))
-					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.ErrorColor);
-				else
-					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.OldColor);
-				}
-
-			newGameButton.ForeColor = checkButton.ForeColor = clearButton.ForeColor = buttons[0].ForeColor;
-			}*/
-
-		/*// Выбор режима работы приложения
-		private void MAppMode_Clicked (object sender, EventArgs e)
-			{
-			gameModeMenu.Show (this, menuPoint);
-			}
-
-		private void ChangeAppMode (object sender, EventArgs e)
-			{
-			// Запрос
-			if (sender != null)
-				SudokuSolverMath.AppMode = (AppModes)(1 - gameModeMenu.Items.IndexOf ((ToolStripItem)sender));
-			bool game = (SudokuSolverMath.AppMode == AppModes.Game);
-
-			// Оформление
-			this.ClientSize = new Size ((int)(SudokuSolverMath.SideSize + 2) * buttonSize,
-				(int)(SudokuSolverMath.SideSize + 2) * buttonSize + (game ? 3 : 1) * buttonSize);
-			newGameButton.Visible = checkButton.Visible = clearButton.Visible = game;
-
-			if (!game)
-				SudokuSolverMath.GameMode = MatrixDifficulty.None;
-			}*/
-
 		// Запуск новой игры из интерфейсной кнопки
 		private void NewGame_Click (object sender, EventArgs e)
 			{
@@ -790,18 +667,6 @@ namespace RD_AAOW
 
 			MGenerate_Click (MGenerate.DropDownItems[(int)res - 1], e);
 			}
-
-		/*// Включение / выключение подсветки
-		private void MHighlighting_Clicked (object sender, EventArgs e)
-			{
-			highlightingMenu.Show (this, menuPoint);
-			}
-
-		private void ChangeHighlighting (object sender, EventArgs e)
-			{
-			SudokuSolverMath.HighlightType = (HighlightTypes)highlightingMenu.Items.IndexOf ((ToolStripItem)sender);
-			ChangeColorScheme (null, null);
-			}*/
 
 		// Отдельное окно настроек
 		private void MParameters_Clicked (object sender, EventArgs e)

@@ -1043,13 +1043,6 @@ namespace RD_AAOW
 		private async Task<bool> GenerateMatrix ()
 			{
 			// Выбор сложности
-			/*if (difficultyVariants.Count < 1)
-				{
-				difficultyVariants.Add (easyPrefix + RDLocale.GetText ("Difficulty0"));
-				difficultyVariants.Add (mediumPrefix + RDLocale.GetText ("Difficulty1"));
-				difficultyVariants.Add (hardPrefix + RDLocale.GetText ("Difficulty2"));
-				}*/
-
 			int res = await RDInterface.ShowList (RDLocale.GetText ("DifficultyLevel"),
 				RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel), difficultyVariants);
 			if (res < 0)
