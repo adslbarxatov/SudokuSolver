@@ -1,4 +1,4 @@
-_Changes for v 5.3.5_:
+_Changes for v 5.3.5_: 
 - Implemented the ability to transfer scores between devices using encoded text line;
 - Added new interface color schemes;
 - Internal assemblies have been updated;
