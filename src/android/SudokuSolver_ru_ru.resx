@@ -320,4 +320,16 @@
   <data name="StateButton" xml:space="preserve">
     <value>Состояние программы</value>
   </data>
+  <data name="ScoresExchangeMessage" xml:space="preserve">
+    <value>Хотите перенести Ваши выигрыши?</value>
+  </data>
+  <data name="ScoresExchangeCopy" xml:space="preserve">
+    <value>Поместить данные о выигрышах в буфер обмена</value>
+  </data>
+  <data name="ScoresExchangeLoad" xml:space="preserve">
+    <value>Получить данные о выигрышах из буфера обмена (и заменить существующие)</value>
+  </data>
+  <data name="ScoresExchangeError" xml:space="preserve">
+    <value>Буфер обмена не содержит данных о выигрышах</value>
+  </data>
 </root>

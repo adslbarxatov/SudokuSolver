@@ -228,7 +228,7 @@ namespace RD_AAOW
 				checkButton.HeightRequest *= 3;
 			else
 				checkButton.WidthRequest *= 2;
-			
+
 			inputSL[inputSL.Count - 1].Add (checkButton);
 
 			clearButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
@@ -244,7 +244,7 @@ namespace RD_AAOW
 				solutionButton.HeightRequest *= 3;
 			else
 				solutionButton.WidthRequest *= 2;
-			
+
 			inputSL[inputSL.Count - 1].Add (solutionButton);
 
 			menuButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
@@ -520,6 +520,7 @@ namespace RD_AAOW
 				menuVariants.Add ([]);
 				menuVariants[3].Add ("🎛\t " + RDLocale.GetText ("StateButton"));
 				menuVariants[3].Add ("📊\t " + RDLocale.GetText ("StatsButton"));
+				menuVariants[3].Add ("🔀\t " + RDLocale.GetText ("ExchangeButton"));
 				menuVariants[3].Add ("ℹ️\t " + RDLocale.GetDefaultText (RDLDefaultTexts.Control_AppAbout));
 				}
 			List<List<int>> indirectMenu = [
@@ -608,8 +609,13 @@ namespace RD_AAOW
 					await ShowScore (false);
 					break;
 
-				// О приложении
+				// Перенос выигрышей
 				case 32:
+					await ExchangeScores ();
+					break;
+
+				// О приложении
+				case 33:
 					RDInterface.SetCurrentPage (aboutPage, aboutMasterBackColor);
 					break;
 				}
@@ -1264,6 +1270,30 @@ namespace RD_AAOW
 			// поэтому не требует повторения
 			if (sender != null)
 				ColorSchemeButton_Clicked (null, null);
+			}
+
+		// Перенос выигрышей
+		private static async Task<bool> ExchangeScores ()
+			{
+			int res = await RDInterface.ShowList (RDLocale.GetText ("ScoresExchangeMessage"),
+				RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel),
+				[RDLocale.GetText ("ScoresExchangeCopy"), RDLocale.GetText ("ScoresExchangeLoad")]);
+
+			switch (res)
+				{
+				case 0:
+					RDGenerics.SendToClipboard (SudokuSolverMath.GetPortableScoresLine (), true);
+					break;
+
+				case 1:
+					if (SudokuSolverMath.SetPortableScoresLine (await RDGenerics.GetFromClipboard ()))
+						await ShowScore (false);
+					else
+						RDInterface.ShowBalloon (RDLocale.GetText ("ScoresExchangeError"), true);
+					break;
+				}
+
+			return true;
 			}
 
 		#endregion

@@ -729,5 +729,27 @@ namespace RD_AAOW
 			string msg = string.Format (RDLocale.GetText ("AppModeMessage"), diff, yesNo).Replace ("&", "");
 			RDInterface.MessageBox (RDMessageFlags.Information | RDMessageFlags.LockSmallSize, msg);
 			}
+
+		// Перенос выигрышей
+		private void MExchange_Click (object sender, EventArgs e)
+			{
+			RDMessageButtons res = RDInterface.LocalizedMessageBox (RDMessageFlags.Question | RDMessageFlags.LeftText,
+				"ScoresExchangeMessage", RDLDefaultTexts.Button_Copy, RDLDefaultTexts.Button_Load, RDLDefaultTexts.Button_Cancel);
+
+			switch (res)
+				{
+				case RDMessageButtons.ButtonOne:
+					RDGenerics.SendToClipboard (SudokuSolverMath.GetPortableScoresLine (), true);
+					break;
+
+				case RDMessageButtons.ButtonTwo:
+					if (SudokuSolverMath.SetPortableScoresLine (RDGenerics.GetFromClipboard ()))
+						MStats_Click (sender, null);
+					else
+						RDInterface.LocalizedMessageBox (RDMessageFlags.Error | RDMessageFlags.CenterText,
+							"ScoresExchangeError", 1000);
+					break;
+				}
+			}
 		}
 	}

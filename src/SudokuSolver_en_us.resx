@@ -274,4 +274,15 @@ Appears every time when all checks are successful</value>
   <data name="MInfo_MState" xml:space="preserve">
     <value>App s&amp;tatus</value>
   </data>
+  <data name="ScoresExchangeMessage" xml:space="preserve">
+    <value>Do you want to transfer your scores?
+• Click “Copy” to put the scores data to clipboard
+• Click “Load” to get scores data from clipboard (and replace existing scores)</value>
+  </data>
+  <data name="ScoresExchangeError" xml:space="preserve">
+    <value>The clipboard doesn’t contain any scores data</value>
+  </data>
+  <data name="MSettings_MExchange" xml:space="preserve">
+    <value>&amp;Transfer scores</value>
+  </data>
 </root>

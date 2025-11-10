@@ -274,4 +274,15 @@
   <data name="MInfo_MState" xml:space="preserve">
     <value>С&amp;татус программы</value>
   </data>
+  <data name="ScoresExchangeMessage" xml:space="preserve">
+    <value>Хотите перенести Ваши выигрыши?
+• Нажмите «Копировать», чтобы поместить данные о выигрышах в буфер обмена
+• Нажмите «Загрузить», чтобы получить данные о выигрышах из буфера обмена (и заменить существующие)</value>
+  </data>
+  <data name="ScoresExchangeError" xml:space="preserve">
+    <value>Буфер обмена не содержит данных о выигрышах</value>
+  </data>
+  <data name="MSettings_MExchange" xml:space="preserve">
+    <value>Пе&amp;ренос выигрышей</value>
+  </data>
 </root>

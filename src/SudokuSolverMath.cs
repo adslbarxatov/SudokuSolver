@@ -278,6 +278,21 @@ namespace RD_AAOW
 		LightYellow,
 
 		/// <summary>
+		/// Светлая зелёная
+		/// </summary>
+		LightGreen,
+
+		/// <summary>
+		/// Светлая розовая
+		/// </summary>
+		LightPink,
+
+		/// <summary>
+		/// Светлая голубая
+		/// </summary>
+		LightBlue,
+
+		/// <summary>
 		/// Тёмная серая
 		/// </summary>
 		DarkGrey,
@@ -373,9 +388,9 @@ namespace RD_AAOW
 #endif
 
 		private const string appModePar = "AppMode";
-		private const string sudokuFieldPar = "SudokuField";
+		private const string sudokuFieldUPar = "SudokuFieldU";
 		private const string gameModePar = "GameMode";
-		private const string gameScorePar = "GameScore";
+		private const string gameScoreUPar = "GameScoreU";
 		private const string colorSchemePar = "ColorScheme";
 		private const string cellsAppearancePar = "CellsAppearance";
 		private const string gameStartDatePar = "GameStartDate";
@@ -420,36 +435,39 @@ namespace RD_AAOW
 		private static string[][] colorsNames = [
 			["Светлая серая", "Light grey"],
 			["Светлая жёлтая", "Light yellow"],
+			["Светлая зелёная", "Light green"],
+			["Светлая розовая", "Light pink"],
+			["Светлая голубая", "Light blue"],
 			["Тёмная серая", "Dark grey"],
 			["Тёмная фиолетовая", "Dark violet"],
 			];
 		private static byte[][][] colorsV4 = [
 			// Цвет новых ячеек
-			[ [0, 0, 255], [0, 0, 255], [255, 255, 64], [255, 255, 64], ],
+			[ [0, 0, 255], [0, 0, 255], [0, 0, 255], [0, 0, 255], [0, 0, 255], [255, 255, 64], [255, 255, 64], ],
 
 			// Цвет ошибочных ячеек
-			[ [200, 0, 0], [200, 0, 0], [255, 64, 64], [255, 64, 64], ],
+			[ [200, 0, 0], [200, 0, 0], [200, 0, 0], [200, 0, 0], [200, 0, 0], [255, 64, 64], [255, 64, 64], ],
 
 			// Цвет решённых ячеек
-			[ [0, 180, 0], [0, 180, 0], [64, 255, 64], [64, 255, 64], ],
+			[ [0, 180, 0], [0, 180, 0], [0, 180, 0], [0, 180, 0], [0, 180, 0], [64, 255, 64], [64, 255, 64], ],
 
 			// Цвет имеющегося значения
-			[ [32, 32, 32], [32, 48, 32], [196, 196, 196], [172, 160, 172], ],
+			[ [32, 32, 32], [32, 48, 32], [32, 48, 32], [32, 48, 32], [32, 48, 32], [196, 196, 196], [172, 160, 172], ],
 
 			// Цвет фона страницы или окна
-			[ [231, 231, 231], [255, 255, 231], [28, 28, 28], [30, 28, 40], ],
+			[ [231, 231, 231], [255, 255, 231], [231, 255, 231], [255, 231, 255], [231, 255, 255], [28, 28, 28], [30, 28, 40], ],
 			
 			// Цвет обычных кнопок
-			[ [240, 240, 240], [255, 255, 222], [34, 34, 34], [37, 34, 40], ],
+			[ [240, 240, 240], [255, 255, 222], [222, 255, 222], [255, 222, 255], [222, 255, 255], [34, 34, 34], [37, 34, 40], ],
 
 			// Цвет невыбранных ячеек
-			[ [208, 208, 208], [208, 255, 255], [56, 56, 56], [56, 28, 56], ],
+			[ [208, 208, 208], [255, 255, 208], [232, 255, 208], [232, 208, 255], [208, 255, 255], [56, 56, 56], [56, 28, 56], ],
 
 			// Цвет выбранных ячеек
-			[ [156, 156, 156], [0, 240, 255], [120, 120, 120], [112, 60, 112], ],
+			[ [156, 156, 156], [255, 220, 0], [240, 255, 0], [240, 40, 255], [0, 240, 255], [120, 120, 120], [112, 60, 112], ],
 
 			// Цвет простреливаемых ячеек
-			[ [184, 184, 184], [116, 255, 255], [84, 84, 84], [80, 42, 80], ],
+			[ [184, 184, 184], [255, 255, 116], [200, 255, 116], [220, 156, 255], [116, 255, 255], [84, 84, 84], [80, 42, 80], ],
 			];
 
 		// Индекс текущей цветовой схемы
@@ -670,18 +688,11 @@ namespace RD_AAOW
 			get
 				{
 				// Защита верхних вызовов
-				string line = RDGenerics.GetSettings (sudokuFieldPar, "");
-#if !ANDROID
-				try
-					{
-					byte[] conv = Convert.FromBase64String (line.Replace ('А', 'A').Replace ('М', 'M'));
-					line = RDGenerics.GetEncoding (RDEncodings.UTF8).GetString (conv);
-					}
-				catch
-					{
-					line = "";
-					}
-#endif
+				string line = RDGenerics.GetSettings (sudokuFieldUPar, "");
+				if (string.IsNullOrWhiteSpace (line))
+					line = ParseOldField ();
+				else
+					line = DecodeLine (line);
 
 				if (line.Length == FullSize)
 					return line;
@@ -690,14 +701,16 @@ namespace RD_AAOW
 				}
 			set
 				{
-				string line = value;
-#if !ANDROID
+				/*string line = value;
+				if !ANDROID
 				byte[] conv = RDGenerics.GetEncoding (RDEncodings.UTF8).GetBytes (line);
 				line = Convert.ToBase64String (conv, Base64FormattingOptions.None);
 				line = line.Replace ('A', 'А').Replace ('M', 'М');
-#endif
+				endif
 
-				RDGenerics.SetSettings (sudokuFieldPar, line);
+				RDGenerics.SetSettings (sudokuFieldPar, line);*/
+				string line = EncodeLine (value);
+				RDGenerics.SetSettings (sudokuFieldUPar, line);
 				}
 			}
 
@@ -1311,8 +1324,13 @@ namespace RD_AAOW
 					}
 
 				// Извлечение
-				string line = RDGenerics.GetSettings (gameScorePar, "");
-#if !ANDROID
+				string line = RDGenerics.GetSettings (gameScoreUPar, "");
+				if (string.IsNullOrWhiteSpace (line))
+					line = ParseOldScores ();
+				else
+					line = DecodeLine (line);
+
+				/*if !ANDROID
 				try
 					{
 					byte[] conv = Convert.FromBase64String (line.Replace ('А', 'A'));
@@ -1322,7 +1340,8 @@ namespace RD_AAOW
 					{
 					line = "";
 					}
-#endif
+				endif*/
+
 				string[] values = line.Split (gameScoreSplitter, StringSplitOptions.RemoveEmptyEntries);
 				if (values.Length < 4)
 					return gameScore[Item];
@@ -1358,11 +1377,12 @@ namespace RD_AAOW
 				line += (gameScore[i].ToString () + sp);
 			line += gameScore[gameScoreSize - 1].ToString ();
 
-#if !ANDROID
+			/*if !ANDROID
 			byte[] conv = RDGenerics.GetEncoding (RDEncodings.Unicode32).GetBytes (line);
 			line = Convert.ToBase64String (conv, Base64FormattingOptions.None).Replace ('A', 'А');
-#endif
-			RDGenerics.SetSettings (gameScorePar, line);
+			endif*/
+			line = EncodeLine (line);
+			RDGenerics.SetSettings (gameScoreUPar, line);
 			}
 
 		// Метод рассчитывает выигрыш по типу расчёта и количеству найденных ячеек
@@ -1993,6 +2013,110 @@ namespace RD_AAOW
 				return true;
 
 			return false;
+			}
+
+		// Переходные методы
+
+		private static string ParseOldField ()
+			{
+			string line = RDGenerics.GetSettings ("SudokuField", "");
+
+#if !ANDROID
+			try
+				{
+				byte[] conv = Convert.FromBase64String (line.Replace ('А', 'A').Replace ('М', 'M'));
+				line = RDGenerics.GetEncoding (RDEncodings.UTF8).GetString (conv);
+				}
+			catch
+				{
+				line = "";
+				}
+#endif
+
+			RDGenerics.SetSettings ("SudokuField", "");
+			if (line.Length == FullSize)
+				{
+				string lineU = EncodeLine (line);
+				RDGenerics.SetSettings (sudokuFieldUPar, lineU);
+
+				return line;
+				}
+
+			return "";
+			}
+
+		private static string ParseOldScores ()
+			{
+			string line = RDGenerics.GetSettings ("GameScore", "");
+#if !ANDROID
+			try
+				{
+				byte[] conv = Convert.FromBase64String (line.Replace ('А', 'A'));
+				line = RDGenerics.GetEncoding (RDEncodings.Unicode32).GetString (conv);
+				}
+			catch
+				{
+				line = "";
+				}
+#endif
+
+			RDGenerics.SetSettings ("GameScore", "");
+			string lineU = EncodeLine (line);
+			RDGenerics.SetSettings (gameScoreUPar, lineU);
+
+			return line;
+			}
+
+		private static string EncodeLine (string SourceLine)
+			{
+			byte[] data = RDGenerics.GetEncoding (RDEncodings.Unicode16).GetBytes ("SU535" + SourceLine);
+			for (int i = 0; i < data.Length; i++)
+				data[i] = (byte)(data[i] ^ (((i + 4) * 3) % 0xFF));
+			return Convert.ToBase64String (data, Base64FormattingOptions.None);
+			}
+
+		private static string DecodeLine (string SourceLine)
+			{
+			byte[] data;
+			try
+				{
+				data = Convert.FromBase64String (SourceLine);
+				}
+			catch
+				{
+				return "";
+				}
+
+			for (int i = 0; i < data.Length; i++)
+				data[i] = (byte)(data[i] ^ (((i + 4) * 3) % 0xFF));
+			string line = RDGenerics.GetEncoding (RDEncodings.Unicode16).GetString (data);
+
+			if (line.StartsWith ("SU535"))
+				return line.Substring (5);
+			return "";
+			}
+
+		/// <summary>
+		/// Метод возвращает строку, пригодную для обмена сохранёнными выигрышами
+		/// и достижениями между клиентами
+		/// </summary>
+		public static string GetPortableScoresLine ()
+			{
+			return RDGenerics.GetSettings (gameScoreUPar, "");
+			}
+
+		/// <summary>
+		/// Метод загружает строку, пригодную для обмена сохранёнными выигрышами
+		/// и достижениями между клиентами
+		/// </summary>
+		public static bool SetPortableScoresLine (string ScoresLine)
+			{
+			if (string.IsNullOrWhiteSpace (DecodeLine (ScoresLine)))
+				return false;
+
+			RDGenerics.SetSettings (gameScoreUPar, ScoresLine);
+			gameScore = null;
+			return true;
 			}
 		}
 	}

@@ -320,4 +320,16 @@ Changing generated cells is not possible: {1:S}</value>
   <data name="StateButton" xml:space="preserve">
     <value>App status</value>
   </data>
+  <data name="ScoresExchangeMessage" xml:space="preserve">
+    <value>Do you want to transfer your scores?</value>
+  </data>
+  <data name="ScoresExchangeCopy" xml:space="preserve">
+    <value>Put the scores data to clipboard</value>
+  </data>
+  <data name="ScoresExchangeLoad" xml:space="preserve">
+    <value>Get scores data from clipboard (and replace existing scores)</value>
+  </data>
+  <data name="ScoresExchangeError" xml:space="preserve">
+    <value>The clipboard doesn’t contain any scores data</value>
+  </data>
 </root>
