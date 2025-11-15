@@ -332,4 +332,18 @@
   <data name="ScoresExchangeError" xml:space="preserve">
     <value>Буфер обмена не содержит данных о выигрышах</value>
   </data>
+  <data name="ExchangeButton" xml:space="preserve">
+    <value>Перенос выигрышей</value>
+  </data>
+  <data name="GameIsNotCompletedMessage" xml:space="preserve">
+    <value>Текущая игра не завершена.
+
+Вы всё равно хотите начать новую игру?</value>
+  </data>
+  <data name="ShowFreeDigitsLabel" xml:space="preserve">
+    <value>Показывать доступные цифры</value>
+  </data>
+  <data name="ShowFreeDigitsTip" xml:space="preserve">
+    <value>Опция включает отображение цифр, доступных для подстановки в текущую выбранную ячейку</value>
+  </data>
 </root>

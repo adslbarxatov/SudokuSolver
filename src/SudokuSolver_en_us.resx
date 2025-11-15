@@ -285,4 +285,12 @@ Appears every time when all checks are successful</value>
   <data name="MSettings_MExchange" xml:space="preserve">
     <value>&amp;Transfer scores</value>
   </data>
+  <data name="GameIsNotCompletedMessage" xml:space="preserve">
+    <value>Current game is not completed.
+
+Do you want to start new game anyway?</value>
+  </data>
+  <data name="ShowFreeDigitsFlag" xml:space="preserve">
+    <value>Show available digits for the current cell</value>
+  </data>
 </root>

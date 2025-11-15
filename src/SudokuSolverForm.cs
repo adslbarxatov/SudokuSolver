@@ -16,6 +16,7 @@ namespace RD_AAOW
 		private const int buttonSize = 30;
 		private List<Button> buttons = [];
 		private Button newGameButton, checkButton, clearButton;
+		private Label freeDigitsTip;
 
 		/// <summary>
 		/// Конструктор. Настраивает главную форму приложения
@@ -59,10 +60,11 @@ namespace RD_AAOW
 			newGameButton = new Button ();
 			checkButton = new Button ();
 			clearButton = new Button ();
+			freeDigitsTip = new Label ();
 
 			LocalizeForm ();
 
-			newGameButton.TextAlign = checkButton.TextAlign = clearButton.TextAlign =
+			newGameButton.TextAlign = checkButton.TextAlign = clearButton.TextAlign = freeDigitsTip.TextAlign =
 				ContentAlignment.MiddleCenter;
 			newGameButton.Width = checkButton.Width = clearButton.Width = 3 * buttonSize;
 			newGameButton.Height = checkButton.Height = clearButton.Height = buttonSize;
@@ -71,10 +73,17 @@ namespace RD_AAOW
 			checkButton.Left = 4 * buttonSize;
 			clearButton.Left = 7 * buttonSize + 3;
 
+			freeDigitsTip.AutoSize = false;
+			freeDigitsTip.Top = buttons[buttons.Count - 1].Top + 5 * buttonSize / 4;
+			freeDigitsTip.Left = buttons[0].Left;
+			freeDigitsTip.Width = buttons[buttons.Count - 1].Left - buttons[0].Left + buttons[0].Width;
+			freeDigitsTip.Height = buttons[buttons.Count - 1].Height / 2;
+
 			newGameButton.Top = checkButton.Top = clearButton.Top =
 				buttons[buttons.Count - 1].Top + 2 * buttonSize;
 			newGameButton.FlatStyle = checkButton.FlatStyle = clearButton.FlatStyle = FlatStyle.Flat;
-			newGameButton.Font = checkButton.Font = clearButton.Font = MainMenu.Font;
+			newGameButton.Font = checkButton.Font = clearButton.Font /*= freeDigitsTip.Font*/ = MainMenu.Font;
+			freeDigitsTip.Font = new Font (this.Font.FontFamily, 7 * freeDigitsTip.Font.Size / 8);
 
 			newGameButton.Click += NewGame_Click;
 			checkButton.Click += MCheck_Click;
@@ -83,6 +92,7 @@ namespace RD_AAOW
 			this.Controls.Add (newGameButton);
 			this.Controls.Add (checkButton);
 			this.Controls.Add (clearButton);
+			this.Controls.Add (freeDigitsTip);
 
 			// Загрузка настроек
 			MParameters_Clicked (null, null);
@@ -91,19 +101,41 @@ namespace RD_AAOW
 		// Подсветка простреливаемых ячеек
 		private void Lb_MouseHover (object sender, EventArgs e)
 			{
-			if (SudokuSolverMath.HighlightType == HighlightTypes.None)
-				return;
-
-			bool squaresToo = (SudokuSolverMath.HighlightType == HighlightTypes.LinesAndSquares);
 			uint idx = (uint)buttons.IndexOf ((Button)sender);
-			for (int i = 0; i < buttons.Count; i++)
+
+			// Обновление цветов
+			if (SudokuSolverMath.HighlightType != HighlightTypes.None)
 				{
-				if (i == idx)
-					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.SelectedCell);
-				else if (SudokuSolverMath.IsCellAffected (idx, (uint)i, squaresToo))
-					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.AffectedCell);
-				else
-					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.DeselectedCell);
+				bool squaresToo = (SudokuSolverMath.HighlightType == HighlightTypes.LinesAndSquares);
+				for (int i = 0; i < buttons.Count; i++)
+					{
+					if (i == idx)
+						SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.SelectedCell);
+					else if (SudokuSolverMath.IsCellAffected (idx, (uint)i, squaresToo))
+						SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.AffectedCell);
+					else
+						SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.DeselectedCell);
+					}
+				}
+
+			// Обновление подсказки
+			if (SudokuSolverMath.ShowFreeDigitsFlag)
+				{
+				if (!SudokuSolverMath.CheckCondition (buttons[(int)idx], ConditionTypes.IsEmpty))
+					{
+					freeDigitsTip.Text = "";
+					return;
+					}
+
+				string existing = "";
+				for (int i = 0; i < buttons.Count; i++)
+					{
+					if (SudokuSolverMath.IsCellAffected (idx, (uint)i, true))
+						if (!existing.Contains (buttons[i].Text))
+							existing += buttons[i].Text;
+					}
+
+				freeDigitsTip.Text = SudokuSolverMath.GetFreeDigitsForCell (existing);
 				}
 			}
 
@@ -499,12 +531,13 @@ namespace RD_AAOW
 
 						string achiText = RDLocale.GetText ("Achi" + i.ToString ());
 						int left = achiText.IndexOf (RDLocale.RN);
-						achiLine += " " + achiText.Substring (0, left);
+						achiLine += (" " + achiText.Substring (0, left));
 
 						uint tip = 1u << (8 + (int)i);
 						if ((RDGenerics.TipsState & tip) == 0)
 							{
-							RDInterface.MessageBox (RDMessageFlags.Success | RDMessageFlags.CenterText, achiText);
+							RDInterface.MessageBox (RDMessageFlags.Success | RDMessageFlags.CenterText |
+								RDMessageFlags.LockSmallSize, achiText);
 							RDGenerics.TipsState |= tip;
 							}
 						}
@@ -588,6 +621,15 @@ namespace RD_AAOW
 		// Генерация матрицы судоку
 		private void MGenerate_Click (object sender, EventArgs e)
 			{
+			// Контроль
+			if ((e != null) && (SudokuSolverMath.GameMode != MatrixDifficulty.None))
+				{
+				if (RDInterface.LocalizedMessageBox (RDMessageFlags.Warning | RDMessageFlags.CenterText | RDMessageFlags.LockSmallSize,
+					"GameIsNotCompletedMessage", RDLDefaultTexts.Button_YesNoFocus, RDLDefaultTexts.Button_No) !=
+					RDMessageButtons.ButtonOne)
+					return;
+				}
+
 			// Запуск
 			ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
 			string n = tsmi.Name.Substring (tsmi.Name.Length - 1);
@@ -660,12 +702,21 @@ namespace RD_AAOW
 		// Запуск новой игры из интерфейсной кнопки
 		private void NewGame_Click (object sender, EventArgs e)
 			{
+			// Контроль
+			if (SudokuSolverMath.GameMode != MatrixDifficulty.None)
+				{
+				if (RDInterface.LocalizedMessageBox (RDMessageFlags.Warning | RDMessageFlags.CenterText | RDMessageFlags.LockSmallSize,
+					"GameIsNotCompletedMessage", RDLDefaultTexts.Button_YesNoFocus, RDLDefaultTexts.Button_No) !=
+					RDMessageButtons.ButtonOne)
+					return;
+				}
+
 			RDMessageButtons res = RDInterface.MessageBox (RDMessageFlags.Question |
 				RDMessageFlags.CenterText | RDMessageFlags.NoSound,
 				RDLocale.GetText ("DifficultyMessage"), RDLocale.GetText ("MGenerate_MDifficulty0"),
 				RDLocale.GetText ("MGenerate_MDifficulty1"), RDLocale.GetText ("MGenerate_MDifficulty2"));
 
-			MGenerate_Click (MGenerate.DropDownItems[(int)res - 1], e);
+			MGenerate_Click (MGenerate.DropDownItems[(int)res - 1], null/*e*/);
 			}
 
 		// Отдельное окно настроек
@@ -686,6 +737,7 @@ namespace RD_AAOW
 			this.ClientSize = new Size ((int)(SudokuSolverMath.SideSize + 2) * buttonSize,
 				(int)(SudokuSolverMath.SideSize + 2) * buttonSize + (game ? 3 : 1) * buttonSize);
 			newGameButton.Visible = checkButton.Visible = clearButton.Visible = game;
+			freeDigitsTip.Visible = game && SudokuSolverMath.ShowFreeDigitsFlag;
 
 			if (!game)
 				SudokuSolverMath.GameMode = MatrixDifficulty.None;
@@ -707,7 +759,8 @@ namespace RD_AAOW
 					SudokuSolverMath.SetProperty (buttons[i], PropertyTypes.OldColor);
 				}
 
-			newGameButton.ForeColor = checkButton.ForeColor = clearButton.ForeColor = buttons[0].ForeColor;
+			newGameButton.ForeColor = checkButton.ForeColor = clearButton.ForeColor = freeDigitsTip.ForeColor =
+				buttons[0].ForeColor;
 
 			// Представление ячеек
 			for (int i = 0; i < buttons.Count; i++)

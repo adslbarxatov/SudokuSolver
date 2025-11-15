@@ -395,6 +395,7 @@ namespace RD_AAOW
 		private const string cellsAppearancePar = "CellsAppearance";
 		private const string gameStartDatePar = "GameStartDate";
 		private const string showAffectedCellsPar = "ShowAffectedCells";
+		private const string showFreeDigitsFlagPar = "ShowFreeDigitsFlag";
 
 		#endregion
 
@@ -485,9 +486,9 @@ namespace RD_AAOW
 			[ "a", "b", "c", "d", "e", "f", "g", "h", "i" ],
 			[ "а", "б", "в", "г", "д", "е", "ж", "з", "и" ],
 			[ "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι" ],
-			[ "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ" ],
+			/*[ "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ" ],*/
 #if ANDROID
-			[
+			/*[
 			"     \n  ●  \n     ",
 			"    ●\n     \n●    ",
 			"    ●\n  ●  \n●    ",
@@ -497,7 +498,7 @@ namespace RD_AAOW
 			"●   ●\n● ● ●\n●   ●",
 			"● ● ●\n●   ●\n● ● ●",
 			"● ● ●\n● ● ●\n● ● ●",
-			],
+			],*/
 			[ "❤️", "🧡", "💛", "💚", "🩵", "💙", "💜", "🩷", "🤍" ],
 			[ "🍎", "🍊", "🍋", "🍏", "🧊", "🫐", "🍇", "🍗", "🥚" ],
 #endif
@@ -507,9 +508,9 @@ namespace RD_AAOW
 			[ "Латинские буквы", "Latin letters" ],
 			[ "Русские буквы", "Cyrillic letters" ],
 			[ "Греческие буквы", "Greek letters" ],
-			[ "Римские цифры", "Roman numerals" ],
+			/*[ "Римские цифры", "Roman numerals" ],*/
 #if ANDROID
-			[ "Точки", "Dots" ],
+			/*[ "Точки", "Dots" ],*/
 			[ "Радуга", "Rainbow" ],
 			[ "Еда", "Food" ],
 #endif
@@ -522,8 +523,8 @@ namespace RD_AAOW
 			1.25,
 			1.25,
 			1.25,
-			1.25,
-			0.55,
+			/*1.25,
+			0.55,*/
 			1.55,
 			1.55,
 			];
@@ -638,6 +639,22 @@ namespace RD_AAOW
 			set
 				{
 				RDGenerics.SetSettings (appModePar, (uint)value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает или задаёт флаг отображения подсказки о доступных цифрах
+		/// для выбранной ячейки
+		/// </summary>
+		public static bool ShowFreeDigitsFlag
+			{
+			get
+				{
+				return RDGenerics.GetSettings (showFreeDigitsFlagPar, false);
+				}
+			set
+				{
+				RDGenerics.SetSettings (showFreeDigitsFlagPar, value);
 				}
 			}
 
@@ -2117,6 +2134,47 @@ namespace RD_AAOW
 			RDGenerics.SetSettings (gameScoreUPar, ScoresLine);
 			gameScore = null;
 			return true;
+			}
+
+		/// <summary>
+		/// Метод возвращает перечень цифр, доступных для выбранной ячейки, согласно
+		/// указанному списку недоступных цифр
+		/// </summary>
+		/// <param name="OccupiedDigits">Список недоступных цифр</param>
+		public static string GetFreeDigitsForCell (string OccupiedDigits)
+			{
+			string res = "";
+			int len = 0;
+			for (int i = 0; i < cellsApps[cellsAppIndex].Count; i++)
+				{
+				if (!OccupiedDigits.Contains (cellsApps[cellsAppIndex][i]))
+					{
+					res += cellsApps[cellsAppIndex][i];
+					len++;
+
+#if ANDROID
+					if (((len == 3) || (len == 6)) && !res.EndsWith ('\n'))
+						res += "\n";
+#endif
+					}
+				}
+
+			switch (len)
+				{
+				case 0:
+					return "???";
+
+				case 1:
+					return "–";
+
+				case 2:
+					return "––";
+
+				default:
+					if (res.EndsWith ('\n'))
+						res = res.Substring (0, res.Length - 1);
+					return res;
+				}
 			}
 		}
 	}

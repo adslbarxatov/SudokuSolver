@@ -1,5 +1,10 @@
 Sudoku solver: changes log
 
+Version 5.4:
+• Added tip about digits available for the currently selected cell;
+• Removed badly implemented cell appearances;
+• Added confirmation for beginning of new game the the previous one hasn't been finished
+
 Version 5.3.5:
 • Implemented the ability to transfer scores between devices using encoded text line;
 • Added new interface color schemes;

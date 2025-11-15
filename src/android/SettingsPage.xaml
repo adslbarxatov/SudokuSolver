@@ -49,6 +49,15 @@
 			<Button x:Name="HighlightAffectedButton" HorizontalOptions="Center" />
 			<Label x:Name="HighlightAffectedTip" />
 
+			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
+					WidthRequest="100" Color="#505050" Margin="12" />
+
+			<StackLayout Orientation="Horizontal">
+				<Switch x:Name="ShowFreeDigitsSwitch" VerticalOptions="Center" />
+				<Label x:Name="ShowFreeDigitsLabel" VerticalOptions="Center" />
+			</StackLayout>
+			<Label x:Name="ShowFreeDigitsTip" />
+
 			<Label />
 			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
 					WidthRequest="200" Color="#505050" Margin="12" />

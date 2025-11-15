@@ -46,7 +46,8 @@ namespace RD_AAOW
 		private Label aboutFontSizeField, solutionTipLabel;
 
 		private Button languageButton, solutionButton, checkButton, generateButton,
-			clearButton, menuButton, colorSchemeButton, cellsAppearanceButton, highlightButton;
+			clearButton, menuButton, colorSchemeButton, cellsAppearanceButton,
+			highlightButton, freeDigitsTipButton;
 		private List<Button> numberButtons = [];
 		private List<Button> inputButtons = [];
 
@@ -54,7 +55,7 @@ namespace RD_AAOW
 		private StackLayout numbersField = [];
 		private StackLayout inputField = [];
 
-		private Switch gameModeSwitch, keepScreenOnSwitch, replaceBalloonsSwitch;
+		private Switch gameModeSwitch, keepScreenOnSwitch, replaceBalloonsSwitch, showFreeDigitsSwitch;
 
 		#endregion
 
@@ -215,6 +216,13 @@ namespace RD_AAOW
 			inputField.Add (msl);
 
 			// Добавление управляющих кнопок
+			freeDigitsTipButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
+				stubColor, null);
+			freeDigitsTipButton.Text = "";
+			freeDigitsTipButton.FontFamily = RDGenerics.MonospaceFont;
+			freeDigitsTipButton.FontSize /= 1.75;
+			inputSL[inputSL.Count - 1].Add (freeDigitsTipButton);
+
 			generateButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
 				stubColor, GenerateMatrix_Clicked);
 			generateButton.Text = "🆕";
@@ -290,6 +298,13 @@ namespace RD_AAOW
 			RDInterface.ApplyLabelSettings (settingsPage, "ReplaceBalloonsLabel", RDLocale.GetText ("ReplaceBalloonsLabel"),
 				RDLabelTypes.DefaultLeft);
 			RDInterface.ApplyLabelSettings (settingsPage, "ReplaceBalloonsTip", RDLocale.GetText ("ReplaceBalloonsTip"),
+				RDLabelTypes.TipJustify);
+
+			showFreeDigitsSwitch = RDInterface.ApplySwitchSettings (settingsPage, "ShowFreeDigitsSwitch", false,
+				settingsFieldBackColor, ShowFreeDigits_Toggled, SudokuSolverMath.ShowFreeDigitsFlag);
+			RDInterface.ApplyLabelSettings (settingsPage, "ShowFreeDigitsLabel", RDLocale.GetText ("ShowFreeDigitsLabel"),
+				RDLabelTypes.DefaultLeft);
+			RDInterface.ApplyLabelSettings (settingsPage, "ShowFreeDigitsTip", RDLocale.GetText ("ShowFreeDigitsTip"),
 				RDLabelTypes.TipJustify);
 
 			RDInterface.ApplyLabelSettings (settingsPage, "RestartTipLabel",
@@ -701,17 +716,41 @@ namespace RD_AAOW
 		private void PaintButtons ()
 			{
 			bool showAffected = (SudokuSolverMath.HighlightType != HighlightTypes.None);
-			bool squaresToo = (SudokuSolverMath.HighlightType == HighlightTypes.LinesAndSquares);
 
-			for (int i = 0; i < numberButtons.Count; i++)
+			// Обновление цветов
+			if (showAffected)
 				{
-				if (i == currentButtonIndex)
-					SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.SelectedCell);
-				else if (showAffected && SudokuSolverMath.IsCellAffected ((uint)currentButtonIndex,
-					(uint)i, squaresToo))
-					SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.AffectedCell);
-				else
-					SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.DeselectedCell);
+				bool squaresToo = (SudokuSolverMath.HighlightType == HighlightTypes.LinesAndSquares);
+				for (int i = 0; i < numberButtons.Count; i++)
+					{
+					if (i == currentButtonIndex)
+						SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.SelectedCell);
+					else if (showAffected && SudokuSolverMath.IsCellAffected ((uint)currentButtonIndex,
+						(uint)i, squaresToo))
+						SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.AffectedCell);
+					else
+						SudokuSolverMath.SetProperty (numberButtons[i], PropertyTypes.DeselectedCell);
+					}
+				}
+
+			// Обновление подсказки
+			if (SudokuSolverMath.ShowFreeDigitsFlag)
+				{
+				if (!SudokuSolverMath.CheckCondition (numberButtons[currentButtonIndex], ConditionTypes.IsEmpty))
+					{
+					freeDigitsTipButton.Text = "";
+					return;
+					}
+
+				string existing = "";
+				for (int i = 0; i < numberButtons.Count; i++)
+					{
+					if (SudokuSolverMath.IsCellAffected ((uint)currentButtonIndex, (uint)i, true))
+						if (!existing.Contains (numberButtons[i].Text))
+							existing += numberButtons[i].Text;
+					}
+
+				freeDigitsTipButton.Text = SudokuSolverMath.GetFreeDigitsForCell (existing);
 				}
 			}
 
@@ -984,7 +1023,7 @@ namespace RD_AAOW
 
 			if (!Enabled)
 				{
-				generateButton.IsVisible = clearButton.IsVisible = checkButton.IsVisible = false;
+				generateButton.IsVisible = clearButton.IsVisible = checkButton.IsVisible = freeDigitsTipButton.IsVisible = false;
 				solutionButton.IsVisible = true;
 				solutionButton.Text = "❌";
 				}
@@ -1048,6 +1087,15 @@ namespace RD_AAOW
 
 		private async Task<bool> GenerateMatrix ()
 			{
+			// Контроль
+			if (SudokuSolverMath.GameMode != MatrixDifficulty.None)
+				{
+				if (!await RDInterface.ShowMessage (RDLocale.GetText ("GameIsNotCompletedMessage"),
+					RDLocale.GetDefaultText (RDLDefaultTexts.Button_Yes),
+					RDLocale.GetDefaultText (RDLDefaultTexts.Button_No)))
+					return false;
+				}
+
 			// Выбор сложности
 			int res = await RDInterface.ShowList (RDLocale.GetText ("DifficultyLevel"),
 				RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel), difficultyVariants);
@@ -1095,6 +1143,7 @@ namespace RD_AAOW
 
 			generateButton.IsVisible = checkButton.IsVisible = game;
 			solutionButton.IsVisible = !game;
+			freeDigitsTipButton.IsVisible = game && SudokuSolverMath.ShowFreeDigitsFlag;
 			clearButton.IsVisible = true;
 			if (!game)
 				SudokuSolverMath.GameMode = MatrixDifficulty.None;
@@ -1166,6 +1215,8 @@ namespace RD_AAOW
 			SudokuSolverMath.SetProperty (solutionButton, PropertyTypes.OtherButton);
 			SudokuSolverMath.SetProperty (menuButton, PropertyTypes.OtherButton);
 			SudokuSolverMath.SetProperty (menuButton, PropertyTypes.OldColor);
+			SudokuSolverMath.SetProperty (freeDigitsTipButton, PropertyTypes.OtherButton);
+			SudokuSolverMath.SetProperty (freeDigitsTipButton, PropertyTypes.OldColor);
 			}
 
 		// Выбор цветовой схемы приложения
@@ -1227,6 +1278,13 @@ namespace RD_AAOW
 		private void ReplaceBalloonsSwitch_Toggled (object sender, ToggledEventArgs e)
 			{
 			SudokuSolverMath.ReplaceBalloons = replaceBalloonsSwitch.IsToggled;
+			}
+
+		// Включение / выключение отображения цифр, доступных для выбранной ячейки
+		private void ShowFreeDigits_Toggled (object sender, ToggledEventArgs e)
+			{
+			SudokuSolverMath.ShowFreeDigitsFlag = showFreeDigitsSwitch.IsToggled;
+			freeDigitsTipButton.IsVisible = (SudokuSolverMath.AppMode == AppModes.Game) && SudokuSolverMath.ShowFreeDigitsFlag;
 			}
 
 		private static async Task<bool> ShowRBControlledMessage (string Text)

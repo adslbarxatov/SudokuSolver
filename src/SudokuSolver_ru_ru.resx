@@ -285,4 +285,12 @@
   <data name="MSettings_MExchange" xml:space="preserve">
     <value>Пе&amp;ренос выигрышей</value>
   </data>
+  <data name="GameIsNotCompletedMessage" xml:space="preserve">
+    <value>Текущая игра не завершена.
+
+Вы всё равно хотите начать новую игру?</value>
+  </data>
+  <data name="ShowFreeDigitsFlag" xml:space="preserve">
+    <value>Показывать цифры, подходящие для текущей ячейки</value>
+  </data>
 </root>

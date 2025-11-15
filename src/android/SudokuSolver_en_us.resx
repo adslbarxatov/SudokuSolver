@@ -332,4 +332,18 @@ Changing generated cells is not possible: {1:S}</value>
   <data name="ScoresExchangeError" xml:space="preserve">
     <value>The clipboard doesn’t contain any scores data</value>
   </data>
+  <data name="ExchangeButton" xml:space="preserve">
+    <value>Transfer scores</value>
+  </data>
+  <data name="GameIsNotCompletedMessage" xml:space="preserve">
+    <value>Current game is not completed.
+
+Do you want to start new game anyway?</value>
+  </data>
+  <data name="ShowFreeDigitsLabel" xml:space="preserve">
+    <value>Show available digits</value>
+  </data>
+  <data name="ShowFreeDigitsTip" xml:space="preserve">
+    <value>This option allows you to see digits that are available for placing in the currently selected cell</value>
+  </data>
 </root>
