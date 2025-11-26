@@ -1,5 +1,8 @@
 Sudoku solver: changes log
 
+Version 5.4.1:
+• Adjusted the interface behavior
+
 Version 5.4:
 • Added tip about digits available for the currently selected cell;
 • Removed badly implemented cell appearances;

@@ -486,19 +486,7 @@ namespace RD_AAOW
 			[ "a", "b", "c", "d", "e", "f", "g", "h", "i" ],
 			[ "а", "б", "в", "г", "д", "е", "ж", "з", "и" ],
 			[ "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι" ],
-			/*[ "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ" ],*/
 #if ANDROID
-			/*[
-			"     \n  ●  \n     ",
-			"    ●\n     \n●    ",
-			"    ●\n  ●  \n●    ",
-			"●   ●\n     \n●   ●",
-			"●   ●\n  ●  \n●   ●",
-			"●   ●\n●   ●\n●   ●",
-			"●   ●\n● ● ●\n●   ●",
-			"● ● ●\n●   ●\n● ● ●",
-			"● ● ●\n● ● ●\n● ● ●",
-			],*/
 			[ "❤️", "🧡", "💛", "💚", "🩵", "💙", "💜", "🩷", "🤍" ],
 			[ "🍎", "🍊", "🍋", "🍏", "🧊", "🫐", "🍇", "🍗", "🥚" ],
 #endif
@@ -508,9 +496,7 @@ namespace RD_AAOW
 			[ "Латинские буквы", "Latin letters" ],
 			[ "Русские буквы", "Cyrillic letters" ],
 			[ "Греческие буквы", "Greek letters" ],
-			/*[ "Римские цифры", "Roman numerals" ],*/
 #if ANDROID
-			/*[ "Точки", "Dots" ],*/
 			[ "Радуга", "Rainbow" ],
 			[ "Еда", "Food" ],
 #endif
@@ -523,8 +509,6 @@ namespace RD_AAOW
 			1.25,
 			1.25,
 			1.25,
-			/*1.25,
-			0.55,*/
 			1.55,
 			1.55,
 			];
@@ -718,14 +702,6 @@ namespace RD_AAOW
 				}
 			set
 				{
-				/*string line = value;
-				if !ANDROID
-				byte[] conv = RDGenerics.GetEncoding (RDEncodings.UTF8).GetBytes (line);
-				line = Convert.ToBase64String (conv, Base64FormattingOptions.None);
-				line = line.Replace ('A', 'А').Replace ('M', 'М');
-				endif
-
-				RDGenerics.SetSettings (sudokuFieldPar, line);*/
 				string line = EncodeLine (value);
 				RDGenerics.SetSettings (sudokuFieldUPar, line);
 				}
@@ -1347,18 +1323,6 @@ namespace RD_AAOW
 				else
 					line = DecodeLine (line);
 
-				/*if !ANDROID
-				try
-					{
-					byte[] conv = Convert.FromBase64String (line.Replace ('А', 'A'));
-					line = RDGenerics.GetEncoding (RDEncodings.Unicode32).GetString (conv);
-					}
-				catch
-					{
-					line = "";
-					}
-				endif*/
-
 				string[] values = line.Split (gameScoreSplitter, StringSplitOptions.RemoveEmptyEntries);
 				if (values.Length < 4)
 					return gameScore[Item];
@@ -1394,10 +1358,6 @@ namespace RD_AAOW
 				line += (gameScore[i].ToString () + sp);
 			line += gameScore[gameScoreSize - 1].ToString ();
 
-			/*if !ANDROID
-			byte[] conv = RDGenerics.GetEncoding (RDEncodings.Unicode32).GetBytes (line);
-			line = Convert.ToBase64String (conv, Base64FormattingOptions.None).Replace ('A', 'А');
-			endif*/
 			line = EncodeLine (line);
 			RDGenerics.SetSettings (gameScoreUPar, line);
 			}
@@ -2167,8 +2127,8 @@ namespace RD_AAOW
 				case 1:
 					return "–";
 
-				case 2:
-					return "––";
+				/*case 2:
+					return "––";*/
 
 				default:
 					if (res.EndsWith ('\n'))

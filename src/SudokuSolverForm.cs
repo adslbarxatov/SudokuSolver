@@ -82,7 +82,7 @@ namespace RD_AAOW
 			newGameButton.Top = checkButton.Top = clearButton.Top =
 				buttons[buttons.Count - 1].Top + 2 * buttonSize;
 			newGameButton.FlatStyle = checkButton.FlatStyle = clearButton.FlatStyle = FlatStyle.Flat;
-			newGameButton.Font = checkButton.Font = clearButton.Font /*= freeDigitsTip.Font*/ = MainMenu.Font;
+			newGameButton.Font = checkButton.Font = clearButton.Font = MainMenu.Font;
 			freeDigitsTip.Font = new Font (this.Font.FontFamily, 7 * freeDigitsTip.Font.Size / 8);
 
 			newGameButton.Click += NewGame_Click;
@@ -716,7 +716,7 @@ namespace RD_AAOW
 				RDLocale.GetText ("DifficultyMessage"), RDLocale.GetText ("MGenerate_MDifficulty0"),
 				RDLocale.GetText ("MGenerate_MDifficulty1"), RDLocale.GetText ("MGenerate_MDifficulty2"));
 
-			MGenerate_Click (MGenerate.DropDownItems[(int)res - 1], null/*e*/);
+			MGenerate_Click (MGenerate.DropDownItems[(int)res - 1], null);
 			}
 
 		// Отдельное окно настроек

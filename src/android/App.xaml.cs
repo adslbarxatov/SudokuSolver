@@ -1141,9 +1141,13 @@ namespace RD_AAOW
 			// Настройка
 			bool game = (SudokuSolverMath.AppMode == AppModes.Game);
 
-			generateButton.IsVisible = checkButton.IsVisible = game;
+			generateButton.IsVisible = checkButton.IsVisible = freeDigitsTipButton.IsVisible = game;
 			solutionButton.IsVisible = !game;
-			freeDigitsTipButton.IsVisible = game && SudokuSolverMath.ShowFreeDigitsFlag;
+
+			/*freeDigitsTipButton.IsVisible = game && SudokuSolverMath.ShowFreeDigitsFlag;*/
+			if (!game || !SudokuSolverMath.ShowFreeDigitsFlag)
+				freeDigitsTipButton.Text = "";
+
 			clearButton.IsVisible = true;
 			if (!game)
 				SudokuSolverMath.GameMode = MatrixDifficulty.None;
@@ -1284,7 +1288,7 @@ namespace RD_AAOW
 		private void ShowFreeDigits_Toggled (object sender, ToggledEventArgs e)
 			{
 			SudokuSolverMath.ShowFreeDigitsFlag = showFreeDigitsSwitch.IsToggled;
-			freeDigitsTipButton.IsVisible = (SudokuSolverMath.AppMode == AppModes.Game) && SudokuSolverMath.ShowFreeDigitsFlag;
+			/*freeDigitsTipButton.IsVisible = (SudokuSolverMath.AppMode == AppModes.Game) && SudokuSolverMath.ShowFreeDigitsFlag;*/
 			}
 
 		private static async Task<bool> ShowRBControlledMessage (string Text)
