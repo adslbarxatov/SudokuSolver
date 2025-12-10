@@ -1,5 +1,10 @@
 Sudoku solver: changes log
 
+Version 5.5:
+• Windows: app has been migrated to .NET 10;
+• Android: app has been targeted to API 36;
+• Internal assemblies have been updated
+
 Version 5.4.1:
 • Adjusted the interface behavior
 

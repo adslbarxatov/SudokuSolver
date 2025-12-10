@@ -2127,9 +2127,6 @@ namespace RD_AAOW
 				case 1:
 					return "–";
 
-				/*case 2:
-					return "––";*/
-
 				default:
 					if (res.EndsWith ('\n'))
 						res = res.Substring (0, res.Length - 1);

@@ -1,5 +1,5 @@
-﻿using Microsoft.Maui.Controls;
-using System.ComponentModel;
+﻿/*using Microsoft.Maui.Controls;
+using System.ComponentModel;*/
 
 [assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 namespace RD_AAOW
@@ -1144,7 +1144,6 @@ namespace RD_AAOW
 			generateButton.IsVisible = checkButton.IsVisible = freeDigitsTipButton.IsVisible = game;
 			solutionButton.IsVisible = !game;
 
-			/*freeDigitsTipButton.IsVisible = game && SudokuSolverMath.ShowFreeDigitsFlag;*/
 			if (!game || !SudokuSolverMath.ShowFreeDigitsFlag)
 				freeDigitsTipButton.Text = "";
 
@@ -1288,7 +1287,6 @@ namespace RD_AAOW
 		private void ShowFreeDigits_Toggled (object sender, ToggledEventArgs e)
 			{
 			SudokuSolverMath.ShowFreeDigitsFlag = showFreeDigitsSwitch.IsToggled;
-			/*freeDigitsTipButton.IsVisible = (SudokuSolverMath.AppMode == AppModes.Game) && SudokuSolverMath.ShowFreeDigitsFlag;*/
 			}
 
 		private static async Task<bool> ShowRBControlledMessage (string Text)
