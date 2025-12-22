@@ -27,7 +27,7 @@ namespace RD_AAOW
 			InitializeComponent ();
 			RDGenerics.LoadWindowDimensions (this);
 
-			this.Text = ProgramDescription.AssemblyTitle;
+			this.Text = RDGenerics.DefaultAssemblyVisibleName;
 
 			// Формирование поля
 			for (int r = 0; r < SudokuSolverMath.SideSize; r++)

@@ -1,7 +1,4 @@
-﻿/*using Microsoft.Maui.Controls;
-using System.ComponentModel;*/
-
-[assembly: XamlCompilation (XamlCompilationOptions.Compile)]
+﻿[assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 namespace RD_AAOW
 	{
 	/// <summary>
@@ -996,8 +993,8 @@ namespace RD_AAOW
 			if (ans)
 				return true;
 
-			await Share.RequestAsync (ProgramDescription.AssemblyVisibleName + RDLocale.RNRN +
-				text, ProgramDescription.AssemblyVisibleName);
+			await Share.RequestAsync (RDGenerics.DefaultAssemblyVisibleName + RDLocale.RNRN +
+				text, RDGenerics.DefaultAssemblyVisibleName);
 			return true;
 			}
 
