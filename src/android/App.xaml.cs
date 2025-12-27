@@ -130,6 +130,8 @@ namespace RD_AAOW
 
 				// Добавление кнопок
 				Button b = new Button ();
+				RDInterface.ApplyButtonDefaults (b);
+
 				b.FontAttributes = FontAttributes.None;
 				b.FontFamily = RDGenerics.MonospaceFont;
 				SudokuSolverMath.SetProperty (b, PropertyTypes.OldColor);
@@ -174,6 +176,8 @@ namespace RD_AAOW
 					}
 
 				Button b = new Button ();
+				RDInterface.ApplyButtonDefaults (b);
+
 				b.FontAttributes = FontAttributes.None;
 				b.FontFamily = RDGenerics.MonospaceFont;
 				b.TextColor = RDInterface.GetInterfaceColor (RDInterfaceColors.AndroidTextColor);
@@ -1217,6 +1221,8 @@ namespace RD_AAOW
 			SudokuSolverMath.SetProperty (menuButton, PropertyTypes.OldColor);
 			SudokuSolverMath.SetProperty (freeDigitsTipButton, PropertyTypes.OtherButton);
 			SudokuSolverMath.SetProperty (freeDigitsTipButton, PropertyTypes.OldColor);
+			SudokuSolverMath.SetProperty (colorSchemeButton, PropertyTypes.OtherButton);
+			SudokuSolverMath.SetProperty (colorSchemeButton, PropertyTypes.OldColor);
 			}
 
 		// Выбор цветовой схемы приложения

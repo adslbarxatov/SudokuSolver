@@ -1,5 +1,4 @@
-_Changes for v 5.5.1_:
-- Internal assemblies have been updated;
-- `Windows`: app has been migrated to `.NET 10`;
-- `Android`: app has been targeted to `API 36`;
-- Added ***tip about digits available for the currently selected cell***
+_Changes for v 5.5.2_:
+- Android: fixed the missing shadows under buttons (was hardly visible after the last update);
+- Android: the color scheme button now disblays the selected style;
+- Internal assemblies have been updated
