@@ -2,7 +2,7 @@ Sudoku solver: changes log
 
 Version 5.5.2:
 • Android: fixed the missing shadows under buttons (was hardly visible after the last update);
-• Android: the color scheme button now disblays the selected style
+• Android: the color scheme button now displays the selected style
 
 Version 5.5.1:
 • Internal assemblies have been updated
