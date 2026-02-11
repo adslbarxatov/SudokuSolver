@@ -1,4 +1,14 @@
-﻿[assembly: XamlCompilation (XamlCompilationOptions.Compile)]
+﻿using Microsoft.Maui;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.Xaml;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+[assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 namespace RD_AAOW
 	{
 	/// <summary>
@@ -24,6 +34,7 @@ namespace RD_AAOW
 		private List<List<string>> menuVariants = [];
 		private List<string> appearanceVariants = [];
 		private List<string> highlightVariants = [];
+		private static List<string> scoresExchangeVariants = [];
 
 		// Номер текущей выбранной кнопки
 		private int currentButtonIndex = -1;
@@ -130,17 +141,14 @@ namespace RD_AAOW
 
 				// Добавление кнопок
 				Button b = new Button ();
-				RDInterface.ApplyButtonDefaults (b);
+				RDInterface.ApplyButtonDefaults (b, true);
 
-				b.FontAttributes = FontAttributes.None;
 				b.FontFamily = RDGenerics.MonospaceFont;
 				SudokuSolverMath.SetProperty (b, PropertyTypes.OldColor);
-				b.LineBreakMode = LineBreakMode.WordWrap;
 				b.WidthRequest = b.HeightRequest = RDInterface.MasterFontSize * 2.25;
 				b.Padding = Thickness.Zero;
 				b.Margin = new Thickness (1);
 				SudokuSolverMath.SetProperty (b, PropertyTypes.EmptyValue);
-				b.TextTransform = TextTransform.None;
 				b.Clicked += SelectCurrentButton;
 				if (RDGenerics.IsTV)
 					b.Focused += FocusButton;
@@ -176,15 +184,11 @@ namespace RD_AAOW
 					}
 
 				Button b = new Button ();
-				RDInterface.ApplyButtonDefaults (b);
+				RDInterface.ApplyButtonDefaults (b, true);
 
-				b.FontAttributes = FontAttributes.None;
 				b.FontFamily = RDGenerics.MonospaceFont;
-				b.TextColor = RDInterface.GetInterfaceColor (RDInterfaceColors.AndroidTextColor);
-				b.LineBreakMode = LineBreakMode.WordWrap;
 				b.Padding = Thickness.Zero;
 				b.Margin = new Thickness (3);
-				b.TextTransform = TextTransform.None;
 				b.Clicked += SetValueForCurrentButton;
 
 				b.WidthRequest = b.HeightRequest = RDInterface.MasterFontSize * 2.75;
@@ -218,19 +222,19 @@ namespace RD_AAOW
 
 			// Добавление управляющих кнопок
 			freeDigitsTipButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
-				stubColor, null);
+				stubColor, null, true);
 			freeDigitsTipButton.Text = "";
 			freeDigitsTipButton.FontFamily = RDGenerics.MonospaceFont;
 			freeDigitsTipButton.FontSize /= 1.75;
 			inputSL[inputSL.Count - 1].Add (freeDigitsTipButton);
 
 			generateButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
-				stubColor, GenerateMatrix_Clicked);
+				stubColor, GenerateMatrix_Clicked, true);
 			generateButton.Text = "🆕";
 			inputSL[inputSL.Count - 1].Add (generateButton);
 
 			checkButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
-				stubColor, CheckSolution_Clicked);
+				stubColor, CheckSolution_Clicked, true);
 			checkButton.Text = "☑️";
 
 			if (RDGenerics.IsTV)
@@ -241,12 +245,12 @@ namespace RD_AAOW
 			inputSL[inputSL.Count - 1].Add (checkButton);
 
 			clearButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
-				stubColor, ClearSolution_Clicked);
+				stubColor, ClearSolution_Clicked, true);
 			clearButton.Text = "↩️";
 			inputSL[inputSL.Count - 1].Add (clearButton);
 
 			solutionButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
-				stubColor, SolveSudoku_Clicked);
+				stubColor, SolveSudoku_Clicked, true);
 			solutionButton.Text = "✅";
 
 			if (RDGenerics.IsTV)
@@ -257,7 +261,7 @@ namespace RD_AAOW
 			inputSL[inputSL.Count - 1].Add (solutionButton);
 
 			menuButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
-				stubColor, MenuButton_Clicked);
+				stubColor, MenuButton_Clicked, true);
 			inputSL[inputSL.Count - 1].Add (menuButton);
 
 			// Подсказка о выполнении решения
@@ -313,11 +317,11 @@ namespace RD_AAOW
 				RDLabelTypes.TipCenter);
 
 			RDInterface.ApplyLabelSettings (settingsPage, "LanguageLabel",
-				RDLocale.GetDefaultText (RDLDefaultTexts.Control_InterfaceLanguage),
+				RDLocale.GetDefaultText (RDLDefaultTexts.Control_InterfaceLanguageNC) + ":",
 				RDLabelTypes.DefaultLeft);
 			languageButton = RDInterface.ApplyButtonSettings (settingsPage, "LanguageSelector",
 				RDLocale.LanguagesNames[(int)RDLocale.CurrentLanguage],
-				settingsFieldBackColor, SelectLanguage_Clicked, false);
+				settingsFieldBackColor, SelectLanguage_Clicked);
 			RDInterface.ApplyLabelSettings (settingsPage, "LanguageTip", RDLocale.GetText ("LanguageTip"),
 				RDLabelTypes.TipJustify);
 
@@ -325,16 +329,16 @@ namespace RD_AAOW
 				RDLocale.GetDefaultText (RDLDefaultTexts.Control_InterfaceFontSize),
 				RDLabelTypes.DefaultLeft);
 			RDInterface.ApplyButtonSettings (settingsPage, "FontSizeInc",
-				RDDefaultButtons.Increase, settingsFieldBackColor, FontSizeButton_Clicked);
+				RDDefaultButtons.Increase, settingsFieldBackColor, FontSizeButton_Clicked, true);
 			RDInterface.ApplyButtonSettings (settingsPage, "FontSizeDec",
-				RDDefaultButtons.Decrease, settingsFieldBackColor, FontSizeButton_Clicked);
+				RDDefaultButtons.Decrease, settingsFieldBackColor, FontSizeButton_Clicked, true);
 			aboutFontSizeField = RDInterface.ApplyLabelSettings (settingsPage, "FontSizeField",
 				" ", RDLabelTypes.DefaultCenter);
 			RDInterface.ApplyLabelSettings (settingsPage, "FontSizeTip", RDLocale.GetText ("FontSizeTip"),
 				RDLabelTypes.TipJustify);
 
 			highlightButton = RDInterface.ApplyButtonSettings (settingsPage, "HighlightAffectedButton", " ",
-				settingsFieldBackColor, HighlightAffectedButton_Clicked, false);
+				settingsFieldBackColor, HighlightAffectedButton_Clicked);
 			RDInterface.ApplyLabelSettings (settingsPage, "HighlightAffectedLabel",
 				RDLocale.GetText ("HighlightAffectedLabel"), RDLabelTypes.DefaultLeft);
 			RDInterface.ApplyLabelSettings (settingsPage, "HighlightAffectedTip",
@@ -342,7 +346,7 @@ namespace RD_AAOW
 			HighlightAffectedButton_Clicked (null, null);
 
 			colorSchemeButton = RDInterface.ApplyButtonSettings (settingsPage, "ColorSchemeButton", " ",
-				settingsFieldBackColor, ColorSchemeButton_Clicked, false);
+				settingsFieldBackColor, ColorSchemeButton_Clicked);
 			RDInterface.ApplyLabelSettings (settingsPage, "ColorSchemeLabel", RDLocale.GetText ("ColorSchemeLabel"),
 				RDLabelTypes.DefaultLeft);
 			RDInterface.ApplyLabelSettings (settingsPage, "ColorSchemeTip", RDLocale.GetText ("ColorSchemeTip"),
@@ -350,7 +354,7 @@ namespace RD_AAOW
 			ColorSchemeButton_Clicked (null, null);
 
 			cellsAppearanceButton = RDInterface.ApplyButtonSettings (settingsPage, "CellsAppearanceButton", " ",
-				settingsFieldBackColor, CellsAppearanceButton_Clicked, false);
+				settingsFieldBackColor, CellsAppearanceButton_Clicked);
 			RDInterface.ApplyLabelSettings (settingsPage, "CellsAppearanceLabel", RDLocale.GetText ("CellsAppearanceLabel"),
 				RDLabelTypes.DefaultLeft);
 			RDInterface.ApplyLabelSettings (settingsPage, "CellsAppearanceTip", RDLocale.GetText ("CellsAppearanceTip"),
@@ -366,22 +370,22 @@ namespace RD_AAOW
 
 			RDInterface.ApplyButtonSettings (aboutPage, "ManualsButton",
 				RDLocale.GetDefaultText (RDLDefaultTexts.Control_ReferenceMaterials),
-				aboutFieldBackColor, ReferenceButton_Click, false);
+				aboutFieldBackColor, ReferenceButton_Click);
 
 			Button hlp = RDInterface.ApplyButtonSettings (aboutPage, "HelpButton",
 				RDLocale.GetDefaultText (RDLDefaultTexts.Control_HelpSupport),
-				aboutFieldBackColor, HelpButton_Click, false);
+				aboutFieldBackColor, HelpButton_Click);
 			hlp.IsVisible = !RDGenerics.IsTV;
 
 			Image qrImage = (Image)aboutPage.FindByName ("QRImage");
 			qrImage.IsVisible = RDGenerics.IsTV;
 
-			RDInterface.ApplyLabelSettings (aboutPage, "HelpHeaderLabel",
+			/*RDInterface.ApplyLabelSettings (aboutPage, "HelpHeaderLabel",
 				RDLocale.GetDefaultText (RDLDefaultTexts.Control_AppAbout),
 				RDLabelTypes.HeaderLeft);
 			Label htl = RDInterface.ApplyLabelSettings (aboutPage, "HelpTextLabel",
 				RDGenerics.GetAppHelpText (), RDLabelTypes.SmallLeft);
-			htl.TextType = TextType.Html;
+			htl.TextType = TextType.Html;*/
 
 			FontSizeButton_Clicked (null, null);
 
@@ -1338,9 +1342,16 @@ namespace RD_AAOW
 		// Перенос выигрышей
 		private static async Task<bool> ExchangeScores ()
 			{
+			if (scoresExchangeVariants.Count < 1)
+				{
+				scoresExchangeVariants.Add (RDLocale.GetText ("ScoresExchangeCopy"));
+				scoresExchangeVariants.Add (RDLocale.GetText ("ScoresExchangeLoad"));
+				}
+
 			int res = await RDInterface.ShowList (RDLocale.GetText ("ScoresExchangeMessage"),
 				RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel),
-				[RDLocale.GetText ("ScoresExchangeCopy"), RDLocale.GetText ("ScoresExchangeLoad")]);
+				/*[RDLocale.GetText ("ScoresExchangeCopy"), RDLocale.GetText ("ScoresExchangeLoad")]);*/
+				scoresExchangeVariants);
 
 			switch (res)
 				{

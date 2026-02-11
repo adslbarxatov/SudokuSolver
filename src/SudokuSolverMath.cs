@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 
 #if ANDROID
-using Microsoft.Maui.Controls;
+	using Microsoft.Maui.Controls;
+	using Microsoft.Maui.Graphics;
 #else
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
+	using System.ComponentModel;
+	using System.Drawing;
+	using System.Windows.Forms;
 #endif
 
 namespace RD_AAOW
