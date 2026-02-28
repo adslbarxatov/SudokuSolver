@@ -380,13 +380,6 @@ namespace RD_AAOW
 			Image qrImage = (Image)aboutPage.FindByName ("QRImage");
 			qrImage.IsVisible = RDGenerics.IsTV;
 
-			/*RDInterface.ApplyLabelSettings (aboutPage, "HelpHeaderLabel",
-				RDLocale.GetDefaultText (RDLDefaultTexts.Control_AppAbout),
-				RDLabelTypes.HeaderLeft);
-			Label htl = RDInterface.ApplyLabelSettings (aboutPage, "HelpTextLabel",
-				RDGenerics.GetAppHelpText (), RDLabelTypes.SmallLeft);
-			htl.TextType = TextType.Html;*/
-
 			FontSizeButton_Clicked (null, null);
 
 			#endregion
@@ -1350,7 +1343,6 @@ namespace RD_AAOW
 
 			int res = await RDInterface.ShowList (RDLocale.GetText ("ScoresExchangeMessage"),
 				RDLocale.GetDefaultText (RDLDefaultTexts.Button_Cancel),
-				/*[RDLocale.GetText ("ScoresExchangeCopy"), RDLocale.GetText ("ScoresExchangeLoad")]);*/
 				scoresExchangeVariants);
 
 			switch (res)
