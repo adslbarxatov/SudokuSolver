@@ -26,6 +26,8 @@ namespace RD_AAOW
 		private Color aboutFieldBackColor = Color.FromArgb ("#D0FFD0");
 		private Color settingsMasterBackColor = Color.FromArgb ("#FFFFF0");
 		private Color settingsFieldBackColor = Color.FromArgb ("#FFFFD0");
+		private Color resultsMasterBackColor = Color.FromArgb ("#FFFFF0");
+		/*private Color resultsFieldBackColor = Color.FromArgb ("#FFFFD0");*/
 		private Color stubColor = RDInterface.GetInterfaceColor (RDInterfaceColors.MediumGrey);
 
 		// Контекстные меню
@@ -49,13 +51,13 @@ namespace RD_AAOW
 
 		#region Переменные страниц
 
-		private ContentPage solutionPage, aboutPage, settingsPage;
+		private ContentPage solutionPage, aboutPage, settingsPage, resultsPage;
 
 		private Label aboutFontSizeField, solutionTipLabel;
 
 		private Button languageButton, solutionButton, checkButton, generateButton,
 			clearButton, menuButton, colorSchemeButton, cellsAppearanceButton,
-			highlightButton, freeDigitsTipButton;
+			highlightButton, freeDigitsTipButton, scoreField, achievementField;
 		private List<Button> numberButtons = [];
 		private List<Button> inputButtons = [];
 
@@ -98,6 +100,8 @@ namespace RD_AAOW
 			aboutPage = RDInterface.ApplyPageSettings (new AboutPage (),
 				RDLocale.GetDefaultText (RDLDefaultTexts.Control_AppAbout),
 				aboutMasterBackColor);
+			resultsPage = RDInterface.ApplyPageSettings (new ResultsPage (),
+				RDLocale.GetText ("ResultsPage"), resultsMasterBackColor);
 
 			RDInterface.SetMasterPage (mainPage, solutionPage, stubColor);
 
@@ -363,7 +367,7 @@ namespace RD_AAOW
 
 			#endregion
 
-			#region Страница "О программе"
+			#region Страница «О программе»
 
 			RDInterface.ApplyLabelSettings (aboutPage, "AboutLabel",
 				RDGenerics.AppAboutLabelText, RDLabelTypes.AppAbout);
@@ -381,6 +385,18 @@ namespace RD_AAOW
 			qrImage.IsVisible = RDGenerics.IsTV;
 
 			FontSizeButton_Clicked (null, null);
+
+			#endregion
+
+			#region Страница результатов
+
+			scoreField = RDInterface.ApplyButtonSettings (resultsPage, "ScoreField", " ", resultsMasterBackColor,
+				SendResultToClipboard, RDButtonFlags.BiggerFontSize);
+			scoreField.FontFamily = RDGenerics.SerifFont;
+
+			achievementField = RDInterface.ApplyButtonSettings (resultsPage, "AchievementField", " ", resultsMasterBackColor,
+				SendResultToClipboard, RDButtonFlags.BiggerFontSize);
+			achievementField.FontFamily = RDGenerics.SerifFont;
 
 			#endregion
 
@@ -619,7 +635,7 @@ namespace RD_AAOW
 
 				// Статистика игры
 				case 31:
-					await ShowScore (false);
+					/*await*/ ShowScore (false);
 					break;
 
 				// Перенос выигрышей
@@ -887,7 +903,8 @@ namespace RD_AAOW
 
 					// Отображение сведений о достижениях (обязательно до обновления очков)
 					string achiLine = "";
-					for (uint i = 0; i < SudokuSolverMath.AchievementsCount; i++)
+					/*for (uint i = 0; i < SudokuSolverMath.AchievementsCount; i++)*/
+					for (StoredFields i = StoredFields.Achi_OneOrLess_Easy; i <= StoredFields.Achi_NoMistakes_Hard; i++)
 						{
 						if (!win)
 							break;
@@ -895,11 +912,13 @@ namespace RD_AAOW
 						if (!SudokuSolverMath.CheckAchievement (i))
 							continue;
 
-						string achiText = RDLocale.GetText ("Achi" + i.ToString ());
+						/*string achiText = RDLocale.GetText ("Achi" + i.ToString ());*/
+						string achiText = RDLocale.GetText ("Achi" + ((uint)i).ToString ());
 						int left = achiText.IndexOf (RDLocale.RN);
 						achiLine += " " + achiText.Substring (0, left);
 
-						uint tip = 1u << (8 + (int)i);
+						/*uint tip = 1u << (8 + (int)i);*/
+						uint tip = 1u << (int)i;
 						if ((RDGenerics.TipsState & tip) == 0)
 							{
 							await RDInterface.ShowMessage (achiText, RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK));
@@ -919,7 +938,7 @@ namespace RD_AAOW
 
 					// Отобразить решение в случае выигрыша (без return; режим игры отключается далее)
 					if (win)
-						await ShowScore (true);
+						/*await*/ ShowScore (true);
 
 					// Иначе продолжить игру
 					else
@@ -959,9 +978,9 @@ namespace RD_AAOW
 			}
 
 		// Метод отображает игровую статистику
-		private static async Task<bool> ShowScore (bool AsWin)
+		private void ShowScore (bool AsWin)
 			{
-			// Сборка
+			/*// Сборка
 			string text = "";
 
 			if (AsWin)
@@ -996,7 +1015,47 @@ namespace RD_AAOW
 
 			await Share.RequestAsync (RDGenerics.DefaultAssemblyVisibleName + RDLocale.RNRN +
 				text, RDGenerics.DefaultAssemblyVisibleName);
-			return true;
+			return true;*/
+
+			resultsPage.Title = AsWin ? RDLocale.GetText ("SolvedText") : RDLocale.GetText ("StatsText");
+
+			// Результаты
+			string[] stats = SudokuSolverMath.GetStatsValues ();
+
+			string fmt = RDLocale.GetText ("StatsText00");
+			scoreField.Text = string.Format (fmt, stats[0]) + RDLocale.RNRN;
+
+			fmt = RDLocale.GetText ("StatsText01");
+			scoreField.Text += (string.Format (fmt, stats[1], stats[2], stats[3]) + RDLocale.RNRN);
+
+			fmt = RDLocale.GetText ("StatsText04");
+			scoreField.Text += (string.Format (fmt, stats[4], stats[5], stats[6]) + RDLocale.RNRN);
+
+			fmt = RDLocale.GetText ("StatsText07");
+			scoreField.Text += (string.Format (fmt, stats[7], stats[8], stats[9]) + RDLocale.RNRN);
+
+			fmt = RDLocale.GetText ("StatsText10");
+			scoreField.Text += string.Format (fmt, stats[10]);
+
+			fmt = RDLocale.GetText ("StatsText11");
+			achievementField.Text = string.Format (fmt, stats[11], stats[12], stats[13]) + RDLocale.RN;
+
+			fmt = RDLocale.GetText ("StatsText14");
+			achievementField.Text += (string.Format (fmt, stats[14], stats[15], stats[16]) + RDLocale.RN);
+
+			fmt = RDLocale.GetText ("StatsText17");
+			achievementField.Text += string.Format (fmt, stats[17], stats[18]);
+
+			achievementField.Text = achievementField.Text.Replace (RDLocale.RN, RDLocale.RNRN);
+
+			// Запуск
+			RDInterface.SetCurrentPage (resultsPage, resultsMasterBackColor);
+			}
+
+		private async void SendResultToClipboard (object sender, EventArgs e)
+			{
+			RDGenerics.SendToClipboard (RDGenerics.DefaultAssemblyVisibleName + RDLocale.RNRN +
+				resultsPage.Title + RDLocale.RNRN + ((Button)sender).Text, true);
 			}
 
 		// Статус программы
@@ -1333,7 +1392,7 @@ namespace RD_AAOW
 			}
 
 		// Перенос выигрышей
-		private static async Task<bool> ExchangeScores ()
+		private async Task<bool> ExchangeScores ()
 			{
 			if (scoresExchangeVariants.Count < 1)
 				{
@@ -1353,7 +1412,7 @@ namespace RD_AAOW
 
 				case 1:
 					if (SudokuSolverMath.SetPortableScoresLine (await RDGenerics.GetFromClipboard ()))
-						await ShowScore (false);
+						/*await*/ ShowScore (false);
 					else
 						RDInterface.ShowBalloon (RDLocale.GetText ("ScoresExchangeError"), true);
 					break;

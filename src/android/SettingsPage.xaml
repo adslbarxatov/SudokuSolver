@@ -16,7 +16,7 @@
 			<Label x:Name="GameModeTip" />
 
 			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
-					WidthRequest="100" Color="#505050" Margin="12" />
+				WidthRequest="100" Color="#505050" Margin="12" />
 
 			<StackLayout Orientation="Horizontal">
 				<Switch x:Name="ReplaceBalloonsSwitch" VerticalOptions="Center" />
@@ -25,7 +25,7 @@
 			<Label x:Name="ReplaceBalloonsTip" />
 
 			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
-					WidthRequest="100" Color="#505050" Margin="12" />
+				WidthRequest="100" Color="#505050" Margin="12" />
 
 			<StackLayout Orientation="Horizontal">
 				<Label x:Name="ColorSchemeLabel" VerticalOptions="Center" />
@@ -34,7 +34,7 @@
 			<Label x:Name="ColorSchemeTip" />
 
 			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
-					WidthRequest="100" Color="#505050" Margin="12" />
+				WidthRequest="100" Color="#505050" Margin="12" />
 
 			<StackLayout Orientation="Horizontal">
 				<Label x:Name="CellsAppearanceLabel" VerticalOptions="Center" />
@@ -43,14 +43,14 @@
 			<Label x:Name="CellsAppearanceTip" />
 
 			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
-					WidthRequest="100" Color="#505050" Margin="12" />
+				WidthRequest="100" Color="#505050" Margin="12" />
 
 			<Label x:Name="HighlightAffectedLabel" HorizontalOptions="Start" />
 			<Button x:Name="HighlightAffectedButton" HorizontalOptions="Center" />
 			<Label x:Name="HighlightAffectedTip" />
 
 			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
-					WidthRequest="100" Color="#505050" Margin="12" />
+				WidthRequest="100" Color="#505050" Margin="12" />
 
 			<StackLayout Orientation="Horizontal">
 				<Switch x:Name="ShowFreeDigitsSwitch" VerticalOptions="Center" />
@@ -60,13 +60,13 @@
 
 			<Label />
 			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
-					WidthRequest="200" Color="#505050" Margin="12" />
+				WidthRequest="200" Color="#505050" Margin="12" />
 			<Label />
 
 			<Label x:Name="RestartTipLabel" />
 
 			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
-					WidthRequest="100" Color="#505050" Margin="12" />
+				WidthRequest="100" Color="#505050" Margin="12" />
 
 			<StackLayout Orientation="Horizontal">
 				<Switch x:Name="KeepScreenOnSwitch" VerticalOptions="Center" />
@@ -75,7 +75,7 @@
 			<Label x:Name="KeepScreenOnTip" />
 
 			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
-					WidthRequest="100" Color="#505050" Margin="12" />
+				WidthRequest="100" Color="#505050" Margin="12" />
 
 			<StackLayout Orientation="Horizontal">
 				<Label x:Name="LanguageLabel" VerticalOptions="Center" />
@@ -84,7 +84,7 @@
 			<Label x:Name="LanguageTip" />
 
 			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
-					WidthRequest="100" Color="#505050" Margin="12" />
+				WidthRequest="100" Color="#505050" Margin="12" />
 
 			<StackLayout Orientation="Horizontal">
 				<Label x:Name="FontSizeLabel" VerticalOptions="Center" />

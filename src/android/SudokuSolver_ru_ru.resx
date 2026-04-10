@@ -210,19 +210,7 @@
     <value>Статистика игры</value>
   </data>
   <data name="StatsText" xml:space="preserve">
-    <value>Результаты игрового режима:
-
-Очков (всего):
-{0:S}
-
-Победы:
-{1:S}
-
-Лучшее время решения:
-{2:S}
-
-Длиннейшая цепочка без проверок:
-{3:S}</value>
+    <value>Результаты игры</value>
   </data>
   <data name="WelcomeTip" xml:space="preserve">
     <value>Добро пожаловать в Sudoku solver – инструмент решения судоку!
@@ -272,24 +260,20 @@
   <data name="HighlightAffectedTip" xml:space="preserve">
     <value>Опция позволяет подсвечивать ячейки, затронутые выделенной (в строке, столбце и квадрате)</value>
   </data>
-  <data name="Achi0" xml:space="preserve">
-    <value>3️⃣
-Достижение «угадать с трёх раз»
+  <data name="Achi20" xml:space="preserve">
+    <value>😀
+Достижение «без ошибок / среднее»
 
-Выдаётся каждый раз, когда:
-- не более двух проверок (включая последнюю) сделано в лёгкой игре
-- не более трёх проверок сделано в средней игре
-- не более четырёх проверок сделано в сложной игре</value>
+Выдаётся каждый раз, когда все проверки оказываются успешными в средней игре</value>
   </data>
-  <data name="Achi1" xml:space="preserve">
-    <value>👍
-Достижение «без ошибок»
+  <data name="Achi21" xml:space="preserve">
+    <value>😍
+Достижение «без ошибок / сложное»
 
-Выдаётся каждый раз, когда все проверки оказываются успешными</value>
+Выдаётся каждый раз, когда все проверки оказываются успешными в сложной игре</value>
   </data>
-  <data name="StatsTextAchi" xml:space="preserve">
-    <value>Достижения:
-3️⃣ {0:S}		👍 {1:S}</value>
+  <data name="StatsText00" xml:space="preserve">
+    <value>Общий выигрыш: {0:S}</value>
   </data>
   <data name="HelpQRTip" xml:space="preserve">
     <value>Для доступа к помощи, поддержке и справочным материалам воспользуйтесь QR-кодом, представленным ниже.
@@ -345,5 +329,67 @@
   </data>
   <data name="ShowFreeDigitsTip" xml:space="preserve">
     <value>Опция включает отображение цифр, доступных для подстановки в текущую выбранную ячейку</value>
+  </data>
+  <data name="Achi19" xml:space="preserve">
+    <value>🙂
+Достижение «без ошибок / лёгкое»
+
+Выдаётся каждый раз, когда все проверки оказываются успешными в лёгкой игре</value>
+  </data>
+  <data name="Achi18" xml:space="preserve">
+    <value>🕔
+Достижение «пять или менее»
+
+Выдаётся каждый раз, когда не более пяти проверок сделано в сложной игре</value>
+  </data>
+  <data name="Achi17" xml:space="preserve">
+    <value>🕒
+Достижение «три или менее»
+
+Выдаётся каждый раз, когда не более трёх проверок сделано в средней игре</value>
+  </data>
+  <data name="Achi16" xml:space="preserve">
+    <value>🕐
+Достижение «один или менее»
+
+Выдаётся каждый раз, когда не более одной проверки сделано в лёгкой игре</value>
+  </data>
+  <data name="StatsText01" xml:space="preserve">
+    <value>Завершённые игры:
+простые – {0:S}
+средние – {1:S}
+сложные – {2:S}</value>
+  </data>
+  <data name="StatsText04" xml:space="preserve">
+    <value>Лучшее время:
+простые – {0:S}
+средние – {1:S}
+сложные – {2:S}</value>
+  </data>
+  <data name="StatsText07" xml:space="preserve">
+    <value>Длиннейшая цепочка без проверок:
+простые – {0:S}
+средние – {1:S}
+сложные – {2:S}</value>
+  </data>
+  <data name="StatsText10" xml:space="preserve">
+    <value>Доля правильных предположений: {0:S}</value>
+  </data>
+  <data name="StatsText11" xml:space="preserve">
+    <value>Достижения «одна или менее»: {0:S}
+Достижения «три или менее»: {1:S}
+Достижения «пять или менее»: {2:S}</value>
+  </data>
+  <data name="StatsText14" xml:space="preserve">
+    <value>Достижения «без ошибок / простая»: {0:S}
+Достижения «без ошибок / средняя»: {1:S}
+Достижения «без ошибок / сложная»: {2:S}</value>
+  </data>
+  <data name="StatsText17" xml:space="preserve">
+    <value>Старые достижения «три или менее»: {0:S}
+Старые достижения «без ошибок»: {1:S}</value>
+  </data>
+  <data name="ResultsPage" xml:space="preserve">
+    <value>Результаты игры</value>
   </data>
 </root>

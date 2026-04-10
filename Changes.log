@@ -1,5 +1,16 @@
 Sudoku solver: changes log
 
+ToDo:
+- split the achievements tip
+- move achievements descriptions to the code?
+- make the results window facultative for displaying
+
+Version 5.6:
+• Upgraded the achievements set: all of them are now difficulty-dependent;
+• Removed support for old settings storages;
+• New results interface has been implemented;
+• .NET support packages have been updated
+
 Version 5.5.4:
 • Upgraded the update checking method;
 • Package format has been updated;

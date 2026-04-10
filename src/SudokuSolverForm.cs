@@ -521,7 +521,8 @@ namespace RD_AAOW
 
 					// Отображение сведений о достижениях (обязательно до обновления очков)
 					string achiLine = "";
-					for (uint i = 0; i < SudokuSolverMath.AchievementsCount; i++)
+					/*for (uint i = 0; i < SudokuSolverMath.AchievementsCount; i++)*/
+					for (StoredFields i = StoredFields.Achi_OneOrLess_Easy; i <= StoredFields.Achi_NoMistakes_Hard; i++)
 						{
 						if (!win)
 							break;
@@ -529,11 +530,12 @@ namespace RD_AAOW
 						if (!SudokuSolverMath.CheckAchievement (i))
 							continue;
 
-						string achiText = RDLocale.GetText ("Achi" + i.ToString ());
+						string achiText = RDLocale.GetText ("Achi" + ((uint)i).ToString ());
 						int left = achiText.IndexOf (RDLocale.RN);
 						achiLine += (" " + achiText.Substring (0, left));
 
-						uint tip = 1u << (8 + (int)i);
+						/*uint tip = 1u << (8 + (int)i);*/
+						uint tip = 1u << (int)i;
 						if ((RDGenerics.TipsState & tip) == 0)
 							{
 							RDInterface.MessageBox (RDMessageFlags.Success | RDMessageFlags.CenterText |
@@ -681,12 +683,12 @@ namespace RD_AAOW
 		// Метод отображает игровую статистику
 		private void MStats_Click (object sender, EventArgs e)
 			{
-			string text = "";
+			/*string text = "";
 
 			if (sender == null)
 				text += (RDLocale.GetText ("SolvedText") + RDLocale.RNRN);
 
-			string[] stats = SudokuSolverMath.StatsValues;
+			string[] stats = SudokuSolverMath.GetStatsValues ();
 			string spl = "   -   ";
 			text += string.Format (RDLocale.GetText ("StatsText"), stats[0],
 				stats[1] + spl + stats[2] + spl + stats[3],
@@ -696,7 +698,8 @@ namespace RD_AAOW
 			text += string.Format (RDLocale.GetText ("StatsTextAchi"),
 				stats[10], stats[11]);
 
-			RDInterface.MessageBox (RDMessageFlags.Success | RDMessageFlags.CenterText | RDMessageFlags.NoSound, text);
+			RDInterface.MessageBox (RDMessageFlags.Success | RDMessageFlags.CenterText | RDMessageFlags.NoSound, text);*/
+			_ = new SudokuSolverResults (sender == null);
 			}
 
 		// Запуск новой игры из интерфейсной кнопки

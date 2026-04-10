@@ -326,6 +326,129 @@ namespace RD_AAOW
 		}
 
 	/// <summary>
+	/// Доступные типы счётчиков игры
+	/// </summary>
+	public enum StoredFields
+		{
+		/// <summary>
+		/// Общий счётчик очков
+		/// </summary>
+		TotalScore = 0,
+
+		/// <summary>
+		/// Число выигрышей на простой сложности
+		/// </summary>
+		WinsEasy = 1 + MatrixDifficulty.Easy,
+
+		/// <summary>
+		/// Число выигрышей на средней сложности
+		/// </summary>
+		WinsMedium = 1 + MatrixDifficulty.Medium,
+
+		/// <summary>
+		/// Число выигрышей на высокой сложности
+		/// </summary>
+		WinsHard = 1 + MatrixDifficulty.Hard,
+
+		/// <summary>
+		/// Незанятое поле, ранее использовавшееся для хранения неразделённого счётчика
+		/// ходов, выполненных подряд без проверок
+		/// </summary>
+		_Unused1_,
+
+		/// <summary>
+		/// Незанятое поле, ранее использовавшееся для хранения неразделённого счётчика
+		/// минимального времени решения задачи
+		/// </summary>
+		_Unused2_,
+
+		/// <summary>
+		/// Максимальное число ходов, выполненных подряд без проверок, на простой сложности
+		/// </summary>
+		ChainEasy = 6 + MatrixDifficulty.Easy,
+
+		/// <summary>
+		/// Максимальное число ходов, выполненных подряд без проверок, на средней сложности
+		/// </summary>
+		ChainMedium = 6 + MatrixDifficulty.Medium,
+
+		/// <summary>
+		/// Максимальное число ходов, выполненных подряд без проверок, на высокой сложности
+		/// </summary>
+		ChainHard = 6 + MatrixDifficulty.Hard,
+
+		/// <summary>
+		/// Минимальное время игры на простой сложности
+		/// </summary>
+		TimeEasy = 9 + MatrixDifficulty.Easy,
+
+		/// <summary>
+		/// Минимальное время игры на средней сложности
+		/// </summary>
+		TimeMedium = 9 + MatrixDifficulty.Medium,
+
+		/// <summary>
+		/// Минимальное время игры на высокой сложности
+		/// </summary>
+		TimeHard = 9 + MatrixDifficulty.Hard,
+
+		/// <summary>
+		/// Поле, ранее использовавшееся для хранения неразделённых достижений «не более трёх»
+		/// </summary>
+		OldAchi_ThreeOrLess = 12,
+
+		/// <summary>
+		/// Поле, ранее использовавшееся для хранения неразделённых достижений «без ошибок»
+		/// </summary>
+		OldAchi_NoMistakes = 13,
+
+		/// <summary>
+		/// Общее число проверок
+		/// </summary>
+		TotalChecks = 14,
+
+		/// <summary>
+		/// Общее число проверок с положительным результатом
+		/// </summary>
+		CorrectChecks = 15,
+
+		/// <summary>
+		/// Достижение «одна проверка или менее» на простой сложности
+		/// </summary>
+		Achi_OneOrLess_Easy = 16 + MatrixDifficulty.Easy,
+
+		/// <summary>
+		/// Достижение «три проверки или менее» на средней сложности
+		/// </summary>
+		Achi_ThreeOrLess_Medium = 16 + MatrixDifficulty.Medium,
+
+		/// <summary>
+		/// Достижение «пять проверок или менее» на высокой сложности
+		/// </summary>
+		Achi_FiveOrLess_Hard = 16 + MatrixDifficulty.Hard,
+
+		/// <summary>
+		/// Достижение «без ошибок» на простой сложности
+		/// </summary>
+		Achi_NoMistakes_Easy = 19 + MatrixDifficulty.Easy,
+
+		/// <summary>
+		/// Достижение «без ошибок» на средней сложности
+		/// </summary>
+		Achi_NoMistakes_Medium = 19 + MatrixDifficulty.Medium,
+
+		/// <summary>
+		/// Достижение «без ошибок» на высокой сложности
+		/// </summary>
+		Achi_NoMistakes_Hard = 19 + MatrixDifficulty.Hard,
+
+		/// <summary>
+		/// Размер списка полей
+		/// </summary>
+		_Size_
+		}
+
+	/// <summary>
 	/// Класс описывает основной функционал поиска решения
 	/// </summary>
 	public static class SudokuSolverMath
@@ -370,7 +493,7 @@ namespace RD_AAOW
 		// если активен режим сброса слишком затянувшихся вычислений
 		private const uint dropSolutionLimit = 5;
 
-		// Смещения полей хранения выигрышей
+		/*// Смещения полей хранения выигрышей
 		private const byte gameScore_TotalScore = 0;
 		private const byte gameScore_WinsBase = 1;
 		private const byte gameScore_ChainBase = 6;
@@ -378,10 +501,15 @@ namespace RD_AAOW
 		private const byte gameScore_AchiBase = 12;
 
 		// Длина массива храрения выигрышей
-		private const int gameScoreSize = 14;
+		private const int gameScoreSize = 14;*/
 
 		// Ограничение поля Лучшее время (не более недели)
 		private const uint gameScore_TimeLimit = 60 * 60 * 24 * 7;
+
+		/*/// <summary>
+		/// Возвращает число доступных достижений
+		/// </summary>
+		public const uint AchievementsCount = 8;*/
 
 		// Имена ключей, используемые для хранения настроек
 #if ANDROID
@@ -691,9 +819,10 @@ namespace RD_AAOW
 				{
 				// Защита верхних вызовов
 				string line = RDGenerics.GetSettings (sudokuFieldUPar, "");
-				if (string.IsNullOrWhiteSpace (line))
+				/*if (string.IsNullOrWhiteSpace (line))
 					line = ParseOldField ();
-				else
+				else*/
+				if (!string.IsNullOrWhiteSpace (line))
 					line = DecodeLine (line);
 
 				if (line.Length == FullSize)
@@ -829,60 +958,7 @@ namespace RD_AAOW
 				}
 			}
 
-		/// <summary>
-		/// Возвращает список из 10 полей статистики в следующем порядке:
-		/// - общий выигрыш игрока
-		/// - число завершённых простых игр
-		/// - число завершённых средних игр
-		/// - число завершённых сложных игр
-		/// - лучшее время прохождения среди простых игр
-		/// - лучшее время прохождения среди средних игр
-		/// - лучшее время прохождения среди сложных игр
-		/// - самая длинная цепочка без проверок среди простых игр
-		/// - самая длинная цепочка без проверок среди средних игр
-		/// - самая длинная цепочка без проверок среди сложных игр
-		/// - число достижений «угадай с трёх раз»
-		/// - число достижений «ни одной ошибки»
-		/// </summary>
-		public static string[] StatsValues
-			{
-			get
-				{
-				List<string> values = [];
-				values.Add (GetGameScore (gameScore_TotalScore).ToString ("#,#0"));
-				for (byte i = gameScore_WinsBase; i < gameScore_WinsBase + 3; i++)
-					values.Add (GetGameScore (i).ToString ());
-
-				for (byte i = gameScore_TimeBase; i < gameScore_TimeBase + 3; i++)
-					{
-					uint bestTime = GetGameScore (i);
-					bool showTime = (bestTime <= gameScore_TimeLimit);
-
-					if (!showTime)
-						{
-						values.Add ("—");
-						continue;
-						}
-
-					string s = (bestTime % 60).ToString ("D2");
-					bestTime /= 60;
-					string m = (bestTime % 60).ToString ("D2");
-					bestTime /= 60;
-					string h = bestTime.ToString ();
-					values.Add (h + ":" + m + ":" + s);
-					}
-
-				for (byte i = gameScore_ChainBase; i < gameScore_ChainBase + 3; i++)
-					values.Add (GetGameScore (i).ToString ());
-
-				for (byte i = gameScore_AchiBase; i < gameScore_AchiBase + AchievementsCount; i++)
-					values.Add (GetGameScore (i).ToString ());
-
-				return values.ToArray ();
-				}
-			}
-
-		/// <summary>
+		/*/// <summary>
 		/// Возвращает число доступных достижений
 		/// </summary>
 		public static uint AchievementsCount
@@ -891,7 +967,7 @@ namespace RD_AAOW
 				{
 				return gameScoreSize - gameScore_AchiBase;
 				}
-			}
+			}*/
 
 		#endregion
 
@@ -1303,61 +1379,98 @@ namespace RD_AAOW
 			}
 
 		// Методы сохранения и загрузки статистики игрового режима
-		private static uint GetGameScore (byte Item)
+		/*private static uint GetGameScore (byte Item)*/
+		private static uint GetGameScore (StoredFields Item)
 			{
 			if (gameScore == null)
 				{
 				// Инициализация
-				gameScore = new uint[gameScoreSize];
-				for (int i = 0; i < gameScoreSize; i++)
+				/*gameScore = new uint[gameScoreSize];
+				for (int i = 0; i < gameScoreSize; i++)*/
+				gameScore = new uint[(int)StoredFields._Size_];
+				for (int i = 0; i < gameScore.Length; i++)
 					{
-					if ((i < gameScore_TimeBase) || (i >= gameScore_AchiBase))
+					/*if ((i < gameScore_TimeBase) || (i >= gameScore_AchiBase))
 						gameScore[i] = 0;   // Чем больше, тем лучше
 					else
-						gameScore[i] = uint.MaxValue;   // Наоборот
+						gameScore[i] = uint.MaxValue;   // Наоборот*/
+					switch ((StoredFields)i)
+						{
+						case StoredFields.TimeEasy:
+						case StoredFields.TimeMedium:
+						case StoredFields.TimeHard:
+							// Чем меньше, тем лучше
+							gameScore[i] = uint.MaxValue;
+							break;
+
+						default:
+							// Наоборот
+							gameScore[i] = 0;
+							break;
+						}
 					}
 
 				// Извлечение
 				string line = RDGenerics.GetSettings (gameScoreUPar, "");
-				if (string.IsNullOrWhiteSpace (line))
+				/*if (string.IsNullOrWhiteSpace (line))
 					line = ParseOldScores ();
-				else
+				else*/
+				if (!string.IsNullOrWhiteSpace (line))
 					line = DecodeLine (line);
 
 				string[] values = line.Split (gameScoreSplitter, StringSplitOptions.RemoveEmptyEntries);
 				if (values.Length < 4)
-					return gameScore[Item];
+					// Строка повреждена или незаполнена – немедленный возврат значения по умолчанию
+					return gameScore[(int)Item];
 
-				// Поля 4 и 5 забракованы ошибочной версией 5.0.0.0, не используются
-				for (int i = 0; i < gameScoreSize; i++)
+				// Поля 4 и 5 (unused1 и unused2) забракованы ошибочной версией 5.0.0.0, не используются
+				/*for (int i = 0; i < gameScoreSize; i++)*/
+				for (int i = 0; i < gameScore.Length; i++)
 					try
 						{
 						gameScore[i] = uint.Parse (values[i]);
 						}
 					catch
 						{
-						if ((i < gameScore_TimeBase) || (i >= gameScore_AchiBase))
+						/*if ((i < gameScore_TimeBase) || (i >= gameScore_AchiBase))
 							gameScore[i] = 0;   // Чем больше, тем лучше
 						else
-							gameScore[i] = uint.MaxValue;   // Наоборот
+							gameScore[i] = uint.MaxValue;   // Наоборот*/
+						switch ((StoredFields)i)
+							{
+							case StoredFields.TimeEasy:
+							case StoredFields.TimeMedium:
+							case StoredFields.TimeHard:
+								// Чем меньше, тем лучше
+								gameScore[i] = uint.MaxValue;
+								break;
+
+							default:
+								// Наоборот
+								gameScore[i] = 0;
+								break;
+							}
 						}
 
 				// Успешно
 				}
 
-			return gameScore[Item];
+			return gameScore[(int)Item];
 			}
 
-		private static void SetGameScore (byte Item, uint Value)
+		/*private static void SetGameScore (byte Item, uint Value)*/
+		private static void SetGameScore (StoredFields Item, uint Value)
 			{
-			gameScore[Item] = Value;
+			gameScore[(int)Item] = Value;
 
 			string line = "";
 			string sp = gameScoreSplitter[0].ToString ();
 
-			for (int i = 0; i < gameScoreSize - 1; i++)
+			/*for (int i = 0; i < gameScoreSize - 1; i++)*/
+			for (int i = 0; i < gameScore.Length - 1; i++)
 				line += (gameScore[i].ToString () + sp);
-			line += gameScore[gameScoreSize - 1].ToString ();
+			/*line += gameScore[gameScoreSize - 1].ToString ();*/
+			line += gameScore[gameScore.Length - 1].ToString ();
 
 			line = EncodeLine (line);
 			RDGenerics.SetSettings (gameScoreUPar, line);
@@ -1369,36 +1482,50 @@ namespace RD_AAOW
 			// Контроль
 			if (GameMode == MatrixDifficulty.None)
 				return 0;
+
+			// Инициализация
 			byte baseOffset = (byte)GameMode;
 			uint multiplier = (uint)(baseOffset + 1);
-			byte item;
+			/*byte item;*/
 			uint v;
+			StoredFields item;
 
 			switch (ScoreType)
 				{
 				// Обычный выигрыш
 				case ScoreTypes.RegularWinning:
 				default:
-					item = (byte)(gameScore_ChainBase + baseOffset);
+					/*item = (byte)(gameScore_ChainBase + baseOffset);*/
+					item = (StoredFields)((byte)StoredFields.ChainEasy + baseOffset);
 					v = GetGameScore (item);
 					if (Value > v)
 						SetGameScore (item, Value);
+
+					v = GetGameScore (StoredFields.TotalChecks);
+					SetGameScore (StoredFields.TotalChecks, v + 1);
+					v = GetGameScore (StoredFields.CorrectChecks);
+					SetGameScore (StoredFields.CorrectChecks, v + 1);
 
 					return multiplier * Value * Value;
 
 				// Штраф
 				case ScoreTypes.Penalty:
+					v = GetGameScore (StoredFields.TotalChecks);
+					SetGameScore (StoredFields.TotalChecks, v + 1);
+
 					return 10 * (4 - multiplier);
 
 				// Победа
 				case ScoreTypes.GameCompletion:
 					// Количество выигранных игр
-					item = (byte)(gameScore_WinsBase + baseOffset);
+					/*item = (byte)(gameScore_WinsBase + baseOffset);*/
+					item = (StoredFields)((byte)StoredFields.WinsEasy + baseOffset);
 					v = GetGameScore (item);
 					SetGameScore (item, v + 1);
 
 					// Лучшее время
-					item = (byte)(gameScore_TimeBase + baseOffset);
+					/*item = (byte)(gameScore_TimeBase + baseOffset);*/
+					item = (StoredFields)((byte)StoredFields.TimeEasy + baseOffset);
 					v = GetGameScore (item);
 
 					double seconds = (DateTime.Now - GameStartDate).TotalSeconds;
@@ -1406,13 +1533,16 @@ namespace RD_AAOW
 						SetGameScore (item, (uint)seconds);
 
 					// Проверка достижений
-					for (uint i = 0; i < AchievementsCount; i++)
+					/*for (uint i = 0; i < AchievementsCount; i++)*/
+					for (StoredFields i = StoredFields.Achi_OneOrLess_Easy; i <= StoredFields.Achi_NoMistakes_Hard; i++)
 						{
 						if (CheckAchievement (i))
 							{
-							item = (byte)(gameScore_AchiBase + i);
+							/*item = (byte)(gameScore_AchiBase + i);
 							v = GetGameScore (item);
-							SetGameScore (item, v + 1);
+							SetGameScore (item, v + 1);*/
+							v = GetGameScore (i);
+							SetGameScore (i, v + 1);
 							}
 						}
 
@@ -1428,7 +1558,8 @@ namespace RD_AAOW
 		public static void UpdateGameScore (bool Penalty, uint Value)
 			{
 			// Загрузка значения
-			uint v = GetGameScore (gameScore_TotalScore);
+			/*uint v = GetGameScore (gameScore_TotalScore);*/
+			uint v = GetGameScore (StoredFields.TotalScore);
 
 			// Обновление
 			if (Penalty)
@@ -1448,7 +1579,8 @@ namespace RD_AAOW
 				}
 
 			// Запись значения
-			SetGameScore (gameScore_TotalScore, v);
+			/*SetGameScore (gameScore_TotalScore, v);*/
+			SetGameScore (StoredFields.TotalScore, v);
 			}
 
 		/// <summary>
@@ -1456,17 +1588,34 @@ namespace RD_AAOW
 		/// </summary>
 		/// <param name="AchiNumber">Номер достижения</param>
 		/// <returns>Возвращает false, если достижение не выполнено, или номер указан некорректно</returns>
-		public static bool CheckAchievement (uint AchiNumber)
+		public static bool CheckAchievement (StoredFields AchiNumber)
 			{
 			switch (AchiNumber)
 				{
-				// Угадай с трёх раз
-				case 0:
-					return (successfulChecks + failedChecks <= (uint)difficulty + 1);
+				// Один / три / пять или менее
+				case StoredFields.Achi_OneOrLess_Easy:
+					return (difficulty == MatrixDifficulty.Easy) && (successfulChecks + failedChecks <= 1);
+
+				case StoredFields.Achi_ThreeOrLess_Medium:
+					return (difficulty == MatrixDifficulty.Medium) && (successfulChecks + failedChecks <= 3);
+
+				case StoredFields.Achi_FiveOrLess_Hard:
+					return (difficulty == MatrixDifficulty.Hard) && (successfulChecks + failedChecks <= 5);
 
 				// Без ошибок
-				case 1:
-					return (failedChecks == 0);
+				case StoredFields.Achi_NoMistakes_Easy:
+					return (difficulty == MatrixDifficulty.Easy) && (failedChecks == 0);
+
+				case StoredFields.Achi_NoMistakes_Medium:
+					return (difficulty == MatrixDifficulty.Medium) && (failedChecks == 0);
+
+				case StoredFields.Achi_NoMistakes_Hard:
+					return (difficulty == MatrixDifficulty.Hard) && (failedChecks == 0);
+
+				// Старые достижения (не обновляются – только отображение)
+				case StoredFields.OldAchi_NoMistakes:
+				case StoredFields.OldAchi_ThreeOrLess:
+					return false;
 				}
 
 			return false;
@@ -1995,7 +2144,7 @@ namespace RD_AAOW
 
 		// Переходные методы
 
-		private static string ParseOldField ()
+		/*private static string ParseOldField ()
 			{
 			string line = RDGenerics.GetSettings ("SudokuField", "");
 
@@ -2021,9 +2170,9 @@ namespace RD_AAOW
 				}
 
 			return "";
-			}
+			}*/
 
-		private static string ParseOldScores ()
+		/*private static string ParseOldScores ()
 			{
 			string line = RDGenerics.GetSettings ("GameScore", "");
 #if !ANDROID
@@ -2043,8 +2192,9 @@ namespace RD_AAOW
 			RDGenerics.SetSettings (gameScoreUPar, lineU);
 
 			return line;
-			}
+			}*/
 
+		// Загрузка и сохранение параметров в защищённом виде
 		private static string EncodeLine (string SourceLine)
 			{
 			byte[] data = RDGenerics.GetEncoding (RDEncodings.Unicode16).GetBytes ("SU535" + SourceLine);
@@ -2133,6 +2283,90 @@ namespace RD_AAOW
 						res = res.Substring (0, res.Length - 1);
 					return res;
 				}
+			}
+
+		/// <summary>
+		/// Возвращает список полей статистики в следующем порядке:
+		///  0. Общий выигрыш игрока;
+		///  1. Число завершённых простых игр;
+		///  2. Число завершённых средних игр;
+		///  3. Число завершённых сложных игр;
+		///  4. Лучшее время прохождения среди простых игр;
+		///  5. Лучшее время прохождения среди средних игр;
+		///  6. Лучшее время прохождения среди сложных игр;
+		///  7. Самая длинная цепочка без проверок среди простых игр;
+		///  8. Самая длинная цепочка без проверок среди средних игр;
+		///  9. Самая длинная цепочка без проверок среди сложных игр;
+		/// 10. Процент успешных проверок;
+		/// 11. Число достижений «одна или менее» среди простых игр;
+		/// 12. Число достижений «три или менее» среди средних игр;
+		/// 13. Число достижений «пять или менее» среди сложных игр;
+		/// 14. Число достижений «без ошибок» среди простых игр;
+		/// 15. Число достижений «без ошибок» среди средних игр;
+		/// 16. Число достижений «без ошибок» среди сложных игр;
+		/// 17. Число старых достижений «три или менее»;
+		/// 18. Число старых достижений «без ошибок»
+		/// </summary>
+		public static string[] GetStatsValues ()
+			{
+			// 0
+			List<string> values = [];
+			/*values.Add (GetGameScore (gameScore_TotalScore).ToString ("#,#0"));*/
+			values.Add (GetGameScore (StoredFields.TotalScore).ToString ("#,#0"));
+
+			// 1 – 3
+			/*for (byte i = gameScore_WinsBase; i < gameScore_WinsBase + 3; i++)
+				values.Add (GetGameScore (i).ToString ());*/
+			for (StoredFields i = StoredFields.WinsEasy; i <= StoredFields.WinsHard; i++)
+				values.Add (GetGameScore (i).ToString ());
+
+			// 4 – 6
+			/*for (byte i = gameScore_TimeBase; i < gameScore_TimeBase + 3; i++)*/
+			for (StoredFields i = StoredFields.TimeEasy; i <= StoredFields.TimeHard; i++)
+				{
+				uint bestTime = GetGameScore (i);
+				bool showTime = (bestTime <= gameScore_TimeLimit);
+
+				if (!showTime)
+					{
+					values.Add ("—");
+					continue;
+					}
+
+				string s = (bestTime % 60).ToString ("D2");
+				bestTime /= 60;
+				string m = (bestTime % 60).ToString ("D2");
+				bestTime /= 60;
+				string h = bestTime.ToString ();
+				values.Add (h + ":" + m + ":" + s);
+				}
+
+			// 7 – 9
+			/*for (byte i = gameScore_ChainBase; i < gameScore_ChainBase + 3; i++)*/
+			for (StoredFields i = StoredFields.ChainEasy; i <= StoredFields.ChainHard; i++)
+				values.Add (GetGameScore (i).ToString ());
+
+			// 10
+			float accuracy = 100.0f * (float)GetGameScore (StoredFields.CorrectChecks);
+			accuracy /= (float)GetGameScore (StoredFields.TotalChecks);
+			values.Add (float.IsNaN (accuracy) ? "—" : accuracy.ToString ("#0.0") + "%");
+
+			/*for (byte i = gameScore_AchiBase; i < gameScore_AchiBase + AchievementsCount; i++)
+				values.Add (GetGameScore (i).ToString ());*/
+
+			// 11 – 13
+			for (StoredFields i = StoredFields.Achi_OneOrLess_Easy; i <= StoredFields.Achi_FiveOrLess_Hard; i++)
+				values.Add (GetGameScore (i).ToString ());
+
+			// 14 – 16
+			for (StoredFields i = StoredFields.Achi_NoMistakes_Easy; i <= StoredFields.Achi_NoMistakes_Hard; i++)
+				values.Add (GetGameScore (i).ToString ());
+
+			// 17, 18
+			values.Add (GetGameScore (StoredFields.OldAchi_ThreeOrLess).ToString ());
+			values.Add (GetGameScore (StoredFields.OldAchi_NoMistakes).ToString ());
+
+			return values.ToArray ();
 			}
 		}
 	}
