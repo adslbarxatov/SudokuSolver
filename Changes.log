@@ -1,9 +1,9 @@
 Sudoku solver: changes log
 
-ToDo:
-- split the achievements tip
-- move achievements descriptions to the code?
-- make the results window facultative for displaying
+Version 5.6.1:
+• The presentation of game results has been simplified;
+• Added tip for free digits button;
+• Added the switch that allows you to skip the stats window when winning
 
 Version 5.6:
 • Upgraded the achievements set: all of them are now difficulty-dependent;

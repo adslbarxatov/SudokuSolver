@@ -16,7 +16,7 @@ namespace RD_AAOW
 		private const int buttonSize = 30;
 		private List<Button> buttons = [];
 		private Button newGameButton, checkButton, clearButton;
-		private Label freeDigitsTip;
+		private Button freeDigitsTip;
 
 		/// <summary>
 		/// Конструктор. Настраивает главную форму приложения
@@ -60,7 +60,7 @@ namespace RD_AAOW
 			newGameButton = new Button ();
 			checkButton = new Button ();
 			clearButton = new Button ();
-			freeDigitsTip = new Label ();
+			freeDigitsTip = new Button ();
 
 			LocalizeForm ();
 
@@ -74,10 +74,13 @@ namespace RD_AAOW
 			clearButton.Left = 7 * buttonSize + 3;
 
 			freeDigitsTip.AutoSize = false;
-			freeDigitsTip.Top = buttons[buttons.Count - 1].Top + 5 * buttonSize / 4;
+			freeDigitsTip.FlatStyle = FlatStyle.Flat;
+			freeDigitsTip.FlatAppearance.BorderSize = 0;
+			freeDigitsTip.Top = buttons[buttons.Count - 1].Top + 19 * buttonSize / 16;
 			freeDigitsTip.Left = buttons[0].Left;
 			freeDigitsTip.Width = buttons[buttons.Count - 1].Left - buttons[0].Left + buttons[0].Width;
-			freeDigitsTip.Height = buttons[buttons.Count - 1].Height / 2;
+			freeDigitsTip.Height = 2 * buttons[buttons.Count - 1].Height / 3;
+			freeDigitsTip.Click += FreeDigitsTip_Click;
 
 			newGameButton.Top = checkButton.Top = clearButton.Top =
 				buttons[buttons.Count - 1].Top + 2 * buttonSize;
@@ -486,8 +489,10 @@ namespace RD_AAOW
 
 					return false;
 
-				case SolutionResults.SearchAborted: // Не перекрашивать поле
-					return true;    // Не считать нарушением правил
+				// Не перекрашивать поле
+				case SolutionResults.SearchAborted:
+					// Не считать нарушением правил
+					return true;
 				}
 
 			// Игровой режим
@@ -530,7 +535,8 @@ namespace RD_AAOW
 						if (!SudokuSolverMath.CheckAchievement (i))
 							continue;
 
-						string achiText = RDLocale.GetText ("Achi" + ((uint)i).ToString ());
+						/*string achiText = RDLocale.GetText ("Achi" + ((uint)i).ToString ());*/
+						string achiText = SudokuSolverMath.GetAchievementDescription (i);
 						int left = achiText.IndexOf (RDLocale.RN);
 						achiLine += (" " + achiText.Substring (0, left));
 
@@ -557,11 +563,16 @@ namespace RD_AAOW
 
 					// Отобразить решение в случае выигрыша (без return; режим игры отключается далее)
 					if (win)
-						MStats_Click (null, null);
+						{
+						if (SudokuSolverMath.ShowStatsOnWinFlag)
+							MStats_Click (null, null);
+						}
 
 					// Иначе продолжить игру
 					else
+						{
 						return true;
+						}
 					}
 
 				// Не отображать решение вне игрового режима
@@ -806,6 +817,24 @@ namespace RD_AAOW
 							"ScoresExchangeError", 1000);
 					break;
 				}
+			}
+
+		// Отображение подсказки к доступным цифрам
+		private void FreeDigitsTip_Click (object sender, EventArgs e)
+			{
+			if (string.IsNullOrWhiteSpace (freeDigitsTip.Text) ||
+				string.IsNullOrWhiteSpace (SudokuSolverMath.LastFreeDigitsDescription))
+				return;
+
+			RDMessageFlags f = RDMessageFlags.CenterText | RDMessageFlags.NoSound | RDMessageFlags.LockSmallSize;
+			if (freeDigitsTip.Text.StartsWith ('!'))
+				f |= RDMessageFlags.Error;
+			else if (freeDigitsTip.Text.StartsWith ('–'))
+				f |= RDMessageFlags.Success;
+			else
+				f |= RDMessageFlags.Warning;
+
+			RDInterface.MessageBox (f, SudokuSolverMath.LastFreeDigitsDescription, 1500);
 			}
 		}
 	}

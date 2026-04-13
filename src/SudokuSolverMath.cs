@@ -493,16 +493,6 @@ namespace RD_AAOW
 		// если активен режим сброса слишком затянувшихся вычислений
 		private const uint dropSolutionLimit = 5;
 
-		/*// Смещения полей хранения выигрышей
-		private const byte gameScore_TotalScore = 0;
-		private const byte gameScore_WinsBase = 1;
-		private const byte gameScore_ChainBase = 6;
-		private const byte gameScore_TimeBase = 9;
-		private const byte gameScore_AchiBase = 12;
-
-		// Длина массива храрения выигрышей
-		private const int gameScoreSize = 14;*/
-
 		// Ограничение поля Лучшее время (не более недели)
 		private const uint gameScore_TimeLimit = 60 * 60 * 24 * 7;
 
@@ -525,6 +515,7 @@ namespace RD_AAOW
 		private const string gameStartDatePar = "GameStartDate";
 		private const string showAffectedCellsPar = "ShowAffectedCells";
 		private const string showFreeDigitsFlagPar = "ShowFreeDigitsFlag";
+		private const string showStatsOnWinFlagPar = "ShowStatsOnWinFlag";
 
 		#endregion
 
@@ -652,6 +643,64 @@ namespace RD_AAOW
 		private static uint successfulChecks = 100;
 		private static uint failedChecks = 100;
 
+		// Текстовые представления полей для статистики игры
+		private static string[][] statsDescriptions = [
+			["Общий выигрыш: {0:S}", "Total score: {0:S}"],
+
+			["Завершённые игры:\r\n• простые – {0:S}\r\n• средние – {1:S}\r\n• сложные – {2:S}",
+			"Finished games:\r\n• easy – {0:S}\r\n• medium – {1:S}\r\n• hard – {2:S}"],
+
+			["Лучшее время:\r\n• простые – {0:S}\r\n• средние – {1:S}\r\n• сложные – {2:S}",
+			"Best time:\r\n• easy – {0:S}\r\n• medium – {1:S}\r\n• hard – {2:S}"],
+
+			["Длиннейшая цепочка без проверок:\r\n• простые – {0:S}\r\n• средние – {1:S}\r\n• сложные – {2:S}",
+			"Longest chain without checks:\r\n• easy – {0:S}\r\n• medium – {1:S}\r\n• hard – {2:S}"],
+
+			["Правильные предположения: {0:S}", "Successful checks: {0:S}"],
+
+			["Достижения\r\n\r\n• «Одна или менее» – {0:S}\r\n• «Три или менее» – {1:S}\r\n• «Пять или менее» – {2:S}",
+			"Achievements\r\n\r\n• “One of less” – {0:S}\r\n• “Three of less” – {1:S}\r\n• “Five of less” – {2:S}"],
+
+			["• «Без ошибок / простая» – {0:S}\r\n• «Без ошибок / средняя» – {1:S}\r\n• «Без ошибок / сложная» – {2:S}",
+			"• “No mistakes / easy” – {0:S}\r\n• “No mistakes / medium” – {1:S}\r\n• “No mistakes / hard” – {2:S}"],
+
+			["• Старые «три или менее» – {0:S}\r\n• Старые «без ошибок» – {1:S}",
+			"• Old “three of less” – {0:S}\r\n• Old “no mistakes” – {1:S}"]
+			];
+
+		// Текстовые сообщения о достижениях
+		private static string[][] achiDescriptions = [
+			["🕐\r\nДостижение «один или менее»\r\n\r\nВыдаётся каждый раз, когда не более одной проверки сделано в лёгкой игре",
+			"🕐\r\n“One or less” achievement\r\n\r\nAppears every time when one or less checks done on easy game mode"],
+
+			["🕒\r\nДостижение «три или менее»\r\n\r\nВыдаётся каждый раз, когда не более трёх проверок сделано в средней игре",
+			"🕒\r\n“Three or less” achievement\r\n\r\nAppears every time when three or less checks done on medium game mode"],
+
+			["🕔\r\nДостижение «пять или менее»\r\n\r\nВыдаётся каждый раз, когда не более пяти проверок сделано в сложной игре",
+			"🕔\r\n“Five or less” achievement\r\n\r\nAppears every time when five or less checks done on hard game mode"],
+
+			["🙂\r\nДостижение «без ошибок / лёгкое»\r\n\r\nВыдаётся каждый раз, когда все проверки оказываются успешными в лёгкой игре",
+			"🙂\r\n“No mistakes / easy” achievement\r\n\r\nAppears every time when all checks are successful on easy game mode"],
+
+			["😀\r\nДостижение «без ошибок / среднее»\r\n\r\nВыдаётся каждый раз, когда все проверки оказываются успешными в средней игре",
+			"😀\r\n“No mistakes / medium” achievement\r\n\r\nAppears every time when all checks are successful on medium game mode"],
+
+			["😍\r\nДостижение «без ошибок / сложное»\r\n\r\nВыдаётся каждый раз, когда все проверки оказываются успешными в сложной игре",
+			"😍\r\n“No mistakes / hard” achievement\r\n\r\nAppears every time when all checks are successful on hard game mode"]
+			];
+
+		// Примечания о доступных цифрах
+		private static string[][] freeDigitsDescriptions = [
+			["Ошибка в решении не позволяет заполнить эту ячейку",
+			"A mistake prevents this cell from being filled in"],
+
+			["Для этой ячейки подходит только одна цифра",
+			"Only one digit fits into this cell"],
+
+			["Для этой ячейки подходят: ",
+			"Digits for this cell: "],
+			];
+
 		#endregion
 
 		#region Свойства
@@ -768,6 +817,21 @@ namespace RD_AAOW
 			set
 				{
 				RDGenerics.SetSettings (showFreeDigitsFlagPar, value);
+				}
+			}
+
+		/// <summary>
+		/// Возвращает или задаёт флаг отображения статистики игры в случае выигрыша
+		/// </summary>
+		public static bool ShowStatsOnWinFlag
+			{
+			get
+				{
+				return RDGenerics.GetSettings (showStatsOnWinFlagPar, false);
+				}
+			set
+				{
+				RDGenerics.SetSettings (showStatsOnWinFlagPar, value);
 				}
 			}
 
@@ -958,16 +1022,18 @@ namespace RD_AAOW
 				}
 			}
 
-		/*/// <summary>
-		/// Возвращает число доступных достижений
+		/// <summary>
+		/// Возвращает примечание к последней возвращённой последовательности цифр,
+		/// доступных для указания в выбранной ячейке
 		/// </summary>
-		public static uint AchievementsCount
+		public static string LastFreeDigitsDescription
 			{
 			get
 				{
-				return gameScoreSize - gameScore_AchiBase;
+				return lastFreeDigitsDescription;
 				}
-			}*/
+			}
+		private static string lastFreeDigitsDescription = "";
 
 		#endregion
 
@@ -1621,6 +1687,30 @@ namespace RD_AAOW
 			return false;
 			}
 
+		/// <summary>
+		/// Метод получает описание достижения по его номеру
+		/// </summary>
+		/// <param name="AchiNumber">Номер достижения</param>
+		/// <returns>Возвращает пустую строку, если номер указан некорректно</returns>
+		public static string GetAchievementDescription (StoredFields AchiNumber)
+			{
+			byte lng = (byte)RDLocale.CurrentLanguage;
+			int offset = (int)AchiNumber - (int)StoredFields.Achi_OneOrLess_Easy;
+
+			switch (AchiNumber)
+				{
+				case StoredFields.Achi_OneOrLess_Easy:
+				case StoredFields.Achi_ThreeOrLess_Medium:
+				case StoredFields.Achi_FiveOrLess_Hard:
+				case StoredFields.Achi_NoMistakes_Easy:
+				case StoredFields.Achi_NoMistakes_Medium:
+				case StoredFields.Achi_NoMistakes_Hard:
+					return achiDescriptions[offset][lng];
+				}
+
+			return "";
+			}
+
 		#endregion
 
 		/// <summary>
@@ -2256,11 +2346,14 @@ namespace RD_AAOW
 			{
 			string res = "";
 			int len = 0;
+			string descr = "";
+
 			for (int i = 0; i < cellsApps[cellsAppIndex].Count; i++)
 				{
 				if (!OccupiedDigits.Contains (cellsApps[cellsAppIndex][i]))
 					{
 					res += cellsApps[cellsAppIndex][i];
+					descr += (cellsApps[cellsAppIndex][i] + ", ");
 					len++;
 
 #if ANDROID
@@ -2270,58 +2363,46 @@ namespace RD_AAOW
 					}
 				}
 
+			byte lng = (byte)RDLocale.CurrentLanguage;
 			switch (len)
 				{
 				case 0:
-					return "???";
+					lastFreeDigitsDescription = freeDigitsDescriptions[0][lng];
+					return "!!!";
 
 				case 1:
+					lastFreeDigitsDescription = freeDigitsDescriptions[1][lng];
 					return "–";
 
 				default:
+#if ANDROID
 					if (res.EndsWith ('\n'))
 						res = res.Substring (0, res.Length - 1);
+#endif
+					if (descr.EndsWith (", "))
+						descr = descr.Substring (0, descr.Length - 2);
+					lastFreeDigitsDescription = freeDigitsDescriptions[2][lng] + descr;
+
 					return res;
 				}
 			}
 
 		/// <summary>
-		/// Возвращает список полей статистики в следующем порядке:
-		///  0. Общий выигрыш игрока;
-		///  1. Число завершённых простых игр;
-		///  2. Число завершённых средних игр;
-		///  3. Число завершённых сложных игр;
-		///  4. Лучшее время прохождения среди простых игр;
-		///  5. Лучшее время прохождения среди средних игр;
-		///  6. Лучшее время прохождения среди сложных игр;
-		///  7. Самая длинная цепочка без проверок среди простых игр;
-		///  8. Самая длинная цепочка без проверок среди средних игр;
-		///  9. Самая длинная цепочка без проверок среди сложных игр;
-		/// 10. Процент успешных проверок;
-		/// 11. Число достижений «одна или менее» среди простых игр;
-		/// 12. Число достижений «три или менее» среди средних игр;
-		/// 13. Число достижений «пять или менее» среди сложных игр;
-		/// 14. Число достижений «без ошибок» среди простых игр;
-		/// 15. Число достижений «без ошибок» среди средних игр;
-		/// 16. Число достижений «без ошибок» среди сложных игр;
-		/// 17. Число старых достижений «три или менее»;
-		/// 18. Число старых достижений «без ошибок»
+		/// Возвращает два раздела статистики:
+		///  0. Выигрыши;
+		///  1. Достижения
 		/// </summary>
-		public static string[] GetStatsValues ()
+		public static string[] GetStatsValues2 ()
 			{
 			// 0
 			List<string> values = [];
-			/*values.Add (GetGameScore (gameScore_TotalScore).ToString ("#,#0"));*/
 			values.Add (GetGameScore (StoredFields.TotalScore).ToString ("#,#0"));
 
 			// 1 – 3
-			/*for (byte i = gameScore_WinsBase; i < gameScore_WinsBase + 3; i++)
-				values.Add (GetGameScore (i).ToString ());*/
 			for (StoredFields i = StoredFields.WinsEasy; i <= StoredFields.WinsHard; i++)
 				values.Add (GetGameScore (i).ToString ());
 
 			// 4 – 6
-			/*for (byte i = gameScore_TimeBase; i < gameScore_TimeBase + 3; i++)*/
 			for (StoredFields i = StoredFields.TimeEasy; i <= StoredFields.TimeHard; i++)
 				{
 				uint bestTime = GetGameScore (i);
@@ -2342,7 +2423,6 @@ namespace RD_AAOW
 				}
 
 			// 7 – 9
-			/*for (byte i = gameScore_ChainBase; i < gameScore_ChainBase + 3; i++)*/
 			for (StoredFields i = StoredFields.ChainEasy; i <= StoredFields.ChainHard; i++)
 				values.Add (GetGameScore (i).ToString ());
 
@@ -2350,9 +2430,6 @@ namespace RD_AAOW
 			float accuracy = 100.0f * (float)GetGameScore (StoredFields.CorrectChecks);
 			accuracy /= (float)GetGameScore (StoredFields.TotalChecks);
 			values.Add (float.IsNaN (accuracy) ? "—" : accuracy.ToString ("#0.0") + "%");
-
-			/*for (byte i = gameScore_AchiBase; i < gameScore_AchiBase + AchievementsCount; i++)
-				values.Add (GetGameScore (i).ToString ());*/
 
 			// 11 – 13
 			for (StoredFields i = StoredFields.Achi_OneOrLess_Easy; i <= StoredFields.Achi_FiveOrLess_Hard; i++)
@@ -2366,7 +2443,23 @@ namespace RD_AAOW
 			values.Add (GetGameScore (StoredFields.OldAchi_ThreeOrLess).ToString ());
 			values.Add (GetGameScore (StoredFields.OldAchi_NoMistakes).ToString ());
 
-			return values.ToArray ();
+			// Сборка
+			string[] res = ["", ""];
+			byte lng = (byte)RDLocale.CurrentLanguage;
+
+			res[0] = string.Format (statsDescriptions[0][lng], values[0]);
+			res[0] += RDLocale.RNRN + string.Format (statsDescriptions[1][lng], values[1], values[2], values[3]);
+			res[0] += RDLocale.RNRN + string.Format (statsDescriptions[2][lng], values[4], values[5], values[6]);
+			res[0] += RDLocale.RNRN + string.Format (statsDescriptions[3][lng], values[7], values[8], values[9]);
+			res[0] += RDLocale.RNRN + string.Format (statsDescriptions[4][lng], values[10]);
+
+			res[1] = string.Format (statsDescriptions[5][lng], values[11], values[12], values[13]);
+			res[1] += RDLocale.RNRN + string.Format (statsDescriptions[6][lng], values[14], values[15], values[16]);
+			res[1] += RDLocale.RNRN + string.Format (statsDescriptions[7][lng], values[17], values[18]);
+
+			/*return values.ToArray ();*/
+			values.Clear ();
+			return res;
 			}
 		}
 	}

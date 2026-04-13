@@ -260,21 +260,6 @@ In this app you can solve classic (9 x 9) sudokus both manually and automaticall
   <data name="HighlightAffectedTip" xml:space="preserve">
     <value>This option allows you to highlight cells affected by the selected one (in row, column and square)</value>
   </data>
-  <data name="Achi16" xml:space="preserve">
-    <value>🕐
-“One or less” achievement
-
-Appears every time when one or less checks done on easy game mode</value>
-  </data>
-  <data name="Achi17" xml:space="preserve">
-    <value>🕒
-“Three or less” achievement
-
-Appears every time when three or less checks done on medium game mode</value>
-  </data>
-  <data name="StatsText00" xml:space="preserve">
-    <value>Total score: {0:S}</value>
-  </data>
   <data name="HelpQRTip" xml:space="preserve">
     <value>To access help, support and reference materials, use the QR code below.
 
@@ -330,66 +315,13 @@ Do you want to start new game anyway?</value>
   <data name="ShowFreeDigitsTip" xml:space="preserve">
     <value>This option allows you to see digits that are available for placing in the currently selected cell</value>
   </data>
-  <data name="Achi18" xml:space="preserve">
-    <value>🕔
-“Five or less” achievement
-
-Appears every time when five or less checks done on hard game mode</value>
-  </data>
-  <data name="Achi19" xml:space="preserve">
-    <value>🙂
-“No mistakes / easy” achievement
-
-Appears every time when all checks are successful on easy game mode</value>
-  </data>
-  <data name="Achi20" xml:space="preserve">
-    <value>😀
-“No mistakes / medium” achievement
-
-Appears every time when all checks are successful on medium game mode</value>
-  </data>
-  <data name="Achi21" xml:space="preserve">
-    <value>😍
-“No mistakes / hard” achievement
-
-Appears every time when all checks are successful on hard game mode</value>
-  </data>
-  <data name="StatsText01" xml:space="preserve">
-    <value>Finished games:
-easy – {0:S}
-medium – {1:S}
-hard – {2:S}</value>
-  </data>
-  <data name="StatsText04" xml:space="preserve">
-    <value>Best time:
-easy – {0:S}
-medium – {1:S}
-hard – {2:S}</value>
-  </data>
-  <data name="StatsText07" xml:space="preserve">
-    <value>Longest chain without checks:
-easy – {0:S}
-medium – {1:S}
-hard – {2:S}</value>
-  </data>
-  <data name="StatsText10" xml:space="preserve">
-    <value>Successful checks: {0:S}</value>
-  </data>
-  <data name="StatsText11" xml:space="preserve">
-    <value>Achievements “one of less”: {0:S}
-Achievements “three of less”: {1:S}
-Achievements “five of less”: {2:S}</value>
-  </data>
-  <data name="StatsText14" xml:space="preserve">
-    <value>Achievements “no mistakes / easy”: {0:S}
-Achievements “no mistakes / medium”: {1:S}
-Achievements “no mistakes / hard”: {2:S}</value>
-  </data>
-  <data name="StatsText17" xml:space="preserve">
-    <value>Old achievements “three of less”: {0:S}
-Old achievements “no mistakes”: {1:S}</value>
-  </data>
   <data name="ResultsPage" xml:space="preserve">
     <value>Game results</value>
+  </data>
+  <data name="ShowStatsOnWinLabel" xml:space="preserve">
+    <value>Display game statistics when winning</value>
+  </data>
+  <data name="ShowStatsOnWinTip" xml:space="preserve">
+    <value>This option enables transition to the statistics section upon winning the current game</value>
   </data>
 </root>

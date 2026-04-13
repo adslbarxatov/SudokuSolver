@@ -58,6 +58,15 @@
 			</StackLayout>
 			<Label x:Name="ShowFreeDigitsTip" />
 
+			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
+				WidthRequest="100" Color="#505050" Margin="12" />
+
+			<StackLayout Orientation="Horizontal">
+				<Switch x:Name="ShowStatsOnWinSwitch" VerticalOptions="Center" />
+				<Label x:Name="ShowStatsOnWinLabel" VerticalOptions="Center" />
+			</StackLayout>
+			<Label x:Name="ShowStatsOnWinTip" />
+
 			<Label />
 			<BoxView VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="1" 
 				WidthRequest="200" Color="#505050" Margin="12" />

@@ -65,7 +65,8 @@ namespace RD_AAOW
 		private StackLayout numbersField = [];
 		private StackLayout inputField = [];
 
-		private Switch gameModeSwitch, keepScreenOnSwitch, replaceBalloonsSwitch, showFreeDigitsSwitch;
+		private Switch gameModeSwitch, keepScreenOnSwitch, replaceBalloonsSwitch, showFreeDigitsSwitch,
+			showStatsOnWinSwitch;
 
 		#endregion
 
@@ -226,7 +227,7 @@ namespace RD_AAOW
 
 			// Добавление управляющих кнопок
 			freeDigitsTipButton = RDInterface.ApplyButtonSettings (solutionPage, null, RDDefaultButtons.Menu,
-				stubColor, null, true);
+				stubColor, FreeDigitsTip_Click, true);
 			freeDigitsTipButton.Text = "";
 			freeDigitsTipButton.FontFamily = RDGenerics.MonospaceFont;
 			freeDigitsTipButton.FontSize /= 1.75;
@@ -314,6 +315,13 @@ namespace RD_AAOW
 			RDInterface.ApplyLabelSettings (settingsPage, "ShowFreeDigitsLabel", RDLocale.GetText ("ShowFreeDigitsLabel"),
 				RDLabelTypes.DefaultLeft);
 			RDInterface.ApplyLabelSettings (settingsPage, "ShowFreeDigitsTip", RDLocale.GetText ("ShowFreeDigitsTip"),
+				RDLabelTypes.TipJustify);
+
+			showStatsOnWinSwitch = RDInterface.ApplySwitchSettings (settingsPage, "ShowStatsOnWinSwitch", false,
+				settingsFieldBackColor, ShowStatsOnWinSwitch_Toggled, SudokuSolverMath.ShowStatsOnWinFlag);
+			RDInterface.ApplyLabelSettings (settingsPage, "ShowStatsOnWinLabel", RDLocale.GetText ("ShowStatsOnWinLabel"),
+				RDLabelTypes.DefaultLeft);
+			RDInterface.ApplyLabelSettings (settingsPage, "ShowStatsOnWinTip", RDLocale.GetText ("ShowStatsOnWinTip"),
 				RDLabelTypes.TipJustify);
 
 			RDInterface.ApplyLabelSettings (settingsPage, "RestartTipLabel",
@@ -938,11 +946,16 @@ namespace RD_AAOW
 
 					// Отобразить решение в случае выигрыша (без return; режим игры отключается далее)
 					if (win)
-						/*await*/ ShowScore (true);
+						{
+						if (SudokuSolverMath.ShowStatsOnWinFlag)
+							ShowScore (true);
+						}
 
 					// Иначе продолжить игру
 					else
+						{
 						return true;
+						}
 					}
 
 				// Не отображать решение вне игрового режима
@@ -980,49 +993,12 @@ namespace RD_AAOW
 		// Метод отображает игровую статистику
 		private void ShowScore (bool AsWin)
 			{
-			/*// Сборка
-			string text = "";
-
-			if (AsWin)
-				text += (RDLocale.GetText ("SolvedText") + RDLocale.RNRN);
-
-			string[] stats = SudokuSolverMath.StatsValues;
-			text += (string.Format (RDLocale.GetText ("StatsText"), gemSuffix + "\t " + stats[0],
-				easyPrefix + stats[1] + "\t\t" + mediumPrefix + stats[2] + "\t\t" + hardPrefix + stats[3],
-				easyPrefix + stats[4] + "\t\t" + mediumPrefix + stats[5] + "\t\t" + hardPrefix + stats[6],
-				easyPrefix + stats[7] + "\t\t" + mediumPrefix + stats[8] + "\t\t" + hardPrefix + stats[9])) +
-				RDLocale.RNRN;
-
-			text += string.Format (RDLocale.GetText ("StatsTextAchi"),
-				stats[10], stats[11]);
-
-			// Отображение
-			bool ans;
-			if (RDGenerics.IsTV)
-				{
-				await RDInterface.ShowMessage (text, RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK));
-				ans = true;
-				}
-			else
-				{
-				ans = await RDInterface.ShowMessage (text, RDLocale.GetDefaultText (RDLDefaultTexts.Button_OK),
-					RDLocale.GetText ("ShareButton"));
-				}
-
-			// Отправка
-			if (ans)
-				return true;
-
-			await Share.RequestAsync (RDGenerics.DefaultAssemblyVisibleName + RDLocale.RNRN +
-				text, RDGenerics.DefaultAssemblyVisibleName);
-			return true;*/
-
 			resultsPage.Title = AsWin ? RDLocale.GetText ("SolvedText") : RDLocale.GetText ("StatsText");
 
 			// Результаты
-			string[] stats = SudokuSolverMath.GetStatsValues ();
+			string[] stats = SudokuSolverMath.GetStatsValues2 ();
 
-			string fmt = RDLocale.GetText ("StatsText00");
+			/*string fmt = RDLocale.GetText ("StatsText00");
 			scoreField.Text = string.Format (fmt, stats[0]) + RDLocale.RNRN;
 
 			fmt = RDLocale.GetText ("StatsText01");
@@ -1046,7 +1022,9 @@ namespace RD_AAOW
 			fmt = RDLocale.GetText ("StatsText17");
 			achievementField.Text += string.Format (fmt, stats[17], stats[18]);
 
-			achievementField.Text = achievementField.Text.Replace (RDLocale.RN, RDLocale.RNRN);
+			achievementField.Text = achievementField.Text.Replace (RDLocale.RN, RDLocale.RNRN);*/
+			scoreField.Text = stats[0];
+			achievementField.Text = stats[1];
 
 			// Запуск
 			RDInterface.SetCurrentPage (resultsPage, resultsMasterBackColor);
@@ -1358,6 +1336,12 @@ namespace RD_AAOW
 			return true;
 			}
 
+		// Включение / выключение отображения статистики игры при выигрыше
+		private void ShowStatsOnWinSwitch_Toggled (object sender, ToggledEventArgs e)
+			{
+			SudokuSolverMath.ShowStatsOnWinFlag = showStatsOnWinSwitch.IsToggled;
+			}
+
 		// Включение / выключение подсветки простреливаемых ячеек
 		private async void HighlightAffectedButton_Clicked (object sender, EventArgs e)
 			{
@@ -1419,6 +1403,16 @@ namespace RD_AAOW
 				}
 
 			return true;
+			}
+
+		// Отображение подсказки к доступным цифрам
+		private void FreeDigitsTip_Click (object sender, EventArgs e)
+			{
+			if (string.IsNullOrWhiteSpace (freeDigitsTipButton.Text) ||
+				string.IsNullOrWhiteSpace (SudokuSolverMath.LastFreeDigitsDescription))
+				return;
+
+			RDInterface.ShowBalloon (SudokuSolverMath.LastFreeDigitsDescription, true);
 			}
 
 		#endregion
