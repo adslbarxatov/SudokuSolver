@@ -1,6 +1,6 @@
 _en_us_
 
-- Simplified display of game results;
+- Simplified display of game results; 
 - Added a tooltip to the button displaying available digits for the selected cell;
 - Added a toggle to skip the statistics window when winning a game;
 - Updated the set of achievements: now they all depend on the current difficulty level;
