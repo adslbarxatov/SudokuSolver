@@ -526,7 +526,6 @@ namespace RD_AAOW
 
 					// Отображение сведений о достижениях (обязательно до обновления очков)
 					string achiLine = "";
-					/*for (uint i = 0; i < SudokuSolverMath.AchievementsCount; i++)*/
 					for (StoredFields i = StoredFields.Achi_OneOrLess_Easy; i <= StoredFields.Achi_NoMistakes_Hard; i++)
 						{
 						if (!win)
@@ -535,12 +534,10 @@ namespace RD_AAOW
 						if (!SudokuSolverMath.CheckAchievement (i))
 							continue;
 
-						/*string achiText = RDLocale.GetText ("Achi" + ((uint)i).ToString ());*/
 						string achiText = SudokuSolverMath.GetAchievementDescription (i);
 						int left = achiText.IndexOf (RDLocale.RN);
 						achiLine += (" " + achiText.Substring (0, left));
 
-						/*uint tip = 1u << (8 + (int)i);*/
 						uint tip = 1u << (int)i;
 						if ((RDGenerics.TipsState & tip) == 0)
 							{
@@ -554,12 +551,15 @@ namespace RD_AAOW
 					SudokuSolverMath.UpdateGameScore (false, score);
 
 					// Отображение результата и отключение игрового режима до следующей генерации
+					if (win && !SudokuSolverMath.ShowStatsOnWinFlag)
+						RDInterface.LocalizedMessageBox (RDMessageFlags.Success | RDMessageFlags.CenterText, "SolvedText", 1000);
+
 					string msgText = RDLocale.GetText ("SolutionIsCorrect") + RDLocale.RNRN +
-						"+" + score.ToString () + " 💎";
+						"+" + score.ToString () + SudokuSolverMath.ScoreChar;
 					if (!string.IsNullOrWhiteSpace (achiLine))
 						msgText += "\t+" + achiLine;
 					RDInterface.MessageBox (RDMessageFlags.Success | RDMessageFlags.CenterText | RDMessageFlags.NoSound,
-						msgText, 1500);
+						msgText, 2000);
 
 					// Отобразить решение в случае выигрыша (без return; режим игры отключается далее)
 					if (win)
@@ -680,7 +680,7 @@ namespace RD_AAOW
 			string text = RDLocale.GetText ("SolutionIsIncorrect");
 			if (SudokuSolverMath.GameMode != MatrixDifficulty.None)
 				{
-				text += (RDLocale.RNRN + "–" + score.ToString () + " 💎");
+				text += (RDLocale.RNRN + "–" + score.ToString () + SudokuSolverMath.ScoreChar);
 				RDInterface.MessageBox (RDMessageFlags.Error | RDMessageFlags.CenterText | RDMessageFlags.NoSound,
 					text, 1500);
 				}
@@ -694,22 +694,6 @@ namespace RD_AAOW
 		// Метод отображает игровую статистику
 		private void MStats_Click (object sender, EventArgs e)
 			{
-			/*string text = "";
-
-			if (sender == null)
-				text += (RDLocale.GetText ("SolvedText") + RDLocale.RNRN);
-
-			string[] stats = SudokuSolverMath.GetStatsValues ();
-			string spl = "   -   ";
-			text += string.Format (RDLocale.GetText ("StatsText"), stats[0],
-				stats[1] + spl + stats[2] + spl + stats[3],
-				stats[4] + spl + stats[5] + spl + stats[6],
-				stats[7] + spl + stats[8] + spl + stats[9]) + RDLocale.RNRN;
-
-			text += string.Format (RDLocale.GetText ("StatsTextAchi"),
-				stats[10], stats[11]);
-
-			RDInterface.MessageBox (RDMessageFlags.Success | RDMessageFlags.CenterText | RDMessageFlags.NoSound, text);*/
 			_ = new SudokuSolverResults (sender == null);
 			}
 

@@ -468,17 +468,17 @@ namespace RD_AAOW
 		/// <summary>
 		/// Размер стороны судоку
 		/// </summary>
-		public const UInt16 SideSize = 9;   // SquareSize ^ 2
+		public const UInt16 SideSize = 9;	// SquareSize ^ 2
 
 		/// <summary>
 		/// Полный размер судоку
 		/// </summary>
-		public const UInt16 FullSize = 81;  // SideSize ^ 2
+		public const UInt16 FullSize = 81;	// SideSize ^ 2
 
 		/// <summary>
 		/// Размер стороны квадрата судоку
 		/// </summary>
-		public const UInt16 SquareSize = 3; // SideSize ^ 0.5
+		public const UInt16 SquareSize = 3;	// SideSize ^ 0.5
 
 		// Полная флаговая переменная (123456789), используемая для решения
 		private const UInt16 SDS_FULL = ((1 << SideSize) - 1);
@@ -496,11 +496,6 @@ namespace RD_AAOW
 		// Ограничение поля Лучшее время (не более недели)
 		private const uint gameScore_TimeLimit = 60 * 60 * 24 * 7;
 
-		/*/// <summary>
-		/// Возвращает число доступных достижений
-		/// </summary>
-		public const uint AchievementsCount = 8;*/
-
 		// Имена ключей, используемые для хранения настроек
 #if ANDROID
 		private const string replaceBalloonsPar = "ReplaceBalloons";
@@ -516,6 +511,42 @@ namespace RD_AAOW
 		private const string showAffectedCellsPar = "ShowAffectedCells";
 		private const string showFreeDigitsFlagPar = "ShowFreeDigitsFlag";
 		private const string showStatsOnWinFlagPar = "ShowStatsOnWinFlag";
+
+		// Общие эмоджи
+
+		/// <summary>
+		/// Возвращает символ выигрыша
+		/// </summary>
+		public const string ScoreChar = " 💎";
+
+#if ANDROID
+
+		/// <summary>
+		/// Возвращает символ простого уровня игры
+		/// </summary>
+		public const string EasyPrefix = "🟢\t ";
+
+		/// <summary>
+		/// Возвращает символ среднего уровня игры
+		/// </summary>
+		public const string MediumPrefix = "🟡\t ";
+
+		/// <summary>
+		/// Возвращает символ сложного уровня игры
+		/// </summary>
+		public const string HardPrefix = "🔴\t ";
+
+		/// <summary>
+		/// Возвращает символ ошибочного решения
+		/// </summary>
+		public const string FailurePrefix = "❌ ";
+
+		/// <summary>
+		/// Возвращает символ корректного решения
+		/// </summary>
+		public const string SuccessPrefix = "✅ ";
+
+#endif
 
 		#endregion
 
@@ -883,9 +914,6 @@ namespace RD_AAOW
 				{
 				// Защита верхних вызовов
 				string line = RDGenerics.GetSettings (sudokuFieldUPar, "");
-				/*if (string.IsNullOrWhiteSpace (line))
-					line = ParseOldField ();
-				else*/
 				if (!string.IsNullOrWhiteSpace (line))
 					line = DecodeLine (line);
 
@@ -1445,21 +1473,14 @@ namespace RD_AAOW
 			}
 
 		// Методы сохранения и загрузки статистики игрового режима
-		/*private static uint GetGameScore (byte Item)*/
 		private static uint GetGameScore (StoredFields Item)
 			{
 			if (gameScore == null)
 				{
 				// Инициализация
-				/*gameScore = new uint[gameScoreSize];
-				for (int i = 0; i < gameScoreSize; i++)*/
 				gameScore = new uint[(int)StoredFields._Size_];
 				for (int i = 0; i < gameScore.Length; i++)
 					{
-					/*if ((i < gameScore_TimeBase) || (i >= gameScore_AchiBase))
-						gameScore[i] = 0;   // Чем больше, тем лучше
-					else
-						gameScore[i] = uint.MaxValue;   // Наоборот*/
 					switch ((StoredFields)i)
 						{
 						case StoredFields.TimeEasy:
@@ -1478,9 +1499,6 @@ namespace RD_AAOW
 
 				// Извлечение
 				string line = RDGenerics.GetSettings (gameScoreUPar, "");
-				/*if (string.IsNullOrWhiteSpace (line))
-					line = ParseOldScores ();
-				else*/
 				if (!string.IsNullOrWhiteSpace (line))
 					line = DecodeLine (line);
 
@@ -1490,7 +1508,6 @@ namespace RD_AAOW
 					return gameScore[(int)Item];
 
 				// Поля 4 и 5 (unused1 и unused2) забракованы ошибочной версией 5.0.0.0, не используются
-				/*for (int i = 0; i < gameScoreSize; i++)*/
 				for (int i = 0; i < gameScore.Length; i++)
 					try
 						{
@@ -1498,10 +1515,6 @@ namespace RD_AAOW
 						}
 					catch
 						{
-						/*if ((i < gameScore_TimeBase) || (i >= gameScore_AchiBase))
-							gameScore[i] = 0;   // Чем больше, тем лучше
-						else
-							gameScore[i] = uint.MaxValue;   // Наоборот*/
 						switch ((StoredFields)i)
 							{
 							case StoredFields.TimeEasy:
@@ -1524,7 +1537,6 @@ namespace RD_AAOW
 			return gameScore[(int)Item];
 			}
 
-		/*private static void SetGameScore (byte Item, uint Value)*/
 		private static void SetGameScore (StoredFields Item, uint Value)
 			{
 			gameScore[(int)Item] = Value;
@@ -1532,10 +1544,8 @@ namespace RD_AAOW
 			string line = "";
 			string sp = gameScoreSplitter[0].ToString ();
 
-			/*for (int i = 0; i < gameScoreSize - 1; i++)*/
 			for (int i = 0; i < gameScore.Length - 1; i++)
 				line += (gameScore[i].ToString () + sp);
-			/*line += gameScore[gameScoreSize - 1].ToString ();*/
 			line += gameScore[gameScore.Length - 1].ToString ();
 
 			line = EncodeLine (line);
@@ -1552,7 +1562,6 @@ namespace RD_AAOW
 			// Инициализация
 			byte baseOffset = (byte)GameMode;
 			uint multiplier = (uint)(baseOffset + 1);
-			/*byte item;*/
 			uint v;
 			StoredFields item;
 
@@ -1561,7 +1570,6 @@ namespace RD_AAOW
 				// Обычный выигрыш
 				case ScoreTypes.RegularWinning:
 				default:
-					/*item = (byte)(gameScore_ChainBase + baseOffset);*/
 					item = (StoredFields)((byte)StoredFields.ChainEasy + baseOffset);
 					v = GetGameScore (item);
 					if (Value > v)
@@ -1584,13 +1592,11 @@ namespace RD_AAOW
 				// Победа
 				case ScoreTypes.GameCompletion:
 					// Количество выигранных игр
-					/*item = (byte)(gameScore_WinsBase + baseOffset);*/
 					item = (StoredFields)((byte)StoredFields.WinsEasy + baseOffset);
 					v = GetGameScore (item);
 					SetGameScore (item, v + 1);
 
 					// Лучшее время
-					/*item = (byte)(gameScore_TimeBase + baseOffset);*/
 					item = (StoredFields)((byte)StoredFields.TimeEasy + baseOffset);
 					v = GetGameScore (item);
 
@@ -1599,14 +1605,10 @@ namespace RD_AAOW
 						SetGameScore (item, (uint)seconds);
 
 					// Проверка достижений
-					/*for (uint i = 0; i < AchievementsCount; i++)*/
 					for (StoredFields i = StoredFields.Achi_OneOrLess_Easy; i <= StoredFields.Achi_NoMistakes_Hard; i++)
 						{
 						if (CheckAchievement (i))
 							{
-							/*item = (byte)(gameScore_AchiBase + i);
-							v = GetGameScore (item);
-							SetGameScore (item, v + 1);*/
 							v = GetGameScore (i);
 							SetGameScore (i, v + 1);
 							}
@@ -1624,7 +1626,6 @@ namespace RD_AAOW
 		public static void UpdateGameScore (bool Penalty, uint Value)
 			{
 			// Загрузка значения
-			/*uint v = GetGameScore (gameScore_TotalScore);*/
 			uint v = GetGameScore (StoredFields.TotalScore);
 
 			// Обновление
@@ -1645,7 +1646,6 @@ namespace RD_AAOW
 				}
 
 			// Запись значения
-			/*SetGameScore (gameScore_TotalScore, v);*/
 			SetGameScore (StoredFields.TotalScore, v);
 			}
 
@@ -2232,58 +2232,6 @@ namespace RD_AAOW
 			return false;
 			}
 
-		// Переходные методы
-
-		/*private static string ParseOldField ()
-			{
-			string line = RDGenerics.GetSettings ("SudokuField", "");
-
-#if !ANDROID
-			try
-				{
-				byte[] conv = Convert.FromBase64String (line.Replace ('А', 'A').Replace ('М', 'M'));
-				line = RDGenerics.GetEncoding (RDEncodings.UTF8).GetString (conv);
-				}
-			catch
-				{
-				line = "";
-				}
-#endif
-
-			RDGenerics.SetSettings ("SudokuField", "");
-			if (line.Length == FullSize)
-				{
-				string lineU = EncodeLine (line);
-				RDGenerics.SetSettings (sudokuFieldUPar, lineU);
-
-				return line;
-				}
-
-			return "";
-			}*/
-
-		/*private static string ParseOldScores ()
-			{
-			string line = RDGenerics.GetSettings ("GameScore", "");
-#if !ANDROID
-			try
-				{
-				byte[] conv = Convert.FromBase64String (line.Replace ('А', 'A'));
-				line = RDGenerics.GetEncoding (RDEncodings.Unicode32).GetString (conv);
-				}
-			catch
-				{
-				line = "";
-				}
-#endif
-
-			RDGenerics.SetSettings ("GameScore", "");
-			string lineU = EncodeLine (line);
-			RDGenerics.SetSettings (gameScoreUPar, lineU);
-
-			return line;
-			}*/
-
 		// Загрузка и сохранение параметров в защищённом виде
 		private static string EncodeLine (string SourceLine)
 			{
@@ -2392,11 +2340,11 @@ namespace RD_AAOW
 		///  0. Выигрыши;
 		///  1. Достижения
 		/// </summary>
-		public static string[] GetStatsValues2 ()
+		public static string[] GetStatsValues ()
 			{
 			// 0
 			List<string> values = [];
-			values.Add (GetGameScore (StoredFields.TotalScore).ToString ("#,#0"));
+			values.Add (GetGameScore (StoredFields.TotalScore).ToString ("#,#0") + ScoreChar);
 
 			// 1 – 3
 			for (StoredFields i = StoredFields.WinsEasy; i <= StoredFields.WinsHard; i++)
@@ -2457,7 +2405,6 @@ namespace RD_AAOW
 			res[1] += RDLocale.RNRN + string.Format (statsDescriptions[6][lng], values[14], values[15], values[16]);
 			res[1] += RDLocale.RNRN + string.Format (statsDescriptions[7][lng], values[17], values[18]);
 
-			/*return values.ToArray ();*/
 			values.Clear ();
 			return res;
 			}

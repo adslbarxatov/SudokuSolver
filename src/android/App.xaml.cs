@@ -27,7 +27,6 @@ namespace RD_AAOW
 		private Color settingsMasterBackColor = Color.FromArgb ("#FFFFF0");
 		private Color settingsFieldBackColor = Color.FromArgb ("#FFFFD0");
 		private Color resultsMasterBackColor = Color.FromArgb ("#FFFFF0");
-		/*private Color resultsFieldBackColor = Color.FromArgb ("#FFFFD0");*/
 		private Color stubColor = RDInterface.GetInterfaceColor (RDInterfaceColors.MediumGrey);
 
 		// Контекстные меню
@@ -41,11 +40,11 @@ namespace RD_AAOW
 		// Номер текущей выбранной кнопки
 		private int currentButtonIndex = -1;
 
-		// Префиксы режимов
+		/*// Префиксы режимов
 		private const string easyPrefix = "🟢\t ";
 		private const string mediumPrefix = "🟡\t ";
 		private const string hardPrefix = "🔴\t ";
-		private const string gemSuffix = "💎";
+		private const string gemSuffix = "💎";*/
 
 		#endregion
 
@@ -280,9 +279,9 @@ namespace RD_AAOW
 			SetInterfaceState (true);
 
 			// Этот список нужен в нескольких местах
-			difficultyVariants.Add (easyPrefix + RDLocale.GetText ("Difficulty0"));
-			difficultyVariants.Add (mediumPrefix + RDLocale.GetText ("Difficulty1"));
-			difficultyVariants.Add (hardPrefix + RDLocale.GetText ("Difficulty2"));
+			difficultyVariants.Add (SudokuSolverMath.EasyPrefix + RDLocale.GetText ("Difficulty0"));
+			difficultyVariants.Add (SudokuSolverMath.MediumPrefix + RDLocale.GetText ("Difficulty1"));
+			difficultyVariants.Add (SudokuSolverMath.HardPrefix + RDLocale.GetText ("Difficulty2"));
 
 			#endregion
 
@@ -329,10 +328,10 @@ namespace RD_AAOW
 				RDLabelTypes.TipCenter);
 
 			RDInterface.ApplyLabelSettings (settingsPage, "LanguageLabel",
-				RDLocale.GetDefaultText (RDLDefaultTexts.Control_InterfaceLanguageNC) + ":",
+				RDLocale.GetDefaultText (RDLDefaultTexts.Control_InterfaceLanguage) + ":",
 				RDLabelTypes.DefaultLeft);
 			languageButton = RDInterface.ApplyButtonSettings (settingsPage, "LanguageSelector",
-				RDLocale.LanguagesNames[(int)RDLocale.CurrentLanguage],
+				RDLocale.LanguagesNamesList[(int)RDLocale.CurrentLanguage],
 				settingsFieldBackColor, SelectLanguage_Clicked);
 			RDInterface.ApplyLabelSettings (settingsPage, "LanguageTip", RDLocale.GetText ("LanguageTip"),
 				RDLabelTypes.TipJustify);
@@ -595,7 +594,7 @@ namespace RD_AAOW
 				// Выполнить решение
 				case 10:
 					if (!await FindSolution (true))
-						await ShowRBControlledMessage ("❌ " + RDLocale.GetText ("SolutionIsIncorrect"));
+						await ShowRBControlledMessage (SudokuSolverMath.FailurePrefix + RDLocale.GetText ("SolutionIsIncorrect"));
 					break;
 
 				// Полный сброс
@@ -643,7 +642,7 @@ namespace RD_AAOW
 
 				// Статистика игры
 				case 31:
-					/*await*/ ShowScore (false);
+					ShowScore (false);
 					break;
 
 				// Перенос выигрышей
@@ -664,9 +663,9 @@ namespace RD_AAOW
 			uint score = SudokuSolverMath.GetScore (ScoreTypes.Penalty);
 			SudokuSolverMath.UpdateGameScore (true, score);
 
-			string text = "❌ " + RDLocale.GetText ("SolutionIsIncorrect");
+			string text = SudokuSolverMath.FailurePrefix + RDLocale.GetText ("SolutionIsIncorrect");
 			if (SudokuSolverMath.GameMode != MatrixDifficulty.None)
-				text += (RDLocale.RNRN + "–" + score.ToString () + " " + gemSuffix);
+				text += (RDLocale.RNRN + "–" + score.ToString () + /*" " + gemSuffix*/ SudokuSolverMath.ScoreChar);
 
 			return await ShowRBControlledMessage (text);
 			}
@@ -804,7 +803,7 @@ namespace RD_AAOW
 		private async void SolveSudoku_Clicked (object sender, EventArgs e)
 			{
 			if (!await FindSolution (true))
-				await ShowRBControlledMessage ("❌ " + RDLocale.GetText ("SolutionIsIncorrect"));
+				await ShowRBControlledMessage (SudokuSolverMath.FailurePrefix + RDLocale.GetText ("SolutionIsIncorrect"));
 
 			if (RDGenerics.IsTV && (currentButtonIndex >= 0) && (numberButtons.Count > currentButtonIndex))
 				numberButtons[currentButtonIndex].Focus ();
@@ -876,8 +875,8 @@ namespace RD_AAOW
 
 					return false;
 
-				case SolutionResults.SearchAborted: // Не перекрашивать поле
-					return true;    // Не считать нарушением правил
+				case SolutionResults.SearchAborted:	// Не перекрашивать поле
+					return true;	// Не считать нарушением правил
 				}
 
 			// Игровой режим
@@ -911,7 +910,6 @@ namespace RD_AAOW
 
 					// Отображение сведений о достижениях (обязательно до обновления очков)
 					string achiLine = "";
-					/*for (uint i = 0; i < SudokuSolverMath.AchievementsCount; i++)*/
 					for (StoredFields i = StoredFields.Achi_OneOrLess_Easy; i <= StoredFields.Achi_NoMistakes_Hard; i++)
 						{
 						if (!win)
@@ -920,12 +918,10 @@ namespace RD_AAOW
 						if (!SudokuSolverMath.CheckAchievement (i))
 							continue;
 
-						/*string achiText = RDLocale.GetText ("Achi" + i.ToString ());*/
-						string achiText = RDLocale.GetText ("Achi" + ((uint)i).ToString ());
+						string achiText = SudokuSolverMath.GetAchievementDescription (i);
 						int left = achiText.IndexOf (RDLocale.RN);
 						achiLine += " " + achiText.Substring (0, left);
 
-						/*uint tip = 1u << (8 + (int)i);*/
 						uint tip = 1u << (int)i;
 						if ((RDGenerics.TipsState & tip) == 0)
 							{
@@ -938,8 +934,11 @@ namespace RD_AAOW
 					SudokuSolverMath.UpdateGameScore (false, score);
 
 					// Отображение результата и отключение игрового режима до следующей генерации
-					string msgText = "✅ " + RDLocale.GetText ("SolutionIsCorrect") + RDLocale.RNRN +
-						"+" + score.ToString () + " " + gemSuffix;
+					if (win && !SudokuSolverMath.ShowStatsOnWinFlag)
+						RDInterface.ShowBalloon (RDLocale.GetText ("SolvedText"), true);
+
+					string msgText = SudokuSolverMath.SuccessPrefix + RDLocale.GetText ("SolutionIsCorrect") + RDLocale.RNRN +
+						"+" + score.ToString () + /*" " + gemSuffix*/ SudokuSolverMath.ScoreChar;
 					if (!string.IsNullOrWhiteSpace (achiLine))
 						msgText += "\t\t+" + achiLine;
 					await ShowRBControlledMessage (msgText);
@@ -961,7 +960,7 @@ namespace RD_AAOW
 				// Не отображать решение вне игрового режима
 				else
 					{
-					await ShowRBControlledMessage ("✅ " + RDLocale.GetText ("SolutionIsCorrect"));
+					await ShowRBControlledMessage (SudokuSolverMath.SuccessPrefix + RDLocale.GetText ("SolutionIsCorrect"));
 					return true;
 					}
 				}
@@ -996,33 +995,8 @@ namespace RD_AAOW
 			resultsPage.Title = AsWin ? RDLocale.GetText ("SolvedText") : RDLocale.GetText ("StatsText");
 
 			// Результаты
-			string[] stats = SudokuSolverMath.GetStatsValues2 ();
+			string[] stats = SudokuSolverMath.GetStatsValues ();
 
-			/*string fmt = RDLocale.GetText ("StatsText00");
-			scoreField.Text = string.Format (fmt, stats[0]) + RDLocale.RNRN;
-
-			fmt = RDLocale.GetText ("StatsText01");
-			scoreField.Text += (string.Format (fmt, stats[1], stats[2], stats[3]) + RDLocale.RNRN);
-
-			fmt = RDLocale.GetText ("StatsText04");
-			scoreField.Text += (string.Format (fmt, stats[4], stats[5], stats[6]) + RDLocale.RNRN);
-
-			fmt = RDLocale.GetText ("StatsText07");
-			scoreField.Text += (string.Format (fmt, stats[7], stats[8], stats[9]) + RDLocale.RNRN);
-
-			fmt = RDLocale.GetText ("StatsText10");
-			scoreField.Text += string.Format (fmt, stats[10]);
-
-			fmt = RDLocale.GetText ("StatsText11");
-			achievementField.Text = string.Format (fmt, stats[11], stats[12], stats[13]) + RDLocale.RN;
-
-			fmt = RDLocale.GetText ("StatsText14");
-			achievementField.Text += (string.Format (fmt, stats[14], stats[15], stats[16]) + RDLocale.RN);
-
-			fmt = RDLocale.GetText ("StatsText17");
-			achievementField.Text += string.Format (fmt, stats[17], stats[18]);
-
-			achievementField.Text = achievementField.Text.Replace (RDLocale.RN, RDLocale.RNRN);*/
 			scoreField.Text = stats[0];
 			achievementField.Text = stats[1];
 
@@ -1396,7 +1370,7 @@ namespace RD_AAOW
 
 				case 1:
 					if (SudokuSolverMath.SetPortableScoresLine (await RDGenerics.GetFromClipboard ()))
-						/*await*/ ShowScore (false);
+						ShowScore (false);
 					else
 						RDInterface.ShowBalloon (RDLocale.GetText ("ScoresExchangeError"), true);
 					break;

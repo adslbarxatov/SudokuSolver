@@ -196,7 +196,7 @@
     <value>&amp;Game statistics</value>
   </data>
   <data name="SolvedText" xml:space="preserve">
-    <value>Solve</value>
+    <value>Solved!</value>
   </data>
   <data name="StatsText" xml:space="preserve">
     <value>Game results</value>
