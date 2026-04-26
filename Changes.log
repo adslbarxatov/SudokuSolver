@@ -1,5 +1,8 @@
 Sudoku solver: changes log
 
+ToDo:
+- Объединить сообщения о победе и выигрыше при скрытой статистике
+
 Version 5.6.2:
 • Internal assemblies have been updated;
 • Restored the congratulation message when stats window is disabled
